@@ -1,0 +1,27 @@
+name: secret-scan
+
+# Scan for committed secrets (API keys, tokens, private keys) on every push and
+# PR, plus a weekly sweep. gitleaks-action is free for personal accounts and
+# public repos owned by individuals; only organizations need GITLEAKS_LICENSE.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    name: gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so every commit is scanned
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

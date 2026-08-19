@@ -1,0 +1,115 @@
+<svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#555"/>
+    </marker>
+  </defs>
+  <!-- Title -->
+  <text x="400" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#111">Rubato — Three Workflows</text>
+
+  <!-- WORKFLOW 1: SCORE BUNDLE SOURCING -->
+  <text x="10" y="56" font-size="10" font-weight="700" letter-spacing="1" fill="#666">① SCORE BUNDLE SOURCING (one-time per piece)</text>
+  <!-- nodes -->
+  <rect x="10" y="64" width="120" height="44" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="70" y="83" text-anchor="middle" font-size="10" font-weight="700" fill="#111">PDF scan</text>
+  <text x="70" y="97" text-anchor="middle" font-size="9" fill="#444">(human-sourced)</text>
+
+  <rect x="10" y="118" width="120" height="44" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="70" y="137" text-anchor="middle" font-size="10" font-weight="700" fill="#111">MXL + MIDI</text>
+  <text x="70" y="151" text-anchor="middle" font-size="9" fill="#444">(MuseScore / IMSLP)</text>
+
+  <line x1="132" y1="86" x2="188" y2="100" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="132" y1="140" x2="188" y2="120" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <rect x="190" y="80" width="115" height="44" rx="4" fill="#fef9c3" stroke="#d97706" stroke-width="1.5"/>
+  <text x="248" y="99" text-anchor="middle" font-size="10" font-weight="700" fill="#111">OMR / layout</text>
+  <text x="248" y="113" text-anchor="middle" font-size="9" fill="#444">Audiveris if needed</text>
+
+  <line x1="305" y1="102" x2="358" y2="102" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <rect x="360" y="80" width="115" height="44" rx="4" fill="#fef9c3" stroke="#d97706" stroke-width="1.5"/>
+  <text x="418" y="99" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Build measure map</text>
+  <text x="418" y="113" text-anchor="middle" font-size="9" fill="#444">PDF ↔ timeline</text>
+
+  <line x1="475" y1="102" x2="528" y2="102" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <rect x="530" y="80" width="110" height="44" rx="4" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="585" y="99" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Visual spot-check</text>
+  <text x="585" y="113" text-anchor="middle" font-size="9" fill="#444">1 page, human ✓</text>
+
+  <line x1="640" y1="102" x2="685" y2="102" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <rect x="687" y="80" width="100" height="44" rx="4" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="737" y="99" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Score Bundle</text>
+  <text x="737" y="113" text-anchor="middle" font-size="9" fill="#444">validated ✓</text>
+
+  <!-- WORKFLOW 2: REHEARSAL TAKES -->
+  <text x="10" y="188" font-size="10" font-weight="700" letter-spacing="1" fill="#666">② REHEARSAL TAKES (repeated)</text>
+  <rect x="10" y="196" width="110" height="56" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="65" y="215" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Score PDF</text>
+  <text x="65" y="229" text-anchor="middle" font-size="9" fill="#444">click → cue point</text>
+  <text x="65" y="242" text-anchor="middle" font-size="9" fill="#444">color coverage</text>
+
+  <line x1="120" y1="224" x2="170" y2="224" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="172" y="196" width="110" height="56" rx="4" fill="#fef9c3" stroke="#d97706" stroke-width="1.5"/>
+  <text x="227" y="215" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Capture</text>
+  <text x="227" y="229" text-anchor="middle" font-size="9" fill="#444">free / top / here</text>
+  <text x="227" y="242" text-anchor="middle" font-size="9" fill="#777">Yamaha MIDI in</text>
+
+  <line x1="282" y1="224" x2="332" y2="224" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="334" y="196" width="110" height="56" rx="4" fill="#fef9c3" stroke="#d97706" stroke-width="1.5"/>
+  <text x="389" y="215" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Align to score</text>
+  <text x="389" y="229" text-anchor="middle" font-size="9" fill="#444">BLAST + DTW</text>
+
+  <line x1="444" y1="224" x2="494" y2="224" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="496" y="196" width="110" height="56" rx="4" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="551" y="215" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Ambiguous?</text>
+  <text x="551" y="229" text-anchor="middle" font-size="9" fill="#444">show 2 score regions</text>
+  <text x="551" y="242" text-anchor="middle" font-size="9" fill="#444">click to confirm</text>
+
+  <line x1="606" y1="224" x2="656" y2="224" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="658" y="196" width="115" height="56" rx="4" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="716" y="215" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Coverage overlay</text>
+  <text x="716" y="229" text-anchor="middle" font-size="9" fill="#444">on score pages</text>
+  <text x="716" y="242" text-anchor="middle" font-size="9" fill="#444">↩ loops to score</text>
+
+  <!-- WORKFLOW 3: LIVE PERFORMANCE -->
+  <text x="10" y="300" font-size="10" font-weight="700" letter-spacing="1" fill="#666">③ LIVE PERFORMANCE (real-time)</text>
+  <rect x="10" y="308" width="100" height="50" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="60" y="328" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Yamaha</text>
+  <text x="60" y="342" text-anchor="middle" font-size="9" fill="#444">live MIDI in</text>
+
+  <line x1="110" y1="333" x2="158" y2="333" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="160" y="308" width="120" height="50" rx="4" fill="#fef9c3" stroke="#d97706" stroke-width="1.5"/>
+  <text x="220" y="328" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Score follower</text>
+  <text x="220" y="342" text-anchor="middle" font-size="9" fill="#444">MIDI→(measure,beat)</text>
+  <text x="220" y="355" text-anchor="middle" font-size="9" fill="#777">priors from takes</text>
+
+  <line x1="280" y1="333" x2="328" y2="333" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="330" y="308" width="110" height="50" rx="4" fill="#fef9c3" stroke="#d97706" stroke-width="1.5"/>
+  <text x="385" y="328" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Tempo model</text>
+  <text x="385" y="342" text-anchor="middle" font-size="9" fill="#444">adapt to phrasing</text>
+
+  <line x1="440" y1="333" x2="488" y2="333" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="490" y="308" width="120" height="50" rx="4" fill="#fef9c3" stroke="#d97706" stroke-width="1.5"/>
+  <text x="550" y="328" text-anchor="middle" font-size="10" font-weight="700" fill="#111">Orch. scheduler</text>
+  <text x="550" y="342" text-anchor="middle" font-size="9" fill="#444">emit MIDI events</text>
+
+  <line x1="610" y1="320" x2="658" y2="310" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="610" y1="346" x2="658" y2="356" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="660" y="298" width="125" height="30" rx="4" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="722" y="317" text-anchor="middle" font-size="9" font-weight="700" fill="#111">Yamaha MIDI out</text>
+  <rect x="660" y="338" width="125" height="30" rx="4" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="722" y="357" text-anchor="middle" font-size="9" font-weight="700" fill="#111">Score cursor (live)</text>
+
+  <!-- LEGEND -->
+  <text x="10" y="400" font-size="10" font-weight="700" letter-spacing="1" fill="#666">LEGEND</text>
+  <rect x="10" y="408" width="12" height="12" rx="2" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="28" y="419" font-size="9" fill="#444">human / external source</text>
+  <rect x="160" y="408" width="12" height="12" rx="2" fill="#fef9c3" stroke="#d97706" stroke-width="1.5"/>
+  <text x="178" y="419" font-size="9" fill="#444">system step</text>
+  <rect x="280" y="408" width="12" height="12" rx="2" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="298" y="419" font-size="9" fill="#444">human gate</text>
+  <rect x="390" y="408" width="12" height="12" rx="2" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="408" y="419" font-size="9" fill="#444">output</text>
+</svg>

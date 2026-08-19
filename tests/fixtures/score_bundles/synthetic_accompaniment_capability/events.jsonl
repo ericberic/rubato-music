@@ -1,0 +1,9 @@
+{"event_id":"solo_000","measure":1,"beat":0.0,"part_id":"piano_solo","role":"solo","pitch":60,"velocity":60,"duration_beats":0.5,"source_refs":{"fixture":"phrase_start"}}
+{"event_id":"accomp_000","measure":1,"beat":0.0,"part_id":"strings","role":"accompaniment","pitch":48,"velocity":64,"duration_beats":2.0,"source_refs":{"fixture":"opening_pad"}}
+{"event_id":"solo_001","measure":1,"beat":1.0,"part_id":"piano_solo","role":"solo","pitch":62,"velocity":64,"duration_beats":0.5,"source_refs":{"fixture":"tempo_estimate_1"}}
+{"event_id":"solo_002","measure":1,"beat":2.0,"part_id":"piano_solo","role":"solo","pitch":64,"velocity":68,"duration_beats":0.5,"source_refs":{"fixture":"tempo_estimate_2"}}
+{"event_id":"accomp_001","measure":1,"beat":3.0,"part_id":"strings","role":"accompaniment","pitch":55,"velocity":70,"duration_beats":1.0,"source_refs":{"fixture":"scheduled_after_initial_tempo"}}
+{"event_id":"solo_003","measure":1,"beat":3.0,"part_id":"piano_solo","role":"solo","pitch":65,"velocity":72,"duration_beats":0.5,"source_refs":{"fixture":"rubato_change"}}
+{"event_id":"solo_004","measure":1,"beat":4.0,"part_id":"piano_solo","role":"solo","pitch":67,"velocity":76,"duration_beats":0.5,"source_refs":{"fixture":"slower_tempo_estimate"}}
+{"event_id":"accomp_002","measure":1,"beat":5.0,"part_id":"winds","role":"accompaniment","pitch":72,"velocity":74,"duration_beats":1.0,"source_refs":{"fixture":"scheduled_after_ritardando"}}
+{"event_id":"solo_005","measure":1,"beat":5.0,"part_id":"piano_solo","role":"solo","pitch":69,"velocity":80,"duration_beats":0.5,"source_refs":{"fixture":"phrase_peak"}}

@@ -1,0 +1,4 @@
+{"event_id":"solo_001","measure":1,"beat":4.0,"part_id":"piano_solo","role":"solo","pitch":64,"velocity":72,"duration_beats":1.0,"source_refs":{"fixture":"solo_entry"}}
+{"event_id":"accomp_001","measure":1,"beat":4.0,"part_id":"strings","role":"accompaniment","pitch":52,"velocity":64,"duration_beats":2.0,"source_refs":{"fixture":"string_pad"}}
+{"event_id":"solo_002","measure":1,"beat":5.0,"part_id":"piano_solo","role":"solo","pitch":67,"velocity":76,"duration_beats":1.0,"source_refs":{"fixture":"solo_continues"}}
+{"event_id":"accomp_002","measure":1,"beat":6.0,"part_id":"strings","role":"accompaniment","pitch":55,"velocity":70,"duration_beats":1.0,"source_refs":{"fixture":"tempo_predicted_entry"}}

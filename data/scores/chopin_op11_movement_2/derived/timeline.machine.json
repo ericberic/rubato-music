@@ -1,0 +1,1394 @@
+{
+  "schema_version": 2,
+  "timeline_id": "chopin-op11-m2-layout-machine-v1",
+  "movement_id": "2",
+  "canonical_ppq": 960,
+  "measures": [
+    {
+      "measure_index": 0,
+      "measure_label": "1",
+      "start_tick": 0,
+      "end_tick": 3840,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 1,
+      "measure_label": "2",
+      "start_tick": 3840,
+      "end_tick": 7680,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 2,
+      "measure_label": "3",
+      "start_tick": 7680,
+      "end_tick": 11520,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 3,
+      "measure_label": "4",
+      "start_tick": 11520,
+      "end_tick": 15360,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 4,
+      "measure_label": "5",
+      "start_tick": 15360,
+      "end_tick": 19200,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 5,
+      "measure_label": "6",
+      "start_tick": 19200,
+      "end_tick": 23040,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 6,
+      "measure_label": "7",
+      "start_tick": 23040,
+      "end_tick": 26880,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 7,
+      "measure_label": "8",
+      "start_tick": 26880,
+      "end_tick": 30720,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 8,
+      "measure_label": "9",
+      "start_tick": 30720,
+      "end_tick": 34560,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 9,
+      "measure_label": "10",
+      "start_tick": 34560,
+      "end_tick": 38400,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 10,
+      "measure_label": "11",
+      "start_tick": 38400,
+      "end_tick": 42240,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 11,
+      "measure_label": "12",
+      "start_tick": 42240,
+      "end_tick": 46080,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 12,
+      "measure_label": "13",
+      "start_tick": 46080,
+      "end_tick": 49920,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 13,
+      "measure_label": "14",
+      "start_tick": 49920,
+      "end_tick": 53760,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 14,
+      "measure_label": "15",
+      "start_tick": 53760,
+      "end_tick": 57600,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 15,
+      "measure_label": "16",
+      "start_tick": 57600,
+      "end_tick": 61440,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 16,
+      "measure_label": "17",
+      "start_tick": 61440,
+      "end_tick": 65280,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 17,
+      "measure_label": "18",
+      "start_tick": 65280,
+      "end_tick": 69120,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 18,
+      "measure_label": "19",
+      "start_tick": 69120,
+      "end_tick": 72960,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 19,
+      "measure_label": "20",
+      "start_tick": 72960,
+      "end_tick": 76800,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 20,
+      "measure_label": "21",
+      "start_tick": 76800,
+      "end_tick": 80640,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 21,
+      "measure_label": "22",
+      "start_tick": 80640,
+      "end_tick": 84480,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 22,
+      "measure_label": "23",
+      "start_tick": 84480,
+      "end_tick": 88320,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 23,
+      "measure_label": "24",
+      "start_tick": 88320,
+      "end_tick": 92160,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 24,
+      "measure_label": "25",
+      "start_tick": 92160,
+      "end_tick": 96000,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 25,
+      "measure_label": "26",
+      "start_tick": 96000,
+      "end_tick": 99840,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 26,
+      "measure_label": "27",
+      "start_tick": 99840,
+      "end_tick": 103680,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 27,
+      "measure_label": "28",
+      "start_tick": 103680,
+      "end_tick": 107520,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 28,
+      "measure_label": "29",
+      "start_tick": 107520,
+      "end_tick": 111360,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 29,
+      "measure_label": "30",
+      "start_tick": 111360,
+      "end_tick": 115200,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 30,
+      "measure_label": "31",
+      "start_tick": 115200,
+      "end_tick": 119040,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 31,
+      "measure_label": "32",
+      "start_tick": 119040,
+      "end_tick": 122880,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 32,
+      "measure_label": "33",
+      "start_tick": 122880,
+      "end_tick": 126720,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 33,
+      "measure_label": "34",
+      "start_tick": 126720,
+      "end_tick": 130560,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 34,
+      "measure_label": "35",
+      "start_tick": 130560,
+      "end_tick": 134400,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 35,
+      "measure_label": "36",
+      "start_tick": 134400,
+      "end_tick": 138240,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 36,
+      "measure_label": "37",
+      "start_tick": 138240,
+      "end_tick": 142080,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 37,
+      "measure_label": "38",
+      "start_tick": 142080,
+      "end_tick": 145920,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 38,
+      "measure_label": "39",
+      "start_tick": 145920,
+      "end_tick": 149760,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 39,
+      "measure_label": "40",
+      "start_tick": 149760,
+      "end_tick": 153600,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 40,
+      "measure_label": "41",
+      "start_tick": 153600,
+      "end_tick": 157440,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 41,
+      "measure_label": "42",
+      "start_tick": 157440,
+      "end_tick": 161280,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 42,
+      "measure_label": "43",
+      "start_tick": 161280,
+      "end_tick": 165120,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 43,
+      "measure_label": "44",
+      "start_tick": 165120,
+      "end_tick": 168960,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 44,
+      "measure_label": "45",
+      "start_tick": 168960,
+      "end_tick": 172800,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 45,
+      "measure_label": "46",
+      "start_tick": 172800,
+      "end_tick": 176640,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 46,
+      "measure_label": "47",
+      "start_tick": 176640,
+      "end_tick": 180480,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 47,
+      "measure_label": "48",
+      "start_tick": 180480,
+      "end_tick": 184320,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 48,
+      "measure_label": "49",
+      "start_tick": 184320,
+      "end_tick": 188160,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 49,
+      "measure_label": "50",
+      "start_tick": 188160,
+      "end_tick": 192000,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 50,
+      "measure_label": "51",
+      "start_tick": 192000,
+      "end_tick": 195840,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 51,
+      "measure_label": "52",
+      "start_tick": 195840,
+      "end_tick": 199680,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 52,
+      "measure_label": "53",
+      "start_tick": 199680,
+      "end_tick": 203520,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 53,
+      "measure_label": "54",
+      "start_tick": 203520,
+      "end_tick": 207360,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 54,
+      "measure_label": "55",
+      "start_tick": 207360,
+      "end_tick": 211200,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 55,
+      "measure_label": "56",
+      "start_tick": 211200,
+      "end_tick": 215040,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 56,
+      "measure_label": "57",
+      "start_tick": 215040,
+      "end_tick": 218880,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 57,
+      "measure_label": "58",
+      "start_tick": 218880,
+      "end_tick": 222720,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 58,
+      "measure_label": "59",
+      "start_tick": 222720,
+      "end_tick": 226560,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 59,
+      "measure_label": "60",
+      "start_tick": 226560,
+      "end_tick": 230400,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 60,
+      "measure_label": "61",
+      "start_tick": 230400,
+      "end_tick": 234240,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 61,
+      "measure_label": "62",
+      "start_tick": 234240,
+      "end_tick": 238080,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 62,
+      "measure_label": "63",
+      "start_tick": 238080,
+      "end_tick": 241920,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 63,
+      "measure_label": "64",
+      "start_tick": 241920,
+      "end_tick": 245760,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 64,
+      "measure_label": "65",
+      "start_tick": 245760,
+      "end_tick": 249600,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 65,
+      "measure_label": "66",
+      "start_tick": 249600,
+      "end_tick": 253440,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 66,
+      "measure_label": "67",
+      "start_tick": 253440,
+      "end_tick": 257280,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 67,
+      "measure_label": "68",
+      "start_tick": 257280,
+      "end_tick": 261120,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 68,
+      "measure_label": "69",
+      "start_tick": 261120,
+      "end_tick": 264960,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 69,
+      "measure_label": "70",
+      "start_tick": 264960,
+      "end_tick": 268800,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 70,
+      "measure_label": "71",
+      "start_tick": 268800,
+      "end_tick": 272640,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 71,
+      "measure_label": "72",
+      "start_tick": 272640,
+      "end_tick": 276480,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 72,
+      "measure_label": "73",
+      "start_tick": 276480,
+      "end_tick": 280320,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 73,
+      "measure_label": "74",
+      "start_tick": 280320,
+      "end_tick": 284160,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 74,
+      "measure_label": "75",
+      "start_tick": 284160,
+      "end_tick": 288000,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 75,
+      "measure_label": "76",
+      "start_tick": 288000,
+      "end_tick": 291840,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 76,
+      "measure_label": "77",
+      "start_tick": 291840,
+      "end_tick": 295680,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 77,
+      "measure_label": "78",
+      "start_tick": 295680,
+      "end_tick": 299520,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 78,
+      "measure_label": "79",
+      "start_tick": 299520,
+      "end_tick": 303360,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 79,
+      "measure_label": "80",
+      "start_tick": 303360,
+      "end_tick": 307200,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 80,
+      "measure_label": "81",
+      "start_tick": 307200,
+      "end_tick": 311040,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 81,
+      "measure_label": "82",
+      "start_tick": 311040,
+      "end_tick": 314880,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 82,
+      "measure_label": "83",
+      "start_tick": 314880,
+      "end_tick": 318720,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 83,
+      "measure_label": "84",
+      "start_tick": 318720,
+      "end_tick": 322560,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 84,
+      "measure_label": "85",
+      "start_tick": 322560,
+      "end_tick": 326400,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 85,
+      "measure_label": "86",
+      "start_tick": 326400,
+      "end_tick": 330240,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 86,
+      "measure_label": "87",
+      "start_tick": 330240,
+      "end_tick": 334080,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 87,
+      "measure_label": "88",
+      "start_tick": 334080,
+      "end_tick": 337920,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 88,
+      "measure_label": "89",
+      "start_tick": 337920,
+      "end_tick": 341760,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 89,
+      "measure_label": "90",
+      "start_tick": 341760,
+      "end_tick": 345600,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 90,
+      "measure_label": "91",
+      "start_tick": 345600,
+      "end_tick": 349440,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 91,
+      "measure_label": "92",
+      "start_tick": 349440,
+      "end_tick": 353280,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 92,
+      "measure_label": "93",
+      "start_tick": 353280,
+      "end_tick": 357120,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 93,
+      "measure_label": "94",
+      "start_tick": 357120,
+      "end_tick": 360960,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 94,
+      "measure_label": "95",
+      "start_tick": 360960,
+      "end_tick": 364800,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 95,
+      "measure_label": "96",
+      "start_tick": 364800,
+      "end_tick": 368640,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 96,
+      "measure_label": "97",
+      "start_tick": 368640,
+      "end_tick": 372480,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 97,
+      "measure_label": "98",
+      "start_tick": 372480,
+      "end_tick": 376320,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 98,
+      "measure_label": "99",
+      "start_tick": 376320,
+      "end_tick": 380160,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 99,
+      "measure_label": "100",
+      "start_tick": 380160,
+      "end_tick": 384000,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 100,
+      "measure_label": "101",
+      "start_tick": 384000,
+      "end_tick": 387840,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 101,
+      "measure_label": "102",
+      "start_tick": 387840,
+      "end_tick": 391680,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 102,
+      "measure_label": "103",
+      "start_tick": 391680,
+      "end_tick": 395520,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 103,
+      "measure_label": "104",
+      "start_tick": 395520,
+      "end_tick": 399360,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 104,
+      "measure_label": "105",
+      "start_tick": 399360,
+      "end_tick": 403200,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 105,
+      "measure_label": "106",
+      "start_tick": 403200,
+      "end_tick": 407040,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 106,
+      "measure_label": "107",
+      "start_tick": 407040,
+      "end_tick": 410880,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 107,
+      "measure_label": "108",
+      "start_tick": 410880,
+      "end_tick": 414720,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 108,
+      "measure_label": "109",
+      "start_tick": 414720,
+      "end_tick": 418560,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 109,
+      "measure_label": "110",
+      "start_tick": 418560,
+      "end_tick": 422400,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 110,
+      "measure_label": "111",
+      "start_tick": 422400,
+      "end_tick": 426240,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 111,
+      "measure_label": "112",
+      "start_tick": 426240,
+      "end_tick": 430080,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 112,
+      "measure_label": "113",
+      "start_tick": 430080,
+      "end_tick": 433920,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 113,
+      "measure_label": "114",
+      "start_tick": 433920,
+      "end_tick": 437760,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 114,
+      "measure_label": "115",
+      "start_tick": 437760,
+      "end_tick": 441600,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 115,
+      "measure_label": "116",
+      "start_tick": 441600,
+      "end_tick": 445440,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 116,
+      "measure_label": "117",
+      "start_tick": 445440,
+      "end_tick": 449280,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 117,
+      "measure_label": "118",
+      "start_tick": 449280,
+      "end_tick": 453120,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 118,
+      "measure_label": "119",
+      "start_tick": 453120,
+      "end_tick": 456960,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 119,
+      "measure_label": "120",
+      "start_tick": 456960,
+      "end_tick": 460800,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 120,
+      "measure_label": "121",
+      "start_tick": 460800,
+      "end_tick": 464640,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 121,
+      "measure_label": "122",
+      "start_tick": 464640,
+      "end_tick": 468480,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 122,
+      "measure_label": "123",
+      "start_tick": 468480,
+      "end_tick": 472320,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 123,
+      "measure_label": "124",
+      "start_tick": 472320,
+      "end_tick": 476160,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 124,
+      "measure_label": "125",
+      "start_tick": 476160,
+      "end_tick": 480000,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    },
+    {
+      "measure_index": 125,
+      "measure_label": "126",
+      "start_tick": 480000,
+      "end_tick": 483840,
+      "time_signature": {
+        "beats": 4,
+        "beat_type": 4
+      },
+      "implicit": false
+    }
+  ]
+}

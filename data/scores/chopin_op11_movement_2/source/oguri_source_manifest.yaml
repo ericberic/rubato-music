@@ -1,0 +1,32 @@
+schema_version: 1
+source_id: oguri_kunstderfuge_chopin_op11_movement_2
+work_id: chopin_op11
+movement: 2
+role: playback_performance
+title: "Piano Concerto No. 1, Movement 2"
+artifact: oguri_concerto_11_2.mid
+artifact_sha256: e4914a6e1c3d223e51a1031cbc3892a4a176a9a28940ac63eec0b58556849b8e
+format:
+  smf_type: 1
+  ticks_per_beat: 240
+  tracks: 18
+provenance:
+  source_page: "https://www.kunstderfuge.com/chopin.htm"
+  direct_url: "https://kunstderfuge.com/-/mid.files/chopin/concerto_11_2_(c)oguri.mid"
+  rights_note: >-
+    Private non-commercial rehearsal/development source. Do not redistribute
+    publicly without a separate rights review.
+derived:
+  solo_reference:
+    artifact: ../derived/solo_reference.mid
+    artifact_sha256: 6c1cf3d20ab39c9d6623c32ede996555bd2ef2b8fed7865364674226af987fbf
+  orchestra_accompaniment:
+    artifact: ../derived/orchestra_accompaniment.mid
+    artifact_sha256: 843da9c11d59f81b09d221cb619e7b088b3ff90b2d05b7ffb9555d2a3c5ec580
+semantic_status:
+  canonical_timeline: false
+  performance_mapping: false
+  note: >-
+    The file's MIDI ticks form an expressive performance coordinate. They must
+    be aligned to a reviewed semantic score timeline before measure labels or
+    notated beats are considered canonical.

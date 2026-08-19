@@ -1,0 +1,72 @@
+{
+ "piece_id": "chopin_op11_movement_2",
+ "sections": [
+  {
+   "id": "opening-orchestra-lead",
+   "start_beat": 0,
+   "end_beat": 47,
+   "mode": "LEAD"
+  },
+  {
+   "id": "solo-follow-1",
+   "start_beat": 47,
+   "end_beat": 84,
+   "mode": "FOLLOW"
+  },
+  {
+   "id": "m22-orchestra-interlude",
+   "start_beat": 84,
+   "end_beat": 88,
+   "mode": "LEAD"
+  },
+  {
+   "id": "solo-follow-2",
+   "start_beat": 88,
+   "end_beat": 204,
+   "mode": "FOLLOW"
+  },
+  {
+   "id": "m52-orchestra-continuation",
+   "start_beat": 204,
+   "end_beat": 211,
+   "mode": "LEAD"
+  },
+  {
+   "id": "solo-follow-3",
+   "start_beat": 211,
+   "end_beat": 400,
+   "mode": "FOLLOW"
+  },
+  {
+   "id": "m101-cadenza",
+   "start_beat": 400,
+   "end_beat": 412,
+   "mode": "FREE",
+   "free_region": {
+    "label": "Cadenza",
+    "from_measure": 101,
+    "from_beat": 2,
+    "to_measure": 103,
+    "to_beat": 4,
+    "hand_back_measure": 104,
+    "hand_back_beat": 1,
+    "policy": "handoff_detector",
+    "detector_model": "cadenza_handoff.model.json",
+    "performer_silent_after": true,
+    "note": "Score following fails here; the orchestra needs only entry and handoff. See .agents/skills/free-region-handoff."
+   }
+  },
+  {
+   "id": "m104-orchestra-interlude",
+   "start_beat": 412,
+   "end_beat": 417,
+   "mode": "LEAD"
+  },
+  {
+   "id": "solo-follow-4",
+   "start_beat": 417,
+   "end_beat": 505,
+   "mode": "FOLLOW"
+  }
+ ]
+}

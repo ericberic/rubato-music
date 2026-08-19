@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "mapping_id": "performance_to_notation",
+  "source_id": "expressive_midi",
+  "timeline_id": "notation-v1",
+  "kind": "performance",
+  "source_unit": "midi_tick",
+  "segments": [
+    {
+      "source_start": 0,
+      "source_end": 510,
+      "score_start_tick": 0,
+      "score_end_tick": 3840,
+      "confidence": 0.99
+    },
+    {
+      "source_start": 630,
+      "source_end": 1100,
+      "score_start_tick": 4800,
+      "score_end_tick": 7680,
+      "confidence": 0.82
+    }
+  ],
+  "unmapped_score_spans": [
+    {"movement_id": "2", "start_tick": 3840, "end_tick": 4800}
+  ]
+}

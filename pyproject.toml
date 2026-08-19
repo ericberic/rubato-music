@@ -1,0 +1,99 @@
+[project]
+name = "aimusic"
+version = "0.1.0"
+description = "Symbolic-first live accompaniment workflow for piano concerto performance"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic>=2.5.0",
+    "python-multipart>=0.0.6",
+    "mido>=1.3.0",
+    "numpy>=1.26.0",
+    "dvc>=3.40.0",
+    "pyyaml>=6.0.1",
+    "matplotlib>=3.8.0",
+    "filelock>=3.20.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+    "httpx>=0.26.0",
+    "playwright>=1.49.0",
+    "pytest-playwright>=0.5.2",
+    "pypdf>=4.0.0",
+]
+live = [
+    "python-rtmidi>=1.5.8",
+    "pymatchmaker[devices]>=0.3.0",
+]
+# Offline score-bundle tooling: MusicXML theory analysis and PDF geometry.
+# Deliberately NOT a runtime dependency -- the live server must never import
+# these, so a broken or unmaintained analysis library cannot affect a
+# performance. See .agents/skills/score-localization/SKILL.md.
+analysis = [
+    "music21>=9.1.0",
+    "pymupdf>=1.24.0",
+    "parangonar>=3.3.0",
+    "partitura>=1.9.0",
+    "pandas>=2.0.0",
+]
+audio = [
+    "pedalboard>=0.9.22",
+    "sounddevice>=0.5.5",
+]
+
+[project.scripts]
+rubato = "aimusic.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aimusic"]
+
+[tool.hatch.build.targets.editable]
+packages = ["src/aimusic"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--strict-config",
+]
+markers = [
+    "audio: marks opt-in tests that generate or play audio for human listening (deselect with '-m \"not audio\"')",
+    "hardware: marks tests that require local MIDI hardware and are opt-in",
+    "matchmaker: marks tests that require the live extra and run the real Matchmaker package",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+ignore = []
+
+[tool.coverage.run]
+source = ["src/aimusic"]
+omit = ["*/tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]

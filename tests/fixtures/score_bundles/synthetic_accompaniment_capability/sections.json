@@ -1,0 +1,6 @@
+{
+  "piece_id": "synthetic_accompaniment_capability",
+  "sections": [
+    {"id": "follow_phrase", "start_beat": 0, "end_beat": 8, "mode": "FOLLOW", "tempo_bpm": 120}
+  ]
+}

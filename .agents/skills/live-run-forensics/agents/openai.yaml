@@ -1,0 +1,4 @@
+interface:
+  display_name: "Live Run Forensics"
+  short_description: "Diagnose the latest Rubato performance run"
+  default_prompt: "Use $live-run-forensics to inspect the latest Rubato live take and explain what happened."

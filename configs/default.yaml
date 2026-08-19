@@ -1,0 +1,22 @@
+# Default configuration (not DVC-tracked)
+# Used for server and non-experiment settings
+
+# Server configuration
+server:
+  host: "127.0.0.1"
+  port: 8000
+  reload: true  # Auto-reload on code changes (dev mode)
+  log_level: "info"
+
+# Paths
+paths:
+  data_root: "data"
+  runs_root: "runs"
+  configs_root: "configs"
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: true  # Log to runs/<run_id>/trace/*.jsonl and server logs
+  console: true

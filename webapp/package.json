@@ -1,0 +1,35 @@
+{
+  "name": "rubato-webapp",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "export-openapi": "cd .. && uv run --extra dev python scripts/export_openapi.py",
+    "generate": "openapi-ts",
+    "predev": "npm run export-openapi && npm run generate",
+    "prebuild": "npm run export-openapi && npm run generate",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@tonejs/midi": "^2.0.27",
+    "pdfjs-dist": "^4.10.38",
+    "tone": "^15.0.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "^0.99.0",
+    "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "@tsconfig/svelte": "^5.0.2",
+    "@types/node": "^22.0.0",
+    "svelte": "^4.2.19",
+    "svelte-check": "^4.0.0",
+    "tslib": "^2.6.2",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10",
+    "vitest": "^4.1.10"
+  }
+}

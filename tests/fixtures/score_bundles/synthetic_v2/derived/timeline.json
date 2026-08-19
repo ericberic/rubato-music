@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "timeline_id": "notation-v1",
+  "movement_id": "2",
+  "canonical_ppq": 960,
+  "measures": [
+    {
+      "measure_index": 0,
+      "measure_label": "pickup",
+      "start_tick": 0,
+      "end_tick": 960,
+      "time_signature": {"beats": 3, "beat_type": 4},
+      "implicit": true
+    },
+    {
+      "measure_index": 1,
+      "measure_label": "1",
+      "start_tick": 960,
+      "end_tick": 3840,
+      "time_signature": {"beats": 3, "beat_type": 4}
+    },
+    {
+      "measure_index": 2,
+      "measure_label": "2a",
+      "start_tick": 3840,
+      "end_tick": 7680,
+      "time_signature": {"beats": 4, "beat_type": 4}
+    }
+  ]
+}

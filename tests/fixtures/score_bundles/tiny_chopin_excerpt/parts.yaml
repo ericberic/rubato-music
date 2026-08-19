@@ -1,0 +1,9 @@
+parts:
+  - id: piano_solo
+    name: Piano solo
+    abbreviation: Pno.
+    role: solo
+  - id: strings
+    name: Strings reduction
+    abbreviation: Str.
+    role: accompaniment

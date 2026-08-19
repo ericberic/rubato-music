@@ -1,0 +1,1 @@
+Synthetic stand-in for expressive performance MIDI coordinates.

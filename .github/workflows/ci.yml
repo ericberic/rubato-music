@@ -1,0 +1,113 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: Containerized Pytest
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      IMAGE_NAME: rubato-ci-minimal:latest
+      IMAGE_CACHE_DIR: /home/runner/docker-cache
+      IMAGE_CACHE_FILE: /home/runner/docker-cache/rubato-ci-minimal.tar.gz
+    steps:
+      - name: Check disk space
+        run: |
+          echo "Initial disk usage:" && df -h
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache Docker image
+        id: cache-docker
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.IMAGE_CACHE_DIR }}
+          key: rubato-ci-${{ hashFiles('docker/minimal.Dockerfile', 'pyproject.toml', 'uv.lock') }}
+          restore-keys: |
+            rubato-ci-
+
+      - name: Prepare cache directory
+        run: mkdir -p ${{ env.IMAGE_CACHE_DIR }}
+
+      - name: Set up Docker Buildx
+        if: steps.cache-docker.outputs.cache-hit != 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build minimal CI image
+        if: steps.cache-docker.outputs.cache-hit != 'true'
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            -t ${{ env.IMAGE_NAME }} \
+            -f docker/minimal.Dockerfile \
+            --load \
+            .
+
+      - name: Save Docker image to cache
+        if: steps.cache-docker.outputs.cache-hit != 'true'
+        run: |
+          docker save ${{ env.IMAGE_NAME }} | gzip -1 > ${{ env.IMAGE_CACHE_FILE }}
+          ls -lh ${{ env.IMAGE_CACHE_DIR }}
+
+      - name: Load cached Docker image
+        if: steps.cache-docker.outputs.cache-hit == 'true'
+        run: |
+          echo "Loading cached Docker image..."
+          ls -lh ${{ env.IMAGE_CACHE_DIR }}
+          gunzip -c ${{ env.IMAGE_CACHE_FILE }} | docker load
+
+      - name: Run tests in container
+        run: docker run --rm ${{ env.IMAGE_NAME }}
+
+  webapp-checks:
+    name: Webapp Type Generation & Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          # @hey-api/openapi-ts (and its transitive deps) require Node
+          # >=22.18.0; Node 20 fails `npm ci` with EBADENGINE warnings and a
+          # lockfile-vs-package.json mismatch during CI.
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: webapp/package-lock.json
+
+      - name: Install webapp dependencies
+        run: npm ci
+        working-directory: webapp
+
+      # Design doc docs/design/SCHEMA_VALIDATION_ARCH.md §2.2 (issue #83):
+      # regenerate webapp/openapi.json + webapp/src/generated/ from the
+      # backend Pydantic models and fail if that produces a diff -- a schema
+      # change that wasn't regenerated (or a regenerated output that wasn't
+      # committed) fails here instead of silently shipping stale types.
+      - name: Check generated OpenAPI types are up to date
+        run: make check-types
+
+      - name: svelte-check (TS strict mode + Svelte diagnostics)
+        run: npm run check
+        working-directory: webapp
+
+      - name: Build webapp
+        run: npm run build
+        working-directory: webapp

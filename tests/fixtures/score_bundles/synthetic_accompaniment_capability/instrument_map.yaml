@@ -1,0 +1,11 @@
+instruments:
+  - part_id: strings
+    channel: 0
+    program: 48
+    name: String Ensemble 1
+    volume: 92
+  - part_id: winds
+    channel: 1
+    program: 73
+    name: Flute
+    volume: 86

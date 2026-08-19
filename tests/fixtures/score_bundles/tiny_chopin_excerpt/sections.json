@@ -1,0 +1,7 @@
+{
+  "piece_id": "tiny_chopin_excerpt",
+  "sections": [
+    {"id": "opening_tutti", "start_beat": 0, "end_beat": 4, "mode": "LEAD", "tempo_bpm": 126},
+    {"id": "solo_entry", "start_beat": 4, "end_beat": 12, "mode": "FOLLOW"}
+  ]
+}

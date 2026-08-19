@@ -1,0 +1,56 @@
+schema_version: 2
+bundle_id: synthetic_movement_2
+revision: fixture-v1
+work:
+  work_id: synthetic_concerto
+  movement_id: "2"
+  title: Synthetic Larghetto Fixture
+  composer: Test Composer
+timeline:
+  timeline_id: notation-v1
+  canonical_ppq: 960
+  artifact: derived/timeline.json
+sources:
+  - source_id: notation
+    role: semantic_score
+    path: source/score.musicxml
+    provenance: Synthetic fixture, not a real score
+  - source_id: reduction_scan
+    role: display_score
+    path: source/reduction.txt
+    page_scope: [1, 2]
+  - source_id: expressive_midi
+    role: playback_performance
+    path: source/performance.txt
+derived:
+  - artifact_id: solo_reference
+    role: follower_reference
+    path: derived/solo_reference.txt
+    derived_from: [notation]
+  - artifact_id: accompaniment
+    role: accompaniment
+    path: derived/accompaniment.txt
+    derived_from: [notation, expressive_midi]
+  - artifact_id: display_map
+    role: display_map
+    path: derived/display_map.json
+    derived_from: [reduction_scan, notation]
+  - artifact_id: sections
+    role: sections
+    path: derived/sections.json
+    derived_from: [notation]
+  - artifact_id: instruments
+    role: instrument_map
+    path: derived/instrument_map.yaml
+    derived_from: [accompaniment]
+mappings:
+  - mapping_id: reduction_to_notation
+    source_id: reduction_scan
+    kind: display
+    artifact: derived/display_map.json
+    review_state: reviewed
+  - mapping_id: performance_to_notation
+    source_id: expressive_midi
+    kind: performance
+    artifact: derived/performance_map.json
+    review_state: machine

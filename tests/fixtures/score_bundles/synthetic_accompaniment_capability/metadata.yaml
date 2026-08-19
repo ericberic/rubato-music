@@ -1,0 +1,5 @@
+piece_id: synthetic_accompaniment_capability
+title: Synthetic Accompaniment Capability Fixture
+composer: Test Composer
+version: test-v1
+source: deterministic synthetic fixture for simulated-online accompaniment tests

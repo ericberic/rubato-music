@@ -1,0 +1,3 @@
+{"type":"midi_output","monotonic_time":0.0,"action":"note_on","event_id":"accomp_000","pitch":48,"target_perf_time":0.0}
+{"type":"midi_output","monotonic_time":1.6249999999999996,"action":"note_on","event_id":"accomp_001","pitch":55,"target_perf_time":1.6249999999999996}
+{"type":"midi_output","monotonic_time":3.5953125000000004,"action":"note_on","event_id":"accomp_002","pitch":72,"target_perf_time":3.5953125000000004}

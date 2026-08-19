@@ -1,0 +1,44 @@
+# DVC-compatible parameters for the live-accompanist MVP.
+# These values configure local simulations and future experiment stages.
+
+session:
+  session_id: "default"
+
+score:
+  piece_id: "chopin_op11_mvt1"
+  bundle_version: "draft"
+  excerpt_id: "first_mvp_excerpt"
+  bundle_path: "data/scores/chopin_op11/draft"
+
+midi:
+  input_device: null
+  output_device: null
+  channel: 0
+  panic_on_shutdown: true
+
+follower:
+  engine: "matchmaker"
+  input_type: "midi"
+  method: "pthmm"
+  processor: "pitch_chord"
+  max_recovery_beats: 8.0
+
+section_policy:
+  default_mode: "FOLLOW"
+  allow_lead_sections: true
+  hold_on_lost_position: true
+
+scheduler:
+  lookahead_ms: 120
+  max_jitter_ms: 20
+  emit_trace: true
+
+tempo:
+  default_bpm: 88
+  smoothing_alpha: 0.35
+  min_bpm: 40
+  max_bpm: 180
+
+run:
+  seed: 42
+  trace_events: true

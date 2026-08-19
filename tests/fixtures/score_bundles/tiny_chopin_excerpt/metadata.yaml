@@ -1,0 +1,5 @@
+piece_id: tiny_chopin_excerpt
+title: Tiny Chopin Accompaniment Fixture
+composer: Frederic Chopin
+version: test-v1
+source: synthetic fixture for score-bundle loader tests

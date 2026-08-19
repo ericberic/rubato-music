@@ -1,0 +1,43 @@
+desc:Rubato surround upmix (stereo -> FL FR C LFE SL SR RL RR)
+// Fronts pass through; center = mono; LFE = low-passed mono (sub); surround L/R
+// copied to BOTH side-surround (ch5/6) AND rear-back (ch7/8) so whichever pair
+// the physical rear satellites use will play. Put on an 8-channel Master.
+in_pin:1
+in_pin:2
+in_pin:3
+in_pin:4
+in_pin:5
+in_pin:6
+in_pin:7
+in_pin:8
+out_pin:FL
+out_pin:FR
+out_pin:C
+out_pin:LFE
+out_pin:SL
+out_pin:SR
+out_pin:RL
+out_pin:RR
+slider1:0<-24,12,0.1>Surround (dB)
+slider2:-6<-24,12,0.1>Center (dB)
+slider3:4<-24,12,0.1>Subwoofer / LFE (dB)
+
+@init
+lfz = 0;
+lpc = exp(-2*$pi*120/srate);
+
+@slider
+sur = 10^(slider1/20);
+cen = 10^(slider2/20);
+lfe = 10^(slider3/20);
+
+@sample
+l = spl0; r = spl1;
+m = (l + r) * 0.5;
+lfz = (1-lpc)*m + lpc*lfz;
+spl2 = m * cen;        // Center
+spl3 = lfz * lfe * 3;  // LFE -> subwoofer (louder)
+spl4 = l * sur;        // Side Surround L
+spl5 = r * sur;        // Side Surround R
+spl6 = l * sur;        // Rear-back L
+spl7 = r * sur;        // Rear-back R

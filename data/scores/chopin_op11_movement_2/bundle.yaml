@@ -1,0 +1,80 @@
+schema_version: 2
+bundle_id: chopin_op11_movement_2
+revision: movement2-symbolic-path-v4
+work:
+  work_id: chopin_op11
+  movement_id: "2"
+  title: "Piano Concerto No. 1: II. Romanze — Larghetto"
+  composer: Frédéric Chopin
+timeline:
+  timeline_id: chopin-op11-m2-layout-machine-v1
+  canonical_ppq: 960
+  artifact: derived/timeline.machine.json
+  review_state: machine
+sources:
+  - source_id: joseffy_reduction
+    role: display_score
+    path: source/joseffy_reduction_movement2.pdf
+    sha256: cefb3fdf8539d1af7ca59d6a3ba24bd526131c1d5e3b0b3ebaf0e5d9543cae41
+    provenance: "Joseffy/Schirmer two-piano reduction, IMSLP file 112477"
+    page_scope: [1, 15]
+  - source_id: joseffy_audiveris_grid
+    role: layout_evidence
+    path: source/joseffy_reduction_movement2.grid.omr
+    sha256: 1c195043649b006676400a5a0ee7b0cfbb4841995c4db5cb46035a7059d3a977
+    derived_from: [joseffy_reduction]
+    provenance: "Audiveris 5.11.0 GRID-stage structural recognition; machine evidence"
+  - source_id: joseffy_audiveris_semantic
+    role: semantic_score
+    path: source/joseffy_reduction_movement2.audiveris.mxl
+    sha256: 9783fc375fe92ee149f8d6d3a9de974200aa610397ab52ac9273404e1e6ec36e
+    derived_from: [joseffy_reduction]
+    provenance: "Audiveris 5.11.0 full optical recognition, phantom-chord repair applied (sheet 14 chord #6783 / stem #6428 removed, re-exported through PAGE); machine MusicXML evidence"
+    page_scope: [1, 15]
+  - source_id: oguri_performance
+    role: playback_performance
+    path: source/oguri_concerto_11_2.mid
+    sha256: e4914a6e1c3d223e51a1031cbc3892a4a176a9a28940ac63eec0b58556849b8e
+    provenance: "Katsuhiro Oguri / Kunst der Fuge; private non-commercial rehearsal"
+derived:
+  - artifact_id: display_layout_machine
+    role: display_layout
+    path: derived/display_layout.machine.json
+    derived_from: [joseffy_audiveris_grid]
+    sha256: a90684e8c16a3622a46c039eb99a926e5c9bc44aceb8c3947ca2dca12ced711f
+  - artifact_id: display_map_machine
+    role: display_map
+    path: derived/display_map.machine.json
+    derived_from: [display_layout_machine]
+    sha256: b6e8d0f65a7ff9f4d1eef933e4bafa272e82542377c3c5f52fb450c2bf3dbc04
+  - artifact_id: solo_reference
+    role: follower_reference
+    path: derived/solo_reference.mid
+    derived_from: [oguri_performance]
+    sha256: 6c1cf3d20ab39c9d6623c32ede996555bd2ef2b8fed7865364674226af987fbf
+  - artifact_id: orchestra_accompaniment
+    role: accompaniment
+    path: derived/orchestra_accompaniment.mid
+    derived_from: [oguri_performance]
+    sha256: 843da9c11d59f81b09d221cb619e7b088b3ff90b2d05b7ffb9555d2a3c5ec580
+  - artifact_id: performance_beat_map_machine
+    role: performance_beat_map
+    path: derived/performance_beat_map.machine.json
+    derived_from:
+      - joseffy_audiveris_semantic
+      - display_map_machine
+      - oguri_performance
+    sha256: c5ef2609a61d5fc50c183199fae778b557ee39b0309ff02b2ef2de59a1ed3da9
+  - artifact_id: movement_2_sections
+    role: sections
+    path: derived/sections.json
+    derived_from:
+      - solo_reference
+      - performance_beat_map_machine
+    sha256: befdde97a00f0db3cfa9ba1f73835923e854d2cba96a2fded215bf956ad03914
+mappings:
+  - mapping_id: joseffy-to-layout-machine-v1
+    source_id: joseffy_reduction
+    kind: display
+    artifact: derived/display_map.machine.json
+    review_state: machine

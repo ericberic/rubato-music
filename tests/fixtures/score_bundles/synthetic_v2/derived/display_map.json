@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "mapping_id": "reduction_to_notation",
+  "source_id": "reduction_scan",
+  "timeline_id": "notation-v1",
+  "kind": "display",
+  "source_unit": "page_coordinate",
+  "segments": [
+    {
+      "source_start": 1.1,
+      "source_end": 1.9,
+      "score_start_tick": 0,
+      "score_end_tick": 3840,
+      "confidence": 1.0
+    },
+    {
+      "source_start": 2.1,
+      "source_end": 2.9,
+      "score_start_tick": 3840,
+      "score_end_tick": 7680,
+      "confidence": 1.0
+    }
+  ],
+  "unmapped_score_spans": []
+}

@@ -1,0 +1,12 @@
+.git
+.github
+.dvc
+runs
+.data
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.vscode/
+docker/*.Dockerfile
+Dockerfile

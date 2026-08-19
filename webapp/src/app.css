@@ -1,0 +1,145 @@
+:root {
+  /* Concert-hall / instrument palette. Deliberately not "AI purple" dark mode:
+     near-black stage background, warm ivory text, brass accent for primary
+     performance actions, muted ember for danger/record states. */
+  --stage: #121317;
+  --stage-panel: #1c1e26;
+  --stage-panel-raised: #23252f;
+  --stage-hairline: rgba(244, 239, 230, 0.09);
+  --stage-hairline-strong: rgba(244, 239, 230, 0.16);
+
+  --ink: #f4efe6;
+  --ink-muted: #aca49b;
+  --ink-dim: #6f6a63;
+
+  --brass: #d8a94c;
+  --brass-strong: #e9bd63;
+  --brass-ink: #241a06;
+
+  --ember: #d1483a;
+  --ember-strong: #e35b4c;
+  --ember-ink: #2a0d09;
+
+  --ready: #7fae67;
+  --ready-ink: #10240a;
+
+  --focus-ring: #e9bd63;
+
+  --shadow-panel: 0 18px 40px rgba(0, 0, 0, 0.35);
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--ink);
+  background-color: var(--stage);
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(216, 169, 76, 0.35);
+  color: var(--ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at top, rgba(216, 169, 76, 0.06), transparent 55%),
+    var(--stage);
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input[type='checkbox'] {
+  accent-color: var(--brass);
+  width: 16px;
+  height: 16px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---- Shared controls ----------------------------------------------------
+   Global (not component-scoped) so any Svelte component -- not just
+   App.svelte -- can use the same button look. */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--stage-hairline-strong);
+  background: var(--stage-panel-raised);
+  color: var(--ink);
+  padding: 0.65rem 1.1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: transform 0.05s ease, filter 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--stage-hairline-strong);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ink-muted);
+}
+.btn-ghost:hover:not(:disabled) {
+  border-color: var(--stage-hairline-strong);
+  color: var(--ink);
+}
+
+.btn-primary {
+  background: var(--brass);
+  color: var(--brass-ink);
+  border: none;
+}
+
+.btn-round {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 1.2rem;
+  background: var(--stage-panel-raised);
+  flex-shrink: 0;
+}

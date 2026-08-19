@@ -1,0 +1,33 @@
+schema_version: 1
+source_id: joseffy_schirmer_chopin_op11_two_piano
+work_id: chopin_op11
+movement: 2
+role: display_score
+title: "Romanze: Larghetto"
+artifact: joseffy_reduction_movement2.pdf
+artifact_sha256: cefb3fdf8539d1af7ca59d6a3ba24bd526131c1d5e3b0b3ebaf0e5d9543cae41
+artifact_pages: 15
+source_file:
+  local_filename: "Chopin - Piano Concerto No 1 (reduction).pdf"
+  sha256: 524043ae15e3180307f78ffd9a0a7cba0229991844779dd55652bc7d77a98983
+  pages: 107
+  page_scope_inclusive: [55, 69]
+edition:
+  arranger: Rafael Joseffy
+  publisher: G. Schirmer
+  publication_year: 1918
+  plate: "25650"
+  format: two-piano reduction
+provenance:
+  source_page: "https://imslp.org/wiki/Piano_Concerto_No.1,_Op.11_(Chopin,_Frederic)"
+  imslp_file_number: 112477
+  scan_note: "HathiTrust scan, converted to monochrome and resampled to 600 dpi"
+  license_note: "Public-domain edition; keep large binaries in DVC."
+semantic_status:
+  canonical_timeline: false
+  measure_geometry: machine
+  recognized_measure_boxes: 126
+  note: >-
+    Performer-facing display evidence only. Audiveris GRID geometry is
+    available, but reviewed anchors must map these boxes to a reviewed
+    canonical score timeline.

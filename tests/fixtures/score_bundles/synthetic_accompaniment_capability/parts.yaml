@@ -1,0 +1,13 @@
+parts:
+  - id: piano_solo
+    name: Piano solo
+    abbreviation: Pno.
+    role: solo
+  - id: strings
+    name: String accompaniment
+    abbreviation: Str.
+    role: accompaniment
+  - id: winds
+    name: Wind accompaniment
+    abbreviation: Ww.
+    role: accompaniment

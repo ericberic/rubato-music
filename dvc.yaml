@@ -1,0 +1,7 @@
+# Live-accompanist DVC scaffold.
+# The old style-transfer stages were removed during the Chopin MVP pivot.
+# Add stages here only when a deterministic score-prep, simulation, or analysis
+# command exists in src/aimusic/ and has tests.
+
+stages: {}
+metrics: []

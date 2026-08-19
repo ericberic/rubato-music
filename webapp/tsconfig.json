@@ -1,0 +1,17 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "types": ["svelte"],
+    "strict": true,
+    // The generated client (webapp/src/generated/, @hey-api/openapi-ts)
+    // includes an async-generator-based SSE helper unconditionally; es2017
+    // (the @tsconfig/svelte base target) predates `AsyncGenerator` /
+    // `AsyncIterableIterator`. This is a local-first app targeting current
+    // browsers, so bumping the lib is safe.
+    "target": "es2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/*", "public/*"]
+}

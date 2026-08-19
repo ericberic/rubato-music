@@ -1,0 +1,1 @@
+Synthetic stand-in for a performer-facing PDF.

@@ -1,0 +1,6 @@
+instruments:
+  - part_id: strings
+    channel: 0
+    program: 48
+    name: String Ensemble 1
+    volume: 96
