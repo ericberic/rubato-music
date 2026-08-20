@@ -5202,24 +5202,24 @@
                   <p class="after-error">Nothing musical was captured. Leave orchestra cue on and record this passage again.</p>
                 {:else if selectedReviewTake.status === 'aligned' && selectedReviewTake.review?.state === 'ready'}
                   <div class="review-output-group">
-                    <span>On Yamaha</span>
+                    <span>On Keyboard</span>
                     <button
                       type="button"
                       class="btn btn-outline"
-                      aria-label={`Hear ${passLocationLabel(selectedReviewTake)} alone on Yamaha from measure ${selectedRehearsalMeasure.measure}`}
+                      aria-label={`Hear ${passLocationLabel(selectedReviewTake)} alone on Keyboard from measure ${selectedRehearsalMeasure.measure}`}
                       on:click={() => hearAlignedTake(selectedReviewTake, 'solo')}
                       disabled={!selectedBackendOutput || hardwareStatus.running}
                     >▶ Take only</button>
                     <button
                       type="button"
                       class="btn btn-primary"
-                      aria-label={`Hear ${passLocationLabel(selectedReviewTake)} with orchestra on Yamaha from measure ${selectedRehearsalMeasure.measure}`}
+                      aria-label={`Hear ${passLocationLabel(selectedReviewTake)} with orchestra on Keyboard from measure ${selectedRehearsalMeasure.measure}`}
                       on:click={() => hearAlignedTake(selectedReviewTake, 'ensemble')}
                       disabled={!selectedBackendOutput || hardwareStatus.running}
                     >▶ Take + orchestra</button>
                   </div>
                   {#if !selectedBackendOutput}
-                    <small>Select Yamaha out in Sound Check for hardware playback.</small>
+                    <small>Select Keyboard out in Sound Check for hardware playback.</small>
                   {/if}
                 {:else if selectedReviewTake.status === 'aligned' && selectedReviewTake.review?.state === 'failed'}
                   <p class="after-error">{selectedReviewTake.review.error || 'Playback preparation needs another try.'}</p>
@@ -5393,7 +5393,7 @@
               </label>
             </details>
             {#if !backendInputs.length}
-              <p class="hint">No backend MIDI input detected. Connect the Yamaha and refresh devices.</p>
+              <p class="hint">No backend MIDI input detected. Connect the Keyboard and refresh devices.</p>
             {/if}
           {/if}
 
@@ -5439,7 +5439,7 @@
                     <button
                       type="button"
                       class="t-btn t-play"
-                      aria-label={`Hear ${passLocationLabel(latestTake)} with orchestra on Yamaha`}
+                      aria-label={`Hear ${passLocationLabel(latestTake)} with orchestra on Keyboard`}
                       on:click={() => hearTakeWithOrchestra(latestTake)}
                       disabled={!selectedBackendOutput || hardwareStatus.running}
                     >
@@ -5572,16 +5572,16 @@
                           <button
                             type="button"
                             class="icon-action"
-                            title="Hear piano only on Yamaha"
-                            aria-label={`Hear ${passageTitle(group).toLowerCase()} piano only on Yamaha`}
+                            title="Hear piano only on Keyboard"
+                            aria-label={`Hear ${passageTitle(group).toLowerCase()} piano only on Keyboard`}
                             on:click={() => hearAlignedTake(selectedTake, 'solo')}
                             disabled={!selectedBackendOutput || hardwareStatus.running}
                           >♩</button>
                           <button
                             type="button"
                             class="icon-action primary"
-                            title="Hear take with orchestra on Yamaha"
-                            aria-label={`Hear ${passageTitle(group).toLowerCase()} with orchestra on Yamaha`}
+                            title="Hear take with orchestra on Keyboard"
+                            aria-label={`Hear ${passageTitle(group).toLowerCase()} with orchestra on Keyboard`}
                             on:click={() => hearAlignedTake(selectedTake, 'ensemble')}
                             disabled={!selectedBackendOutput || hardwareStatus.running}
                           >▶</button>
