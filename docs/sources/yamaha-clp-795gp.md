@@ -11,7 +11,7 @@
 
 ## Why It Matters
 
-Eric's MVP hardware is a Yamaha CLP-795GP. Rubato should initially route live
+The soloist's MVP hardware is a Yamaha CLP-795GP. Rubato should initially route live
 solo MIDI from this piano and send accompaniment MIDI back to its internal synth
 before adding a DAW/VST dependency.
 
@@ -42,8 +42,8 @@ before adding a DAW/VST dependency.
 
 ## Open Questions
 
-- Which exact CLP-795GP MIDI port names appear on Eric's Mac?
-- Does the piano accept live external MIDI on multiple channels while Eric plays
+- Which exact CLP-795GP MIDI port names appear on the soloist's Mac?
+- Does the piano accept live external MIDI on multiple channels while the soloist plays
   the local piano voice?
 - Which built-in XG orchestral voices sound acceptable for Chopin rehearsal?
 - Does local control need to be disabled or split to prevent doubled piano sound?

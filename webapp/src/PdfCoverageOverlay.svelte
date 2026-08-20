@@ -858,7 +858,7 @@
       return { fill: 'var(--ready)', hatch: false };
     }
     // A machine-draft bundle may not yet make the solo/tutti claim, but an
-    // aligned take is still honest evidence that Eric rehearsed this printed
+    // aligned take is still honest evidence that the soloist rehearsed this printed
     // region. Keep that observed wash visible without promoting it to mature
     // (n-target) coverage.
     if (m.observed && m.state === 'covered') {

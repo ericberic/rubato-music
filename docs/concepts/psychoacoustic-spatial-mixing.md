@@ -135,7 +135,7 @@ volume scale: `0` is off and `100` is that route's calibrated full level. It is
 not a claim about sound-pressure level or a fixed percentage of amplifier
 power. A pinned `level_mapping_revision` lets the runtime translate the same
 authored value deterministically into an internal audio gain or Yamaha CC7
-value. The PWA never requires Eric to reason in dB.
+value. The PWA never requires the soloist to reason in dB.
 
 That mapping revision is a control law, not a claim that two unmeasured devices
 produce identical acoustic SPL at the same number. MIDI CC7 standardizes a

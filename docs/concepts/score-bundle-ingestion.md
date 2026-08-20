@@ -19,7 +19,7 @@ Useful Chopin concerto sources may include:
 - MusicXML exports from notation/OCR tools.
 - MIDI files for solo piano, reduction, or orchestral arrangement.
 - Commercial/public recordings for reference listening.
-- Eric's MIDI rehearsal takes.
+- the soloist's MIDI rehearsal takes.
 
 Raw audio is deferred for runtime, but it remains useful as listening/reference
 material.

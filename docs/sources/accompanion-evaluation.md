@@ -26,7 +26,7 @@ On tempo/onset prediction:
 - LTE achieved 23.3 ms onset error and 63.3 ms/beat tempo error when reference
   performances were available.
 
-The LTE result is especially relevant because Rubato can ask Eric for repeated
+The LTE result is especially relevant because Rubato can ask the soloist for repeated
 reference takes of the target excerpt.
 
 ## Human Feedback

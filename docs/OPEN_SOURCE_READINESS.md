@@ -9,7 +9,7 @@ procedure. Last reviewed: 2026-08-18.
 | --- | --- |
 | Secrets / credentials / tokens / keys | ✅ None found in the release tree |
 | Personal data (emails, home paths, IPs, device names) | ✅ Clean — machine-local bindings live outside git |
-| Source-code license | ✅ MIT (`LICENSE`, © Eric Huang) |
+| Source-code license | ✅ MIT (`LICENSE`, © the soloist Huang) |
 | Git history exposure | ⚠️ Publish from the orphan snapshot only — see below |
 | Musical asset licensing | ⚠️ Blocker — third-party MIDI is not redistributable |
 | Front door (README, screenshots, docs) | ✅ In good shape after this pass |

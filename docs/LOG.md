@@ -217,7 +217,7 @@ cells. Wall-clock expiry is now gated by score expectation: only an `ACTIVE`
 piano cell can turn silence into dropout, while rests/sustains keep the score
 and orchestra moving. Entry acquisition likewise keeps the orchestra scheduler
 running instead of pausing at the first solo boundary. This restores the
-orchestral pickups Eric waits for around m.12 and m.30 without weakening true
+orchestral pickups the soloist waits for around m.12 and m.30 without weakening true
 mid-phrase dropout.
 
 The post-performance boundary is now durable rather than process-local. A
@@ -258,7 +258,7 @@ advanced the follower across its onset. Sounding releases now remain
 score-owned and retime against the latest reference clock. Ordinary
 within-chord crossings dispatch once at the current time; relocks and declared
 skips still reject stale catch-up bursts. Deterministic scheduler/output tests
-cover both behaviors, and Eric's real-take expectation replay remains green.
+cover both behaviors, and the soloist's real-take expectation replay remains green.
 
 ## [2026-07-29] recorded passes now use the causal follower and announce the plan
 
@@ -345,7 +345,7 @@ convergence step (#146).
 
 ## [2026-07-29] rehearsal converges on the live performance; cold start is the exception
 
-Correction from Eric, and it inverts what was built. The unidirectional
+Correction from the soloist, and it inverts what was built. The unidirectional
 "orchestra sets the pulse then drops out" behaviour was only ever the **cold-start
 exception**. The rule is:
 
@@ -359,7 +359,7 @@ of the way" behaviour, because there is nothing yet to converge from.
 
 What had actually been implemented was half of that: the orchestra *plays* from
 prior takes (`handoff_at_entry=False`), but nothing *tracks* the performer during
-a rehearsal take, because the record path has no follower. Two consequences Eric
+a rehearsal take, because the record path has no follower. Two consequences the soloist
 hit directly:
 
 - The score cursor could not follow him, though the system had takes of that
@@ -384,7 +384,7 @@ are now valid rehearsal artifacts.
 
 ## [2026-07-29] an aborted take is kept, not discarded
 
-Eric recorded a 58-second passage with an orchestra cue-in, then pressed the
+the soloist recorded a 58-second passage with an orchestra cue-in, then pressed the
 prominent red **Silence** control when he finished. The recording was captured
 to disk correctly -- 220 notes, chords simultaneous (min IOI 0.00 ms) -- but it
 was never registered, never aligned, and never reached the model, with no error
@@ -541,7 +541,7 @@ takes recorded with an accompanying orchestra from clean solo evidence.
 
 ## [2026-07-28] rehearsal is mutual convergence, not data harvesting
 
-Refining the previous entry (Eric): treating rehearsal as purely unidirectional
+Refining the previous entry (the soloist): treating rehearsal as purely unidirectional
 was too reductive. Once takes exist for a passage, the orchestra should not drop
 off -- it should *attempt the live performance* with everything learned so far,
 and learn again from the attempt. Each take is a joint practice pass in which the
@@ -568,14 +568,14 @@ performer's intent -- training on your own outputs. It is not disqualifying (it
 is the condition of real performance), but it means takes stop being one
 homogeneous kind of evidence. Therefore: **tag every take with the accompaniment
 mode it was captured under** (solo / led-then-dropped / followed) so the fit can
-weight or separate them, and so "is this passage learned from Eric, or from Eric
+weight or separate them, and so "is this passage learned from the soloist, or from the soloist
 plus the model?" stays answerable. Belongs with Decision 0009 (rehearsal as
 dataset lifecycle) when implemented.
 
 
 ## [2026-07-28] rehearsal cue-in: the performer ends the lead-in, not a beat
 
-Eric selected m.52 to record a pass and the orchestra stopped dead there. m.52 is
+the soloist selected m.52 to record a pass and the orchestra stopped dead there. m.52 is
 an *orchestral interlude* -- the piano does not enter until m.53 -- so the cue
 fell silent exactly where its own interlude began, and the cursor parking there
 read as a hang. Cause: `handoff_at_entry=True` (hardcoded in the route) set
@@ -587,7 +587,7 @@ played note* starts a short trail-off (`handoff_tail_seconds`), after which the
 orchestra falls silent while the take continues. A longer interlude is simply a
 matter of waiting; the performer decides when to enter.
 
-**Design note (Eric): live and rehearsal cue-ins are NOT the same mechanism, and
+**Design note (the soloist): live and rehearsal cue-ins are NOT the same mechanism, and
 should not be consolidated.** They look alike and were briefly mistaken for
 duplication, but the intents differ:
 
@@ -752,7 +752,7 @@ profiler.
 
 ## [2026-07-28] serialized-chord input bug and a dedicated MIDI-input thread
 
-Playing Eric's *recorded input* back for the first time (offline-alignment beat
+Playing the soloist's *recorded input* back for the first time (offline-alignment beat
 check) revealed his chords were rolled into ~30 ms arpeggios — notes he struck
 together were stored 30-50 ms apart. Root cause in the live FOLLOW loop
 (`live_runtime.py`): `now = clock.now()` was read **inside** the per-note loop,
@@ -765,7 +765,7 @@ regression, but the floor grew from ~18 ms to 30-54 ms on the last week's takes
 as more per-note work (per-note `tick`, the acquisition, the rehearsal-anchored
 model, extra publishes) piled on — which is when it became audible. This false
 rhythm fed the follower and is a likely contributor to the jitter/tempo-hunting
-chased all week; live, Eric hears his real piano and never noticed.
+chased all week; live, the soloist hears his real piano and never noticed.
 
 Fix, two parts:
 1. **Stamp once per poll batch, publish once per batch** — a chord's notes share
@@ -776,7 +776,7 @@ Fix, two parts:
    processing loop only drains what the reader already timestamped; reactive
    output still fires inside `process_note` per note.
 
-Real-time concurrency note (per Eric): the GIL was **not** the direct cause here
+Real-time concurrency note (per the soloist): the GIL was **not** the direct cause here
 (timestamp-after-processing was), and plain threads are the right tool for this
 workload because the GIL is released during MIDI/socket I/O — the input reader,
 the Matchmaker follower thread, and the deadline-output thread all run
@@ -793,18 +793,18 @@ IOIs reappear for struck chords instead of the ~30 ms rolls.
 ## [2026-07-27] rehearsal-anchored FOLLOW pace | tempo stops hunting on tracker jitter
 
 Third live test (`live-1785205484713`, cue at beat 140) confirmed the earlier
-fixes — steady lead-in, clamp at 47.4 BPM (Eric's real ~50) — but the orchestra
-still drifted +-0.5 s and Eric's marked anchors did nothing. Root-causing both:
+fixes — steady lead-in, clamp at 47.4 BPM (the soloist's real ~50) — but the orchestra
+still drifted +-0.5 s and the soloist's marked anchors did nothing. Root-causing both:
 
-- **The tempo hunted 43-95 BPM while Eric played steadily ~50.** The FOLLOW pace
+- **The tempo hunted 43-95 BPM while the soloist played steadily ~50.** The FOLLOW pace
   was derived from the live follower's position, and Matchmaker's position is a
   jumpy step function (plateau, then leap through a cluster of filigree notes), so
   the runtime turned tracker jitter into tempo fluctuation. A windowed regression
   does not fix it (validated at 1.5-5.0 beat windows: still 24-94 BPM) — the
-  signal itself is too jumpy. A rehearsal-curve fit explains Eric's live timing no
+  signal itself is too jumpy. A rehearsal-curve fit explains the soloist's live timing no
   better than a constant tempo (both ~400 ms residual), i.e. the +-400 ms scatter
-  is follower jitter, not real rubato: Eric *did* play steadily.
-- **The anchors never fired.** They armed correctly and Eric played the trigger
+  is follower jitter, not real rubato: the soloist *did* play steadily.
+- **The anchors never fired.** They armed correctly and the soloist played the trigger
   basses in-window (offline replay fires all four), but the predictive scheduler
   had already committed each anchor's chord ~0.5 s before his bass landed
   (orchestra running ahead), so `dispatch_reactively` declined every time. And
@@ -821,7 +821,7 @@ away. Sub-beat micro-rubato is smoothed out (a live follower cannot resolve it a
 playing it as a pulse fluctuates 33-143); the phrase-level arc the takes agree on
 is kept. Where the profile has no support the pace degrades to reactive. Missing
 data (coast/dropout) holds the plan rather than chasing noise — the graceful
-degradation Eric asked for. Reference and canonical periods are rescaled together
+degradation the soloist asked for. Reference and canonical periods are rescaled together
 to stay consistent.
 
 Replaying this trace through the new model: output tempo **50.7 BPM, std 4.3
@@ -838,12 +838,12 @@ trusted, but still shapes untrusted passages.
 
 ## [2026-07-27] steady lead-in, wider entry window, and the reference-warp finding | Yamaha trace repair
 
-Eric retested the acquisition clamp (below) and the orchestra was still off. Trace
+the soloist retested the acquisition clamp (below) and the orchestra was still off. Trace
 `live-1785181271384` (same cue at canonical beat 144) showed two compounding
 problems and surfaced a third, deeper one.
 
 1. **The clamp window was too short.** The acquisition ran cleanly (5 onsets ->
-   handoff) but clamped to **89.6 BPM** while Eric again played a sustained
+   handoff) but clamped to **89.6 BPM** while the soloist again played a sustained
    **51 BPM** (global raw-follower regression, 17.6 beats / 19.7 s). Right after
    Matchmaker recenters it does a fast catch-up burst, and its raw canonical beat
    then plateaus for a stretch, so a 0.73 s / 5-onset window read the catch-up
@@ -854,7 +854,7 @@ problems and surfaced a third, deeper one.
    crawl down to 50 and then overshot to 39 and oscillated 48-73 -- the clamp was
    the dominant "super off" driver.
 
-2. **The lead-in lurched fast.** Eric reported the lead-in "went super fast" and
+2. **The lead-in lurched fast.** the soloist reported the lead-in "went super fast" and
    he had to rush to enter on time. The lead-in drove a constant reference period
    through the reference warp, whose intra-measure slope swings wildly, so its
    canonical tempo lurched 70 -> 113 -> 118 beat-to-beat. Fixed: the pre-entry
@@ -873,20 +873,20 @@ problems and surfaced a third, deeper one.
    (17-23 matched notes per bar) -- so this is most likely Oguri's real, if
    exaggerated, rubato rather than random error. The open question is therefore
    whether the runtime should *impose* that intra-measure rubato during FOLLOW,
-   not whether the alignment is "broken." Deferred pending Eric's retest of fixes
+   not whether the alignment is "broken." Deferred pending the soloist's retest of fixes
    1-2 and his musical review; re-entry trigger: a post-fix trace still shows the
    orchestra lurching within bars while the follower tracks him cleanly.
 
 ## [2026-07-26] cue-in tempo/phase acquisition before FOLLOW authority | Yamaha trace repair
 
-Eric tested the moving cue-in match (below) and the orchestra still did not
+the soloist tested the moving cue-in match (below) and the orchestra still did not
 synchronize. Trace `live-1785118178612` showed the position handoff now works —
 two stable matches near the moving orchestra transferred cleanly, no rewind, no
 repeat — but the *timing* handoff was broken. The lead-in follows the
 reference-performance warp at a constant reference period, so its instantaneous
 canonical tempo had climbed from the performer-set 70 BPM at beat 144 to
 ~88 BPM by the entry at beat ~152 (the warp compresses ~2.16× there). FOLLOW was
-seeded from that 88 while Eric actually played ~51 BPM (raw-follower regression:
+seeded from that 88 while the soloist actually played ~51 BPM (raw-follower regression:
 15.36 beats / 17.8 s). Worse, the EMA then *smoothed* the pianist's real
 candidates into the 88 seed: the first good candidate of 47.7 BPM was dragged to
 72.8 because `0.25·(60/47.7) + 0.75·(60/88)`. Authority transferred at the
@@ -913,8 +913,8 @@ decision (the clamp), distinct from the old `orchestra_entry_handoff_seed`.
 
 The clamp adopts whatever the pianist plays, so its correctness does not depend
 on the exact ~51 BPM figure; that value is trace-derived, not independently
-proven to be Eric's true tempo. Deferred with explicit re-entry triggers: the
-lead-in still warp-accelerates (only what Eric hears while cueing, no longer a
+proven to be the soloist's true tempo. Deferred with explicit re-entry triggers: the
+lead-in still warp-accelerates (only what the soloist hears while cueing, no longer a
 sync input — revisit if the accelerating pulse makes the entry hard to time);
 ongoing FOLLOW still uses the pairwise EMA once clamped (revisit if a new trace
 shows post-clamp oscillation now that it starts from truth); coast/relock
@@ -923,7 +923,7 @@ mutable events).
 
 ## [2026-07-26] moving cue-in match and continuous FOLLOW handoff | Yamaha trace repair
 
-Eric's next Yamaha run, `live-1785115909614`, exposed the second half of the
+the soloist's next Yamaha run, `live-1785115909614`, exposed the second half of the
 orchestra-led entry contract. The orchestra correctly advanced from canonical
 beat 148 to 152.024 while he listened, but Matchmaker's untouched prior remained
 at the original cue beat. Two locally stable estimates near that stale prior
@@ -946,11 +946,11 @@ runtime trace distinguishes `orchestra_entry_position_mismatch` from
 
 ## [2026-07-26] orchestra-led score entry and locator anchors | Yamaha trace repair
 
-Eric's Yamaha test exposed a contract failure, not a browser freeze. Runtime
+the soloist's Yamaha test exposed a contract failure, not a browser freeze. Runtime
 trace `live-1785113806755` started m.38 at canonical beat 148 / reference beat
 380.847, emitted four count-off clicks and the first orchestral notes, then
 entered `count_off_entry_grace_expired` HOLD around canonical beat 150 because
-no piano evidence had arrived. Eric was intentionally listening for the
+no piano evidence had arrived. the soloist was intentionally listening for the
 orchestra's pulse before joining. The generic 1.5-second dropout grace was
 therefore enforcing the opposite human contract.
 
@@ -1452,7 +1452,7 @@ its unique prose.
 Verified and ruled out from a prior partial audit: `pwa-rehearsal-ui.md`'s
 "four-screen sketch" is already fully superseded in the current file (as of
 PR #92) — no stale section survives. `docs/.obsidian/` is gitignored, not a
-committed-docs violation. Deferred-scope terms (style transfer, ERIC vs OTHER,
+committed-docs violation. Deferred-scope terms (style transfer, SOLOIST vs OTHER,
 raw audio) all appear only as deliberate non-goal callouts.
 
 Updated all internal links for both moves (`docs/INDEX.md`,
@@ -1606,7 +1606,7 @@ Kept the skill text agent-neutral and repo-relative.
 ## [2026-07-06] source | Oguri movement 2 MIDI
 
 Added the Oguri/Kunst der Fuge Chopin Op. 11 second-movement MIDI as the first
-private-use live-following target. Eric preferred the Oguri playback quality and
+private-use live-following target. the soloist preferred the Oguri playback quality and
 asked to start with movement 2 because it is slower and easier to sight-read.
 Documented provenance and redistribution caveats in
 [Oguri / Kunst der Fuge MIDI](sources/oguri-kunstderfuge-midi.md).
@@ -1650,7 +1650,7 @@ so future silent cues are diagnosable.
 
 ## [2026-07-06] fix | Cued recording release tail
 
-Analyzed Eric's first `movement2_take` and found that the cue slice was still
+Analyzed the soloist's first `movement2_take` and found that the cue slice was still
 omitting post-entry note-off events for five sustained orchestra notes. Updated
 the cue renderer to continue sending release events after the nominal solo entry
 without starting new orchestra attacks. Compiled the take analysis in
@@ -1792,7 +1792,7 @@ section and the `[SWE]`/`[SCIENTIST]`/`[TPM]` commit-prefix convention from
 [Development](DEVELOPMENT.md), and the "Scientist/SWE Boundary" section from
 [Experimentation](ML_EXPERIMENTATION.md). This was meta-layer coordination
 guidance for collaborating agents, not music-system or architecture content,
-and Eric flagged it as an outdated distraction. Worktree coordination itself
+and the soloist flagged it as an outdated distraction. Worktree coordination itself
 (still real, still used) stays documented in
 [Documentation Map](DOCUMENTATION_MAP.md) and [Development](DEVELOPMENT.md).
 
@@ -3134,7 +3134,7 @@ Root-caused two live failures from a single take, then rebuilt the surface
 around them (Decision 0014).
 
 **The orchestra went silent at the m.22 interlude.** `_accompaniment_mode_for_passage`
-judged the whole take by the support at the *cue start tick*. Eric started the
+judged the whole take by the support at the *cue start tick*. the soloist started the
 cue at m.8 — an orchestral lead-in where the piano is tacet, so solo support
 there is 0 and always will be. Every warm-up-then-enter take was therefore
 condemned to cold start: the orchestra trailed off at the first note and stayed
@@ -3167,7 +3167,7 @@ detection now lives in a plain function outside the reactive graph.
 
 ## 2026-07-29 — Follower redesign: expectation before evidence (Decision 0015)
 
-Eric, after we had spent several sessions asking "is there a follower here?":
+the soloist, after we had spent several sessions asking "is there a follower here?":
 
 > "A follower should always be able to be in existence. Its functionality just
 > needs to be able to handle this state and distinguish between insufficient data
@@ -3183,7 +3183,7 @@ rather than a gap. TACET, UNREHEARSED and DISAGREEING become three distinct
 states instead of one `support == 0`.
 
 Verified ground truth along the way: the piano's first note of Movement II is at
-canonical beat 47.0 — Eric's B-natural pickup — and `sections.json`
+canonical beat 47.0 — the soloist's B-natural pickup — and `sections.json`
 `opening-orchestra-lead` ends at exactly beat 47.0. The section map was already
 right; nothing consumes it except the live engine (`coverage.py`, `live_midi.py`
 and `routes.py` reference it zero times).
@@ -3249,7 +3249,7 @@ Incorporated adversarial architecture review feedback into [Decision 0016](decis
 
 Reworked [Decision 0016](decisions/0016-pedalboard-decoupled-spatial-synth.md),
 [Score-Authored Spatial Mixing](concepts/psychoacoustic-spatial-mixing.md), and
-the owning system/control docs around Eric's intended workflow: he designates
+the owning system/control docs around the soloist's intended workflow: he designates
 exact musical regions where a swell or spatial layer may be committed 250 ms or
 more ahead.
 
@@ -3268,7 +3268,7 @@ on calibration, virtual/MIDI routing, listening, and plugin feasibility tests.
 
 ## [2026-08-03] Mix UX boundary | Separate authoring modality
 
-Eric clarified that current PWA score annotations are data-correction controls
+the soloist clarified that current PWA score annotations are data-correction controls
 for tracking and playback, while spatial swells are a different authoring task.
 Added [Mix Authoring Mode](design/MIX_AUTHORING_MODE.md) and reconciled the
 vision, PWA, system, and Decision 0016 contracts.
@@ -3308,7 +3308,7 @@ validates isolated authoring/pre-render use, not live incremental hosting.
 
 ## [2026-08-03] Spatial design simplification | Direct-HDMI low-latency baseline
 
-Eric selected the LG flagship soundbar's direct-HDMI Game path as the room
+the soloist selected the LG flagship soundbar's direct-HDMI Game path as the room
 output and accepted 59 ms as the MVP planning assumption. Reframed
 [Decision 0016](decisions/0016-pedalboard-decoupled-spatial-synth.md) and
 [Calibrated Low-Latency Spatial Mixing](concepts/psychoacoustic-spatial-mixing.md)
@@ -3332,7 +3332,7 @@ regions shape attention, depth, and antiphonal effects.
 
 ## [2026-08-03] Mix control semantics | Conventional 0--100 volume
 
-Eric clarified that the PWA should use ordinary `0..100` volume sliders rather
+the soloist clarified that the PWA should use ordinary `0..100` volume sliders rather
 than expose dB. Updated the `MixProgram` contract so route defaults and envelope
 points persist that same user-facing scale, with `0` off and `100` the route's
 calibrated full level. A pinned mapping revision translates the authored value
@@ -3548,7 +3548,7 @@ instrument sequentially, warms each, and holds all at a shared playback barrier.
 
 The known-good run loaded nine patches in 31.4 seconds, streamed Oguri m.43--45
 for 16.1 seconds through MacBook Air Speakers, dispatched 52 note-ons, and
-exited cleanly. Eric confirmed hearing a convincing full orchestra with multiple
+exited cleanly. the soloist confirmed hearing a convincing full orchestra with multiple
 instrument families. This proves correct mapping and deadline-safe warmed
 processing; integration as a resident rehearsal service plus dense-tutti,
 long-run, and acoustic-latency qualification remain follow-ons.
@@ -3584,7 +3584,7 @@ beat map. Data → Timing now plays four count-in clicks followed by one exact
 Oguri orchestral measure with clicks at the hypothesized beats through the
 selected MIDI output. The orchestra and metronome are scheduled together by
 the backend rather than combining hardware MIDI with browser oscillator audio;
-Eric confirmed the first real Clavinova audition sounded correct.
+the soloist confirmed the first real Clavinova audition sounded correct.
 
 The global Controls surface now groups Orchestra and Metronome as the two
 listening levels, is available in Data as a compact panel, and retains the full
@@ -3594,7 +3594,7 @@ shared clock, click scaling/mute, and managed hardware boundary.
 
 ## [2026-08-09] Score localization | Repair orchestra-led mm.103–105 boundary
 
-Eric heard the purported m.104 downbeat on the orchestral G-sharp printed as
+the soloist heard the purported m.104 downbeat on the orchestral G-sharp printed as
 m.103 beat 4. Note-level inspection confirmed Violins I/II G-sharp at native
 tick `252985` / `527.052s`, followed by the full m.104 downbeat chord at
 `529.454s`; two independent symbolic alignments also placed m.104 near
@@ -3605,7 +3605,7 @@ Fixed the compiler's evidence routing: Piano I → solo stays authoritative wher
 it produces a downbeat, while Piano II → orchestra now fills only absent later
 downbeats and supplies interior beat timing in those orchestra-led measures.
 The rebuilt map places m.104 at `529.510s` and m.105 at `536.275s`, clearing
-both from the independent-disagreement worklist. Stored Eric's m.103 beat-4
+both from the independent-disagreement worklist. Stored the soloist's m.103 beat-4
 identity as a reviewed machine-local correction at exact tick `252985`.
 
 Data → Timing now permits opening any measure directly and offers a collapsed
@@ -3616,7 +3616,7 @@ an awkward early/late offset description.
 
 ## [2026-08-09] Data timing validation | Score-led selection and m.109 pulse
 
-Eric found that m.109's measure boundaries were right while the metronome fired
+the soloist found that m.109's measure boundaries were right while the metronome fired
 three compressed clicks and left a long tail. The old interior anchors came
 from Piano I's rapid run (`555.879`, `556.985`, `557.896`, `558.688s`), not the
 orchestral quarter-note pulse. Piano II and grouped Oguri orchestra attacks put
@@ -3643,7 +3643,7 @@ native MIDI tick, leaving rhythmic subdivisions visible but unassigned.
 
 ## [2026-08-09] Score localization | Apply repeated-theme pulse fix to m.107
 
-Eric confirmed that mm.105 and 109 sounded right, then heard m.107 reproduce
+the soloist confirmed that mm.105 and 109 sounded right, then heard m.107 reproduce
 the same three-fast-clicks/long-tail failure previously diagnosed at m.109.
 The root cause was the same evidence-routing error: three exact Piano I matches
 inside a dense solo run compressed the supposed orchestral beats into the first
@@ -3658,7 +3658,7 @@ remain byte-identical.
 
 ## [2026-08-09] Data timing UX | Visible targets and race-free local Play
 
-Eric confirmed m.107's corrected pulse, then exposed three workflow failures:
+the soloist confirmed m.107's corrected pulse, then exposed three workflow failures:
 the Timing panel described review counts without visibly updating the global
 strip, a completed audible pass could show a raw managed-job 409 when its loop
 restarted during MIDI teardown, and right-clicking a printed measure could
@@ -3682,7 +3682,7 @@ managed-job teardown timing.
 
 ## [2026-08-09] Data timing UX | Omit orchestra-tacet listening targets
 
-Eric identified that m.17's accompaniment is entirely rests, so its independent
+the soloist identified that m.17's accompaniment is entirely rests, so its independent
 alignment disagreement could not be judged through the orchestra-only timing
 audition. The listening worklist now retains that disagreement in machine
 diagnostics while filtering every orchestra-tacet measure from both the
@@ -3701,7 +3701,7 @@ Analyzed the complete scratch run `live-1786330629261` from its runtime JSONL
 and automatically captured solo MIDI. The run produced 2,394 follower updates
 and 1,230 orchestral note-ons; device onset lateness was 3.09 ms median, 24.15
 ms p95, and 55.28 ms max, with no 100 ms misses. The capture is intentionally
-ephemeral until Eric chooses to keep it as a rehearsal take.
+ephemeral until the soloist chooses to keep it as a rehearsal take.
 
 The trace separated four causes that sounded superficially alike:
 
@@ -3750,7 +3750,7 @@ rehearsal data until the performer explicitly keeps them.
 Analyzed scratch run `live-1786391346736` by joining its runtime/cursor traces
 and automatically captured solo MIDI. The output adapter was healthy: note-on
 lateness was 2.83 ms median, 22.42 ms p95, and 56.09 ms max, with no 100 ms
-misses. The capture remains ephemeral unless Eric explicitly promotes it.
+misses. The capture remains ephemeral unless the soloist explicitly promotes it.
 
 The mm.3 and 8 lurch was upstream of MIDI output and did not involve the
 follower: no piano notes or authority transitions occurred there. The
@@ -3893,13 +3893,13 @@ samples (~5.8 ms). Renderer readiness fails closed if the live rate differs
 from 48 kHz or the block exceeds 128 samples.
 
 The first room-only ten-second test exposed a separate false-ready state:
-Rubato dispatched and released every event, but Eric heard nothing because
+Rubato dispatched and released every event, but the soloist heard nothing because
 REAPER listed `Rubato Orchestra` with Input disabled. Readiness now sends a
 non-sounding channel-16 CC119 probe and requires the bridge to observe it via
 `MIDI_GetRecentInputEvent`. The heartbeat also publishes MIDI receipt and
 track/master peaks. Mix audition now honors the PWA Sound level, accepts live
 fader changes, leases the resident renderer, and supports REAPER-only output
-without an orchestral MIDI copy to Yamaha. Eric enabled both cached same-name
+without an orchestral MIDI copy to Yamaha. the soloist enabled both cached same-name
 MIDI rows; the remaining handoff task is one fresh audible verification.
 
 ## [2026-08-14] Ingress-probe false negative | Duplicate same-name MIDI rows
@@ -3962,7 +3962,7 @@ After both fixes the resident preload reached `ready` and a fresh forced preload
 reached `ready` again with **no manual REAPER interaction**, confirming
 durability. The room-only 10-second audition
 (`mix-audition-1786772630406031000`, `output_name=""`, ticks 0–11520, 76 BPM,
-0.35) was **audible — Eric confirmed hearing it**. Trace: 27 note-ons, 25
+0.35) was **audible — the soloist confirmed hearing it**. Trace: 27 note-ons, 25
 note-offs, 2 terminal panics, `notes_left_sounding: []` (the two uneven notes
 released by the terminal all-notes-off), note-on lateness median 3.25 ms / p95
 5.0 ms, note-off median 3.9 ms / p95 5.1 ms. REAPER heartbeat saw the MIDI and

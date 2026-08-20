@@ -43,7 +43,7 @@ Do not start from HeurMiT for the MVP. Keep it as a research reference only.
 - The scheduler must consume score position and timing/tempo state, not tempo
   alone.
 - The first renderer should target simple GM/XG program/channel mappings.
-- PWA/backend design is required because Eric needs start/stop, device selection,
+- PWA/backend design is required because the soloist needs start/stop, device selection,
   volume, panic, restart, and source-ingestion workflows at the piano.
 
 ## Related

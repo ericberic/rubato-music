@@ -632,15 +632,15 @@ def test_go_live_starts_orchestra_opening_and_exposes_the_solo_handoff(
     tempo.fill("88")
     volume = page.get_by_role("slider", name="Orchestra volume")
     volume.fill("42")
-    page.get_by_text("Advanced Yamaha timing", exact=True).click()
-    output_advance = page.get_by_role("slider", name="Yamaha output advance in milliseconds")
+    page.get_by_text("Advanced Keyboard timing", exact=True).click()
+    output_advance = page.get_by_role("slider", name="Keyboard output advance in milliseconds")
     # The output-advance control is coarse (10 ms steps) for by-ear calibration.
     output_advance.fill("20")
     page.reload(wait_until="networkidle")
     _open_inspector(page)
     expect(tempo).to_have_value("88")
     expect(action_rail).to_contain_text("♩ = 88")
-    page.get_by_text("Advanced Yamaha timing", exact=True).click()
+    page.get_by_text("Advanced Keyboard timing", exact=True).click()
     expect(output_advance).to_have_value("20")
 
     live_intent.click()
@@ -715,7 +715,7 @@ def test_go_live_starts_orchestra_opening_and_exposes_the_solo_handoff(
     live_recording = page.get_by_test_id("after-performance-recording")
     expect(live_recording).to_contain_text("Performance recorded automatically")
     expect(live_recording).to_contain_text(run_id)
-    expect(live_recording.get_by_role("button", name="Hear piano on Yamaha")).to_be_visible()
+    expect(live_recording.get_by_role("button", name="Hear piano on Keyboard")).to_be_visible()
     expect(live_recording.get_by_role("button", name="Preview on Mac")).to_be_visible()
     live_recording.get_by_role("button", name=re.compile(r"Keep for .*review")).click()
     expect(live_recording).not_to_be_visible()
@@ -818,7 +818,7 @@ def test_idle_stage_keeps_live_record_and_sound_together_without_diagnostics(
     expect(page.get_by_test_id("perform-live")).to_contain_text("Go live")
     expect(page.get_by_test_id("orchestra-readiness")).to_contain_text("Orchestra Ready")
     expect(page.get_by_test_id("orchestra-readiness")).to_contain_text(
-        "Yamaha MIDI output is ready"
+        "Keyboard MIDI output is ready"
     )
     expect(rail.get_by_role("button", name=re.compile(r"^Record m\. \d+$"))).to_be_visible()
     sound = page.get_by_test_id("inspector-toggle")
@@ -1009,9 +1009,9 @@ def test_capture_flows_into_one_press_accompanied_review_and_record_again(
     after = page.get_by_test_id("after-take-card")
     expect(after).to_be_visible()
     expect(
-        after.get_by_role("button", name=re.compile(r"Hear .* with orchestra on Yamaha"))
+        after.get_by_role("button", name=re.compile(r"Hear .* with orchestra on Keyboard"))
     ).to_be_enabled()
-    hear = after.get_by_role("button", name=re.compile(r"Hear .* with orchestra on Yamaha"))
+    hear = after.get_by_role("button", name=re.compile(r"Hear .* with orchestra on Keyboard"))
     expect(hear).to_be_enabled()
     hear.click()
     expect(page.locator(".state-word")).to_have_text("Playing")
@@ -1074,11 +1074,11 @@ def test_take_bank_reviews_one_selected_passage_solo_or_with_orchestra(
     review = page.get_by_test_id("passage-review-card")
     expect(review).to_contain_text("Passage recordings")
     expect(review).to_contain_text("Playback begins at m.")
-    expect(review).to_contain_text("On Yamaha")
+    expect(review).to_contain_text("On Keyboard")
     expect(review.get_by_role("combobox", name="Recording at selected passage")).to_be_visible()
 
     take_only = review.get_by_role(
-        "button", name=re.compile(r"Hear pass from measure \d+ alone on Yamaha from measure")
+        "button", name=re.compile(r"Hear pass from measure \d+ alone on Keyboard from measure")
     )
     expect(take_only).to_be_visible(timeout=5000)
     take_only.click()
@@ -1450,7 +1450,7 @@ def test_score_stays_visible_and_tracks_cue_take_coverage_and_review(
     expect(page.get_by_test_id(f"score-measure-label-{target_measure}")).to_be_visible()
     expect(page.get_by_test_id("score-target-badge")).to_have_text("Selected passage")
 
-    hear = after.get_by_role("button", name=re.compile(r"Hear .* with orchestra on Yamaha"))
+    hear = after.get_by_role("button", name=re.compile(r"Hear .* with orchestra on Keyboard"))
     expect(hear).to_be_enabled()
     # Sample the pre-playback position BEFORE starting it. This review transport
     # steps once, ~160ms in, then holds that position for the rest of its ~3.6s
@@ -1990,7 +1990,7 @@ def test_lifecycle_events_update_hardware_and_refresh_materialized_coverage(
     )
     expect(page.locator(".state-word")).to_have_text("Orchestra Ready")
     expect(page.locator(".state-detail")).to_have_text(
-        "Yamaha MIDI output is ready · orchestra 20%"
+        "Keyboard MIDI output is ready · orchestra 20%"
     )
 
     with page.expect_request(lambda request: "/api/coverage/2" in request.url):

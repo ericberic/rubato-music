@@ -41,7 +41,7 @@ class VstInstrumentBinding(LiveAudioConfigModel):
 
 class LiveVstZoneConfig(LiveAudioConfigModel):
     # ``pedalboard`` is retained as a rollback path while the external REAPER
-    # host is proven on Eric's hardware.  REAPER owns the plug-in and CoreAudio;
+    # host is proven on target hardware.  REAPER owns the plug-in and CoreAudio;
     # Rubato owns only a virtual CoreMIDI source and scheduled MIDI messages.
     renderer: Literal["pedalboard", "reaper"] = "pedalboard"
     zone_id: str = Field(min_length=1, pattern=r"^[A-Za-z0-9_-]+$")

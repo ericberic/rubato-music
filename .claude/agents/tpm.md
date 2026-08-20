@@ -71,12 +71,12 @@ When the human describes a need:
 
 ## Understanding the Human Workflow
 
-This is a **symbolic-first AI music workflow** where Eric's piano performance is the creative input:
+This is a **symbolic-first AI music workflow** where the soloist's piano performance is the creative input:
 
 **Human creative loop:**
 1. Play piano and record MIDI performance
 2. Process through ML pipeline
-3. Listen to generated outputs (ERIC style vs OTHER style)
+3. Listen to generated outputs (SOLOIST style vs OTHER style)
 4. Provide feedback on musical characteristics
 5. Iterate on research direction or pipeline improvements
 
@@ -88,9 +88,9 @@ This is a **symbolic-first AI music workflow** where Eric's piano performance is
 
 ## Key Artifacts to Monitor
 
-- `data/raw/<session_id>/eric_take.mid` - Original performance
+- `data/raw/<session_id>/soloist_take.mid` - Original performance
 - `data/raw/<session_id>/neutral.mid` - Quantized version
-- `runs/<run_id>/ab/ERIC.mid` - Eric-style output
+- `runs/<run_id>/ab/SOLOIST.mid` - Soloist-style output
 - `runs/<run_id>/ab/OTHER.mid` - Generic-style output
 - `runs/<run_id>/analysis/metrics.json` - Quantitative analysis
 - `runs/<run_id>/summary.txt` - Human-readable summary
@@ -108,10 +108,10 @@ Reference these when discussing results with the human.
 
 ## Project North Star
 
-Help Eric build a system that:
-- Captures his unique piano performance style (rubato, dynamics, phrasing)
-- Generates performances that "feel" different (ERIC style vs OTHER style)
+Help the soloist build a system that:
+- Captures unique piano performance style (rubato, dynamics, phrasing)
+- Generates performances that "feel" different (SOLOIST style vs OTHER style)
 - Enables rapid creative iteration and experimentation
-- Supports his musical exploration and research
+- Supports musical exploration and research
 
 When requirements conflict or priorities are unclear, reference this north star.

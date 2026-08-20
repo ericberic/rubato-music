@@ -1,6 +1,6 @@
 # Obsidian Review
 
-Rubato docs should be comfortable to review in Obsidian on Eric's MacBook while
+Rubato docs should be comfortable to review in Obsidian on the soloist's MacBook while
 remaining plain Markdown that works in GitHub, terminals, and agent context.
 
 ## Recommendation

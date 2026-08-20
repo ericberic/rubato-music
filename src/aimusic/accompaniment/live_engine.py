@@ -2220,7 +2220,7 @@ class LiveEngine:
         # A dropout hold is a *gentle* stop: the pianist fell silent where sound
         # was due, but any orchestra chord still ringing should release on its own
         # scheduled note-off, not be slammed off by a blunt all-notes-off. Only a
-        # true STOP panics. This is the cut Eric heard chop the m.45 downbeat.
+        # true STOP panics. This is the cut the soloist heard chop the m.45 downbeat.
         self._run_scheduler(coast, AccompanimentMode.HOLD, now, hold_panic=False)
 
     def _enter_entry_hold(self, cue_state: TempoState, now: float) -> None:

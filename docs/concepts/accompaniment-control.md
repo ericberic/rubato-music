@@ -3,7 +3,7 @@
 ## Summary
 
 Accompaniment control is the layer that turns score-following output into a
-musical orchestral response. It decides when Rubato follows Eric, when it leads,
+musical orchestral response. It decides when Rubato follows the soloist, when it leads,
 how it smooths tempo, and how it maps solo dynamics/articulation into
 accompaniment MIDI.
 
@@ -84,7 +84,7 @@ tempo model should:
 
 ACCompanion's LTE model is especially relevant: it uses reference performances
 as tempo expectations, with fallback to a simpler linear model. For Rubato, this
-suggests a practical workflow where Eric records several takes of the target
+suggests a practical workflow where the soloist records several takes of the target
 excerpt before live accompaniment is attempted.
 
 Repeated takes expose information that one take cannot: the median local
@@ -124,7 +124,7 @@ Start with deterministic rendering:
 Human-reviewed terminal notation may override an early reference-performance
 release. Movement II's final two low E string notes are explicitly sustained
 from m.125 through the end of m.126; their note-offs remain mutable on the live
-score clock so Eric and the orchestra can release together.
+score clock so the soloist and the orchestra can release together.
 
 Later, add:
 
@@ -168,7 +168,7 @@ raw key velocity is already a calibrated acoustic-loudness model.
 
 ## Score-Authored Spatial Mix Automation
 
-Spatial swells are a fourth, separate layer. Eric marks exact score regions
+Spatial swells are a fourth, separate layer. the soloist marks exact score regions
 where a named stem or room zone may fade, swell, enter, or move in emphasis.
 The program also owns a piece-wide base blend so those regions remain sparse.
 These envelopes control stem/zone gain; they do not take ownership of phrase

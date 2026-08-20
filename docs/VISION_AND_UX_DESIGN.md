@@ -4,7 +4,7 @@
 
 This document is the product vision and interaction design for Rubato. It is
 written to be read before code, and to guide the agents who write the code. It
-covers what the system is, how it learns, how it follows, what Eric sees, and
+covers what the system is, how it learns, how it follows, what the soloist sees, and
 what to build in what order. Architecture and data contracts remain owned by
 [System Design](SYSTEM_DESIGN.md); this document owns intent, workflow, and the
 interface.
@@ -15,7 +15,7 @@ interface.
 
 Rubato is an orchestra that rehearses with you.
 
-Eric sits at a Yamaha CLP-795GP and plays the solo part of Chopin's Piano
+the soloist sits at a Yamaha CLP-795GP and plays the solo part of Chopin's Piano
 Concerto No. 1 in E minor. Rubato listens to the MIDI stream from the piano,
 knows the score, follows his interpretation in real time — his tempo, his
 rubato, his dynamics — and plays the orchestral accompaniment back through the
@@ -33,7 +33,7 @@ ACCompanion's evaluation, a purely reactive tempo follower produced onset
 errors of multiple seconds, a corrective linear model got to ~82 ms, and a
 model given *reference performances of the same player* got to ~23 ms — see
 [ACCompanion Evaluation](sources/accompanion-evaluation.md). The single
-biggest quality lever available to Rubato is that Eric will rehearse with it.
+biggest quality lever available to Rubato is that the soloist will rehearse with it.
 **Rehearsal is where the ensemble is formed. Performance is where it is
 trusted.** Everything the system learns must flow from simply playing —
 never from labeling, configuring, or annotating.
@@ -50,7 +50,7 @@ clock. This is why [System Design](SYSTEM_DESIGN.md) uses the sequence **score
 identity → symbolic correspondence → timing warp → PDF geometry**, and why the
 scheduler consumes both `score_beat` (location) and tempo state (rate).
 
-**Third: the interface is furniture, not software.** Eric is at the piano,
+**Third: the interface is furniture, not software.** the soloist is at the piano,
 hands on keys, laptop an arm's length away on the music desk or a stand. The
 UI succeeds when it behaves like a music stand light: glanceable from two
 meters, operable in one press, invisible while playing. Every screen, control,
@@ -78,7 +78,7 @@ will happen on stage).
 That shared loop sits inside a three-workflow product lifecycle:
 
 1. offline score bundling creates piece knowledge;
-2. rehearsal turns completed takes into Eric-specific alignment and prior
+2. rehearsal turns completed takes into the soloist-specific alignment and prior
    knowledge;
 3. live performance consumes the prepared piece knowledge and frozen prior
    causally.
@@ -136,7 +136,7 @@ Per-component behavior, tight enough to implement:
 3. **Tempo model.** Smooths follower updates into a beat period estimate and
    predicts the wall time of future beats. Crucially, it blends two sources:
    the live estimate and the **interpretation profile** (Section 3) — the
-   learned prior of how Eric plays this passage. Blend weight follows
+   learned prior of how the soloist plays this passage. Blend weight follows
    confidence in each: fresh piece, no takes → almost purely reactive;
    well-rehearsed passage played consistently → the prior carries most of the
    weight and the orchestra moves with quiet conviction. Raw inter-onset
@@ -261,7 +261,7 @@ Learning is a byproduct of playing. The pipeline already exists in embryo as
 the offline alignment scaffold
 ([Offline Alignment And Render](concepts/offline-alignment-render.md)):
 
-1. Eric finishes a take. The solo MIDI is already on disk (recording is
+1. the soloist finishes a take. The solo MIDI is already on disk (recording is
    unconditional).
 2. In the background, the take is aligned against the solo reference —
    note anchors, then phrase-level anchors for smoothing (per
@@ -270,7 +270,7 @@ the offline alignment scaffold
    profile learns from stable matched groups, never from raw events).
 3. The aligned timing map is resampled onto the profile's beat grid and
    folded into the running statistics with **recency weighting** — an
-   exponential half-life of about eight takes, so the profile tracks Eric's
+   exponential half-life of about eight takes, so the profile tracks the soloist's
    *current* interpretation as it matures rather than averaging this month
    with last month.
 4. The take card (Section 6.4) appears. Keeping the take is the default and
@@ -287,7 +287,7 @@ At runtime the profile enters in exactly three places:
 
 - **Tempo prediction (the big one).** The tempo model's prediction for the
   next beats is a confidence-weighted blend of the live estimate and the
-  profile's curve. Where `spread_s` is small (Eric is consistent here) and
+  profile's curve. Where `spread_s` is small (the soloist is consistent here) and
   live confidence is moderate, the prior dominates — the orchestra
   *anticipates*, entering with him rather than a beat behind him. Where
   spread is large or the passage is unrehearsed, the model leans reactive
@@ -298,7 +298,7 @@ At runtime the profile enters in exactly three places:
   it in real time.
 - **Moment handling.** Marked moments arm special behavior: at a consistent
   broadening, the scheduler pre-stretches; at a marked breath, it holds the
-  next entrance until the follower confirms Eric has moved.
+  next entrance until the follower confirms the soloist has moved.
 
 A useful way to say it: **the profile is the rehearsal letter markings in the
 orchestra's parts.** The score says what to play; the profile says how *this
@@ -395,9 +395,9 @@ one-word UI state (Section 6.3):
 | Soloist skips or repeats a measure | Follower re-acquires at the new position; scheduler jumps the lookahead window — never plays catch-up through skipped material at 4× speed | brief `Listening`, then `Following` |
 | Long tutti, then re-entry | `LEAD` at profile tempo; re-acquire on cue notes | `Leading`, then `Following` |
 | MIDI device vanishes | All-notes-off immediately, stop, preserve trace and partial take | `Silent`, with "Connection lost; all sound stopped" as the secondary status line |
-| Eric presses Silence | All-notes-off + stop, everything else preserved | `Silent` |
+| the soloist presses Silence | All-notes-off + stop, everything else preserved | `Silent` |
 
-Recovery is also a UX contract: from `Waiting`, Eric can simply **start
+Recovery is also a UX contract: from `Waiting`, the soloist can simply **start
 playing anywhere** and the system re-acquires — restarting must never
 require touching the laptop.
 
@@ -419,8 +419,8 @@ next action. Stages 2–5 are the weekly loop; 1 and 6 are the bookends.
 **Stage 1 — Ingest.** A new piece arrives as MusicXML/MIDI/PDF and becomes a
 canonical score bundle: solo reference, accompaniment events, section map,
 instrument map ([Score Bundle Contract](concepts/score-bundle-contract.md)).
-This is agent work with Eric consulted only where the score is genuinely
-ambiguous (repeats, cadenza boundaries, cue choices). Eric's experience of
+This is agent work with the soloist consulted only where the score is genuinely
+ambiguous (repeats, cadenza boundaries, cue choices). the soloist's experience of
 this stage should be: *"I asked for the Larghetto; the next time I opened the
 laptop, the Larghetto was there."* An empty interpretation profile is created
 alongside.
@@ -430,19 +430,19 @@ the Clavinova in and out, verify with a silent round-trip, load the piece
 and profile. The Ready face (Section 6.2) shows the result as a quiet
 checkmark, not a form. Only on failure does it become interactive — one
 line, one retry button. This replaces "Setup" as a screen; setup is not a
-place Eric goes, it is a thing that happens.
+place the soloist goes, it is a thing that happens.
 
 **Stage 3 — First Contact.** The first time through a new piece, trust is
 zero — for both parties. This stage exists to build it cheaply, using the
 machinery that already exists today: record a cued take (orchestra lead-in,
-then Eric enters — the current workflow in
+then the soloist enters — the current workflow in
 [Yamaha MIDI Setup](runbooks/yamaha-midi.md)), auto-render the offline
 accompaniment against that take, and play the recorded solo and retimed
-orchestra together on the Yamaha. Eric hears the orchestra shaped to a
+orchestra together on the Yamaha. the soloist hears the orchestra shaped to a
 performance he just gave, *before* any live following is attempted. The UI
 owns that whole handoff: stop → alignment → review preparation → one playback
 action. Session IDs, uploads, render commands, and individual artifact variants
-are implementation details. The system gets its first profile fold; Eric gets
+are implementation details. The system gets its first profile fold; the soloist gets
 evidence. This is also the permanent fallback path whenever live following
 misbehaves: it isolates alignment/render quality from real-time behavior.
 
@@ -459,7 +459,7 @@ Ready face — no global take counter, no dashboards, no charts at the piano.
 frozen, top of the movement, and the Live face drops to its minimal variant:
 position, one state word, Silence. No tempo readouts, no confidence — a
 performer does not want telemetry, and anything on screen at 2 m is
-something Eric might involuntarily read mid-phrase. The take is recorded
+something the soloist might involuntarily read mid-phrase. The take is recorded
 like any other (it would be absurd for the *performance* to be the one
 thing not captured).
 
@@ -468,7 +468,7 @@ different device, possibly by an agent preparing a summary. Traces, tempo
 curves against profile, alignment metrics, listening to takes, feedback
 notes filed to the run folder. Deliberately excluded from the at-piano
 surfaces: analysis is for after, not during. This is where
-[Experimentation](ML_EXPERIMENTATION.md) metrics meet Eric's ears.
+[Experimentation](ML_EXPERIMENTATION.md) metrics meet the soloist's ears.
 
 ---
 
@@ -478,7 +478,7 @@ surfaces: analysis is for after, not during. This is where
 
 The entire at-piano interface is **one window with three mutually exclusive
 faces** — Ready, Live, After — that the system moves between on its own.
-Eric never navigates; the situation navigates. (A fourth surface, the
+the soloist never navigates; the situation navigates. (A fourth surface, the
 Library, is a drawer on the Ready face used a few times a month; Reflection
 tooling lives outside this window entirely.)
 
@@ -538,7 +538,7 @@ Design constraints, stated as hard rules:
 
 ### 6.2 The Ready face
 
-What Eric sees when he sits down:
+What the soloist sees when he sits down:
 
 ```text
 ┌──────────────────────────────────────────────────────────────────┐
@@ -565,12 +565,12 @@ What Eric sees when he sits down:
 - Profile strength in words, not numbers: "first rehearsal" → "learning your
   tempo" → "orchestra knows you." One honest sentence, no gauges.
 - Device health is a checkmark, not a settings panel. Tapping it reveals
-  the picker only if something is wrong or Eric asks.
+  the picker only if something is wrong or the soloist asks.
 - *Rehearse* is the hero. *Perform* is quieter — present, aspirational,
-  never nagging. Pressing either starts listening immediately; **Eric's
+  never nagging. Pressing either starts listening immediately; **the soloist's
   hands go to the keys, and playing is what starts the music.** In `LEAD`
   openings (orchestra begins), the Ready face names where the orchestra starts
-  and where Eric enters; pressing the explicit orchestra-start action starts
+  and where the soloist enters; pressing the explicit orchestra-start action starts
   the first sounding score event rather than waiting for piano input.
 
 ### 6.3 The Live face
@@ -601,7 +601,7 @@ emptiest:
   `Waiting` (dim ivory — holding for you; play anywhere to resume),
   `Recording` (ember — cued-take flow), `Silent` (gray). Color and word
   change together; nothing else on screen changes its meaning. Confidence
-  is expressed *within* the word's brightness, not as a number — Eric needs
+  is expressed *within* the word's brightness, not as a number — the soloist needs
   "it's with me / it's unsure / it's waiting," never "0.83."
 - **The measure number** is the anchor and the largest thing on screen —
   the answer to the only question a playing pianist asks the machine:
@@ -655,7 +655,7 @@ requiring no decision at all:
   recorded solo and rendered accompaniment together on one synchronized
   timeline through the selected Yamaha output. **Solo only** remains a
   secondary diagnostic action. Loading only `accompaniment.mid` is not a
-  substitute: without the recorded solo, Eric cannot judge ensemble timing.
+  substitute: without the recorded solo, the soloist cannot judge ensemble timing.
 - Outside the immediate After card, recordings are organized by their musical
   entry on the PDF: **From measure 12**, **From measure 53**, and so on.
   Multiple recordings at one entry are local passes within that passage.
@@ -670,13 +670,13 @@ requiring no decision at all:
 - An ambiguous alignment replaces playback with **Choose location** and
   resumes preparation after the choice. A render failure preserves the take
   and alignment and offers **Retry orchestral review**. A missing output
-  directs Eric to Sound Check selection/refresh. No failure sends Eric to a
+  directs the soloist to Sound Check selection/refresh. No failure sends the soloist to a
   terminal.
 - After review, **Record another take** continues the learning loop and
   **Go live · Experimental** enters the live hardware/follower test with the
   same Sound Check input and output choice. The output may be the Yamaha synth
   or **None — orchestra via VST only** when a configured room zone owns the
-  orchestra. Review informs Eric's decision; it is not a hidden
+  orchestra. Review informs the soloist's decision; it is not a hidden
   performance-readiness gate.
 
 Implemented foundation (2026-07): capture queues background alignment, then the
@@ -723,7 +723,7 @@ cued-take path within Rehearse, the Latest Take card becomes the After face,
 and the Session deck's upload/variant management moves to the Library drawer
 and Reflection. The cockpit's aesthetic groundwork (palette, masthead,
 Silence) carries forward unchanged. Session/slot vocabulary disappears from
-the visible product: Eric has *pieces* and *takes*; sessions remain a
+the visible product: the soloist has *pieces* and *takes*; sessions remain a
 backend concept.
 
 **Mix** is an explicit idle-state workspace in the three-way masthead switch,
@@ -789,10 +789,10 @@ everything works by tab/space and by touch.
 ## 8. Open Questions and Tradeoffs
 
 Decisions to make before or during early implementation. Each carries a
-recommendation so agents can proceed unless Eric overrules.
+recommendation so agents can proceed unless the soloist overrules.
 
 1. **Re-entry after tutti (the cue problem).** How does the follower
-   re-acquire when Eric enters after a long `LEAD` section — especially if
+   re-acquire when the soloist enters after a long `LEAD` section — especially if
    he enters early or late? *Recommendation:* explicit cue windows in the
    section map (expected entry beat ± tolerance), distinctive-onset
    matching within the window, orchestra briefly elastic (±1 beat) at the
@@ -806,7 +806,7 @@ recommendation so agents can proceed unless Eric overrules.
    human), then tune against simulated-online replays of real takes before
    any live tuning.
 
-3. **Interpretive drift vs. profile stability.** If Eric changes his mind
+3. **Interpretive drift vs. profile stability.** If the soloist changes his mind
    about a passage, how fast should the orchestra agree? *Recommendation:*
    the eight-take half-life (Section 3.2), no UI. Revisit only if he
    reports the orchestra "arguing" with a new interpretation; resist adding
@@ -817,7 +817,7 @@ recommendation so agents can proceed unless Eric overrules.
    ([Oguri source](sources/oguri-kunstderfuge-midi.md)), but the Live face
    promises `m. 37`. The file carries a single 120 BPM tempo event, and it
    is a sequenced *performance*: if its expressive timing is baked into
-   tick positions (likely, given Eric preferred its playback over the
+   tick positions (likely, given the soloist preferred its playback over the
    metronomic MuseScore export), tick beats are proportional to wall time,
    not musical beats, and beats-per-measure on the grid is not constant —
    a mechanical grid ÷ time-signature derivation would produce wrong
@@ -835,7 +835,7 @@ recommendation so agents can proceed unless Eric overrules.
    response comfortably under 100 ms for reactive corrections.
 
 6. **Local control and the doubled-piano question.** Can the CLP-795GP
-   sound its own piano voice for Eric while receiving orchestra on other
+   sound its own piano voice for the soloist while receiving orchestra on other
    channels — and should local control be split? Open hardware question in
    [Yamaha MIDI Setup](runbooks/yamaha-midi.md). *Recommendation:* resolve
    in the next hardware session; it constrains the whole output design and
@@ -856,7 +856,7 @@ recommendation so agents can proceed unless Eric overrules.
 9. **Velocity calibration on XG voices.** MIDI velocity → perceived
    loudness is voice-dependent; dynamic response may feel wrong even when
    numerically right. *Recommendation:* a one-time per-instrument-map
-   calibration pass by ear (agent plays velocity ladders, Eric ranks),
+   calibration pass by ear (agent plays velocity ladders, the soloist ranks),
    stored in the instrument map. Accept "serviceable, not beautiful" —
    Yamaha XG realism is explicitly a non-goal at this stage
    ([Decision 0002](decisions/0002-tracker-and-synth-mvp.md)).
@@ -883,12 +883,12 @@ recommendation so agents can proceed unless Eric overrules.
 
 Ordered so each item is independently pickable by an agent, has a crisp
 "done when," and delivers value even if the next item never happens. Items
-1–4 make live following real; 5–7 make it musical; 8–10 make it Eric's;
+1–4 make live following real; 5–7 make it musical; 8–10 make it the soloist's;
 11–13 make it a product.
 
 1. **Live follower spike (no sound).** Wire Matchmaker (`arzt`) to live
    Yamaha input against the Oguri movement-2 solo reference; log
-   `FollowerUpdate` traces while Eric plays; no output. *Done when:* a
+   `FollowerUpdate` traces while the soloist plays; no output. *Done when:* a
    trace from a real take shows lock within 4 onsets and plausible beat
    tracking through the first solo span, and the same harness replays
    deterministically in simulated-online mode.
@@ -901,7 +901,7 @@ Ordered so each item is independently pickable by an agent, has a crisp
 3. **Live loop v0 — follow only.** Follower → existing `OnlineTempoModel` →
    `AccompanimentScheduler` → Yamaha output, `FOLLOW` mode only, on a
    1-minute movement-2 excerpt. Purely reactive (no profile). Full traces.
-   *Done when:* Eric plays the excerpt and the orchestra sounds with him
+   *Done when:* the soloist plays the excerpt and the orchestra sounds with him
    end to end, and a simulated-online replay of a recorded take produces
    the same trace shape in CI.
 
@@ -915,7 +915,7 @@ Ordered so each item is independently pickable by an agent, has a crisp
    offline-alignment output; recency-weighted median/spread folds;
    `profile.json` contract; auto-fold on take completion; CLI
    (`rubato profile show/fold/unfold`). *Done when:* three real takes
-   produce a profile whose tempo curve visibly tracks Eric's rubato, and
+   produce a profile whose tempo curve visibly tracks the soloist's rubato, and
    fold/unfold round-trips in tests.
 
 6. **Prior-blended tempo model.** Blend profile prior with live estimate
@@ -927,7 +927,7 @@ Ordered so each item is independently pickable by an agent, has a crisp
 
 7. **Live dynamics.** Intensity trend + bounded velocity modulation +
    dynamic-curve baseline; velocity-ladder calibration pass (Open
-   Question 9). *Done when:* Eric plays a passage twice, piano then forte,
+   Question 9). *Done when:* the soloist plays a passage twice, piano then forte,
    and reports the orchestra audibly moving with him both times.
 
 8. **The three faces — Ready and Live.** Restructure the Svelte app:
@@ -958,7 +958,7 @@ Ordered so each item is independently pickable by an agent, has a crisp
 
 11. **Performance mode.** Frozen profile, minimal Live variant, top-of-
     movement start, Reflection-side fold offer (Open Question 10).
-    *Done when:* Eric performs the Larghetto end to end and afterward the
+    *Done when:* the soloist performs the Larghetto end to end and afterward the
     take, trace, and render are waiting for review.
 
 12. **Measure map + journey bar fidelity.** Beat→measure mapping for the
@@ -969,7 +969,7 @@ Ordered so each item is independently pickable by an agent, has a crisp
 13. **Reflection surface v1.** Off-piano review: takes, tempo-vs-profile
     curves, alignment metrics, feedback notes to run folders. Can be
     plain generated HTML/notebook per run before it is an app surface.
-    *Done when:* Eric reviews a week of rehearsal away from the piano and
+    *Done when:* the soloist reviews a week of rehearsal away from the piano and
     files feedback an agent can act on.
 
 Then: the Allegro maestoso (movement 1) excerpt by excerpt, additional output

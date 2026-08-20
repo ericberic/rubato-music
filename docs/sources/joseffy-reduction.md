@@ -224,7 +224,7 @@ cardinal rule.
 
 ### August 9 — Orchestra-Led Boundary at mm.103–105
 
-Eric's Data-timing audition identified a concrete one-beat boundary defect:
+The soloist's Data-timing audition identified a concrete one-beat boundary defect:
 the click labelled m.104 beat 1 landed on the first orchestral G-sharp, which
 the Joseffy Piano II staff assigns to m.103 beat 4. MIDI inspection confirmed
 the identity independently: Violins I/II enter on G-sharp at native tick
@@ -239,13 +239,13 @@ compiler used Piano I → solo exclusively, even in orchestra-led bars where the
 solo line could not identify a downbeat. `build_movement2_beat_map.py` now uses
 Piano II → orchestra pitch-class matches only to fill measures absent from the
 stronger solo path. The rebuilt map places m.104 at `529.510s` and m.105 at
-`536.275s`; both clear the cross-validation worklist. Eric's m.103 beat-4
+`536.275s`; both clear the cross-validation worklist. The soloist's m.103 beat-4
 identity is also stored as a machine-local reviewed human correction at exact
 native tick `252985`.
 
 ### August 9 — Interior Beat Rhythm at mm.107 and 109
 
-Eric later heard the same three-fast-clicks/long-tail failure at m.107 while
+The soloist later heard the same three-fast-clicks/long-tail failure at m.107 while
 confirming that mm.105 and 109 sounded right. The old m.107 interior anchors
 were ticks `262133`, `262502`, `262870`, and `263239`: just three exact Piano I
 matches had pulled the first three intervals onto a rapid solo run. The guarded
@@ -254,7 +254,7 @@ printed orchestral pulse between the independently agreed barlines. The rebuilt
 ticks are `262133`, `262692`, `263252`, and `263811` (approximately `546.110`,
 `547.275`, `548.442`, and `549.606s`). This changes only m.107.
 
-Eric confirmed that m.109's barlines were correct but the audition click track
+The soloist confirmed that m.109's barlines were correct but the audition click track
 compressed its first three clicks and left a long empty tail. Inspection showed
 that the map had taken all four interior beats from the rapid Piano I solo run:
 ticks `266822`, `267353`, `267790`, `268170`. Piano II and the Oguri orchestra

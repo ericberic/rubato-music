@@ -114,7 +114,7 @@ section policy -> scheduler -> renderer -> Yamaha on a short movement-2
 `FOLLOW` excerpt, then add movement-2 sections, `LEAD`, `HOLD`, and cue-window
 re-entry.
 
-Done when Eric can play a one-minute movement-2 excerpt with live
+Done when the soloist can play a one-minute movement-2 excerpt with live
 accompaniment, and replay produces comparable traces.
 
 The causal queue, retiming, Matchmaker stream bridge, Yamaha renderer, replay,
@@ -140,7 +140,7 @@ and bounded velocity modulation, and represent marked breaths/broadenings.
 Compare prior-blended vs reactive timing in simulated-online replay before live
 tuning.
 
-Done when replay shows timing improvement from the profile and Eric hears
+Done when replay shows timing improvement from the profile and the soloist hears
 dynamic response on a piano/forte contrast.
 
 ### Phase 7 - Recovery and performance mode
@@ -161,7 +161,7 @@ live measure numbers. Use measure and section maps for the journey bar. Generate
 Reflection v1 per run: takes, rendered MIDI, traces, tempo-vs-profile curves,
 alignment metrics, and feedback notes.
 
-Done when Live `m. N` spot-checks against the score PDF and Eric can review a
+Done when Live `m. N` spot-checks against the score PDF and the soloist can review a
 week of takes away from the piano.
 
 ## Suggested Work Items

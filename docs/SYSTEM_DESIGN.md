@@ -7,7 +7,7 @@ Rubato has three workflows with one shared canonical score coordinate:
 1. **Offline score bundling** turns the PDF, Audiveris MusicXML, and reference
    MIDI into a reusable symbolic bundle and source-to-score beat map.
 2. **Rehearsal takes** align completed Yamaha recordings to that bundle,
-   produce review/coverage artifacts, and learn Eric's interpretation profile.
+   produce review/coverage artifacts, and learn the soloist's interpretation profile.
 3. **Live performance** follows incoming Yamaha notes causally against the
    bundle, combines that position with the frozen rehearsal profile, and emits
    symbolic accompaniment in real time to Yamaha MIDI, configured VST audio
@@ -84,9 +84,9 @@ inference.
 
 | Source | Strong evidence | Does not know by itself |
 | --- | --- | --- |
-| Audiveris MusicXML | Notated measures, beats, pitches, voices, and engraving geometry | How the Oguri or Eric performance stretches time; recognition may contain errors |
+| Audiveris MusicXML | Notated measures, beats, pitches, voices, and engraving geometry | How the Oguri or the soloist performance stretches time; recognition may contain errors |
 | Oguri reference MIDI | Ordered notes/chords and one expressive performance clock | Printed bar numbers or PDF coordinates |
-| Yamaha take MIDI | Eric's ordered notes, dynamics, pedal, and performed timestamps | Its canonical score location without alignment |
+| Yamaha take MIDI | the soloist's ordered notes, dynamics, pedal, and performed timestamps | Its canonical score location without alignment |
 | Sparse human landmark | One high-confidence local correspondence | The neighboring measures or a whole-piece timing model |
 | Canonical timeline | Stable internal measure/beat identity | Which source event or wall-clock instant realizes it |
 
@@ -129,7 +129,7 @@ The workflows form a dependency chain, not three peer clocks:
 
 ```text
 score bundle (piece knowledge)
-  -> rehearsal alignments and profile (Eric-specific prior)
+  -> rehearsal alignments and profile (the soloist-specific prior)
   -> live performance (causal position + prior -> accompaniment)
 ```
 
@@ -341,7 +341,7 @@ across takes at each score_tick:
 `seconds_per_quarter` retains absolute pace. The dimensionless
 `rubato_ratio` retains local phrase shape after removing a take's global tempo.
 That separation lets the performer set one conventional quarter-note
-metronome mark (`♩ = N`) for the whole performance without flattening Eric's
+metronome mark (`♩ = N`) for the whole performance without flattening the soloist's
 learned broadening or compression. The web/API boundary uses absolute BPM;
 each autonomous section converts its canonical quarter span into a target wall
 duration and derives the internal reference-clock period from the corresponding

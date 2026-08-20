@@ -133,7 +133,7 @@ stages:
   derive_neutral:  # Quantize and normalize MIDI
   tokenize:        # Convert to REMI tokens
   train:           # Train/fine-tune model
-  generate_ab:     # Generate ERIC and OTHER outputs
+  generate_ab:     # Generate SOLOIST and OTHER outputs
   analyze:         # Compute metrics and summary
 ```
 

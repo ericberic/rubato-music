@@ -182,7 +182,7 @@ performer's **Silence** and stop controls. `STOP` rejects an initial request
 before opening MIDI ports.
 
 This supersedes the four-click `CUE_ENTRY` contract after the 2026-07-26 Yamaha
-trace `live-1785113806755` showed its hidden assumption: Eric selected a measure
+trace `live-1785113806755` showed its hidden assumption: the soloist selected a measure
 to *hear* an orchestral lead-in, but the generic dropout grace assumed he would
 play immediately and entered HOLD around score beat 150 after only two beats.
 Merely extending that timer would preserve the mismatch. Re-enter the bounded

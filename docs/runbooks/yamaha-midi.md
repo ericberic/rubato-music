@@ -2,7 +2,7 @@
 
 ## Goal
 
-Use Eric's Yamaha CLP-795GP as both the live solo MIDI input and the first MVP
+Use the soloist's Yamaha CLP-795GP as both the live solo MIDI input and the first MVP
 accompaniment synth output.
 
 ## Known Device Capabilities
@@ -63,7 +63,24 @@ uv run rubato panic --out Clavinova
 must report a positive `note_on_count`. `play-oguri-cue` sends only that cue to
 the Yamaha so cue playback can be tested without recording.
 
-## PWA Cued Recording
+Connect the piano via USB TO HOST directly to the development Mac. USB MIDI is
+class-compliant and avoids needing a separate 5-pin MIDI interface.
+
+## System Configuration
+
+1. Connect the USB cable.
+2. Turn the piano on.
+3. Verify that macOS recognizes the MIDI device in Audio MIDI Setup.
+4. Run `python -m aimusic.cli info` to list available MIDI ports.
+
+## Local Control
+
+- If using internal piano speakers for accompaniment only: keep Local Control **ON**
+  so the solo piano sound has zero latency.
+- If using external VST/DAW for both piano and orchestra: turn Local Control **OFF**
+  to avoid doubled notes.
+
+## Cueing & Timing
 
 Use the Take Capture deck for the first human-performance fixtures (see
 [Recording Flow Redesign](../design/RECORDING_FLOW_REDESIGN.md) for the full
@@ -87,7 +104,7 @@ sounding at cue start, but they may communicate less tempo context.
 The cue player keeps sending note-off/release events for cue notes after the
 expected piano-entry anchor. For the first-entry Oguri cue, the expected entry is
 8.0 seconds into the take, but the cue's release tail lasts until about 9.304
-seconds. This prevents held Yamaha synth notes while still letting Eric enter at
+seconds. This prevents held synth notes while still letting the soloist enter at
 the 8.0-second anchor.
 
 The backend writes
@@ -110,15 +127,15 @@ against the Oguri `PIANO SOLO` reference.
 - CLP-795GP appears as a MIDI input.
 - CLP-795GP appears as a MIDI output.
 - One-note input can be logged with pitch, velocity, channel, and timestamp.
-- One-note output can be heard from the Yamaha synth.
+- One-note output can be heard from the synth.
 - Program changes can select at least a basic string voice and woodwind/brass
   voice.
 - A panic/all-notes-off command is available before rehearsal.
 - Verify whether local control should stay on or be disabled for the chosen
   routing.
-- Verify whether external accompaniment can sound while Eric plays the local
+- Verify whether external accompaniment can sound while the soloist plays the local
   piano voice.
-- For the first movement-2 rehearsal, Eric can start at a comfortable piano
+- For the first movement-2 rehearsal, the soloist can start at a comfortable piano
   entrance. The next follower step should infer the MIDI tick anchor by matching
   the live notes against the Oguri `PIANO SOLO` reference.
 

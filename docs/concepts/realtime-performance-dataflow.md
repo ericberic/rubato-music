@@ -3,7 +3,7 @@
 ## Summary
 
 During performance, Rubato runs as a causal loop. It loads a score bundle before
-playback, listens to Eric's live MIDI, estimates score position and timing, then
+playback, listens to the soloist's live MIDI, estimates score position and timing, then
 schedules accompaniment MIDI slightly ahead of audio time.
 
 The accompaniment scheduler needs two related coordinates plus timing:
@@ -70,7 +70,7 @@ still preserved as a repeat rather than hidden as jitter.
 
 ## Startup Behavior
 
-Before Eric starts playing, Rubato loads:
+Before the soloist starts playing, Rubato loads:
 
 - score bundle version
 - excerpt start beat
@@ -131,7 +131,7 @@ Startup follows section policy rather than assuming the pianist always begins:
   observation. The orchestra joins the human-cued downbeat under bounded
   `CUE_ENTRY` authority,
   hands authority to the first trusted piano estimate, and enters dropout
-  `HOLD` after the configured coast interval if Eric does not enter. A selected `LEAD` entry
+  `HOLD` after the configured coast interval if the soloist does not enter. A selected `LEAD` entry
   gives the autonomous section clock authority at the count-off downbeat;
   pre-entry ticks hold that origin rather than retiming it backward. `HOLD`
   waits for its authored entry and `STOP` rejects the request.
@@ -265,7 +265,7 @@ canonical half-quarter interval reads expected seconds/quarter and
 take-to-take MAD at `canonical_beat × 960`, then uses relative dispersion as a
 continuous trust gain. High or unknown dispersion contributes zero fitted
 weight, so the exact reference interval survives; low dispersion contributes
-more of Eric's rehearsed curve. A one-take cell has no dispersion estimate even
+more of the soloist's rehearsed curve. A one-take cell has no dispersion estimate even
 though its numerical sample MAD is zero. The fitted curve is never used in
 `LEAD`, and both evaluation reports and scheduler trace rows carry its stable
 curve ID.

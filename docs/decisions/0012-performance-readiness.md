@@ -20,7 +20,7 @@ That metric fails on its own terms:
   the same as three tightly agreeing ones, though only the latter means the
   accompanist knows what to expect.
 
-Eric, on seeing an orchestral interlude marked uncertain:
+The soloist, on seeing an orchestral interlude marked uncertain:
 
 > "In the span where it's really just orchestra, I think it should be certain
 > without requiring a ton of my takes covering what, silence? It's not the number

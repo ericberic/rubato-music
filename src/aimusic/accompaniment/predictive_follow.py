@@ -35,7 +35,7 @@ Expectation source and its limit
 --------------------------------
 The phase lead below uses the aligned reference performance. When the fitted
 rehearsal Interpretation is available, :class:`InterpretationArrivalCurve`
-adds Eric's repeatable future tempo shape at the scheduler boundary. Per-cell
+adds the soloist's repeatable future tempo shape at the scheduler boundary. Per-cell
 dispersion continuously gates that fitted curve back to the reference/reactive
 baseline, and unsupported evidence has zero trust. The bounded phase lead and
 the dispersion-gated future curve remain separate controls: one addresses

@@ -20,7 +20,7 @@ Critical tests:
 - Unit: pure score maps, section policies, tempo helpers.
 - Integration: MIDI file in, trace and accompaniment MIDI out.
 - Hardware smoke: Yamaha input and output route visible.
-- Human smoke: Eric plays an excerpt and rates accompaniment behavior.
+- Human smoke: the soloist plays an excerpt and rates accompaniment behavior.
 
 Spatial-mix tests are split by boundary:
 

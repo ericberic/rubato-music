@@ -83,7 +83,7 @@ from tests.oguri_guard import requires_oguri_derived
 
 @pytest.fixture(autouse=True)
 def isolate_runtime_recordings(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Always-on capture must never write test performances into Eric's data."""
+    """Always-on capture must never write test performances into user data."""
 
     monkeypatch.setenv("AIMUSIC_DATA_ROOT", str(tmp_path / "data"))
 

@@ -280,7 +280,7 @@ class FakeLiveRuntime:
             sample_rate_hz=44100,
             preload_id="fake-preload-id",
             progress_percent=100.0,
-            detail="Yamaha MIDI output is ready",
+            detail="Keyboard MIDI output is ready",
         )
 
     def renderer_status_for_client(self) -> OrchestraRendererStatus:

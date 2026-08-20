@@ -115,7 +115,7 @@ painted. Sparse verified landmarks constrain repeated or ambiguous symbolic
 windows without replacing automatic alignment.
 
 The CLI and session endpoint remain valuable for experiments and file-level
-inspection, but the normal UI does not ask Eric to run them. See
+inspection, but the normal UI does not ask the soloist to run them. See
 [PWA Rehearsal UI](pwa-rehearsal-ui.md#take-native-accompanied-review)
 and [Vision and UX Design](../VISION_AND_UX_DESIGN.md#64-the-after-face).
 
@@ -145,7 +145,7 @@ render policy:
   alignment uncertainty;
 - smooth the timing map so expressive rubato is preserved without copying local
   note mistakes into the accompaniment.
-- compare note-anchor and phrase-anchor renders against Eric's listening
+- compare note-anchor and phrase-anchor renders against the soloist's listening
   feedback on the same recorded take.
 
 ## Related

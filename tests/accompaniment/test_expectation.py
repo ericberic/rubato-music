@@ -41,7 +41,7 @@ from aimusic.accompaniment.runtime_io import (
 )
 from aimusic.accompaniment.section_policy import AccompanimentMode
 
-# The piano's first note of the movement: m.12 beat 4, Eric's B-natural pickup.
+# The piano's first note of the movement: m.12 beat 4, the soloist's B-natural pickup.
 FIRST_SOLO_BEAT = 47.0
 
 
@@ -98,7 +98,7 @@ def test_first_solo_onset_is_canonical_beat_47(model: ExpectationModel) -> None:
 
 
 def test_solo_material_after_the_entry_is_not_tacet(model: ExpectationModel) -> None:
-    # m.13-m.17: the phrase Eric plays. Dense solo writing throughout.
+    # m.13-m.17: the phrase the soloist plays. Dense solo writing throughout.
     assert not model.is_tacet_through(48.0, 68.0)
     assert model.expected_onsets_in(48.0, 68.0) > 0
 
@@ -114,7 +114,7 @@ def test_authority_follows_the_section_map_not_the_evidence(
     # solo-follow-1: beats 47 -> 84
     assert model.authority_at(FIRST_SOLO_BEAT) is AccompanimentMode.FOLLOW
     assert model.authority_at(60.0) is AccompanimentMode.FOLLOW
-    # m22-orchestra-interlude: beats 84 -> 88. The bar Eric expected to hear and
+    # m22-orchestra-interlude: beats 84 -> 88. The bar the soloist expected to hear and
     # heard nothing, because a support count decided the orchestra should quit.
     assert model.authority_at(84.0) is AccompanimentMode.LEAD
     assert model.authority_at(87.5) is AccompanimentMode.LEAD
@@ -169,7 +169,7 @@ def test_sustained_notes_count_as_the_performer_playing(
 def test_follow_hands_back_at_a_tacet_interlude_without_coasting_first() -> None:
     """m.22: the performer stops because the score says to, and the orchestra leads.
 
-    This is Eric's report ("I was expecting the orchestra to play that m.22
+    This is the soloist's report ("I was expecting the orchestra to play that m.22
     interlude and I heard nothing") reproduced against the real bundle. Before
     Decision 0015, FOLLOW never re-checked the section map, so an authored LEAD
     interlude was reached only after `follower_coast_ms` elapsed -- announcing
@@ -370,7 +370,7 @@ def test_recorded_takes_ending_at_the_interlude_never_report_a_dropout(
 ) -> None:
     """Replay of real takes: stopping at m.22 is correct playing, not a dropout.
 
-    Every one of Eric's takes over this passage ends at exactly beat 84.0 -- he
+    Every one of the soloist's takes over this passage ends at exactly beat 84.0 -- he
     plays to the interlude and stops, because the orchestra takes over there. The
     accompanist must end up leading, and must never classify that silence as the
     performer having dropped out.

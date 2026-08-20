@@ -421,7 +421,7 @@ def _movement_2_terminal_sustain(
     """Honor the engraved final bass sustain through the end of m.126.
 
     The Oguri MIDI releases the two final low E notes during m.126, about 2.5
-    seconds before the pianist's ending. The score and Eric's rehearsal verdict
+    seconds before the pianist's ending. The score and the soloist's rehearsal verdict
     make the intended ownership unambiguous: those terminal strings hold until
     the movement ends. Remove the source-duration override for this final chord
     so active-release retiming follows the live canonical clock to that point.

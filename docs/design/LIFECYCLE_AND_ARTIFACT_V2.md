@@ -11,7 +11,7 @@ truthfully describe all of the independent decisions in those workflows.
 The v1 take states mixed:
 
 - an analysis process (`aligning`, `aligned`, `unalignable`),
-- Eric's disposition (`discarded`), and
+- the soloist's disposition (`discarded`), and
 - eligibility for profile folding.
 
 This caused destructive transitions. Marking an aligned take discarded erased

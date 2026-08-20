@@ -233,8 +233,7 @@ experiment. Do not run both hosts for the same room zone.
 
 ## Agent handoff snapshot (2026-08-14)
 
-- Branch/worktree: `claude/mix-vst-routing` at
-  `/Users/ehuang/.codex/worktrees/df76/Rubato`.
+- Branch/worktree: `claude/mix-vst-routing` at repository worktree root.
 - Start: `./scripts/dev-server.sh --skip-build --skip-dvc`, then use
   `http://localhost:8000/app/`. REAPER auto-loads the installed bridge through
   `~/Library/Application Support/REAPER/Scripts/__startup.lua`.
@@ -247,7 +246,7 @@ experiment. Do not run both hosts for the same room zone.
   scheduled note-offs, two terminal panics, and no notes left sounding, but was
   **not audible** because REAPER Input was disabled. Do not call it an audio
   success.
-- Eric enabled both cached Rubato MIDI rows immediately before this handoff;
+- The performer enabled both cached Rubato MIDI rows immediately before this handoff;
   `reaper.ini` confirms `midiins=3` and `midiins_all=3`. A forced retry
   (`renderer-preload-1786766323250252000`) still failed the silent ingress
   probe, so this is no longer explained by the preference bit alone.
@@ -261,7 +260,7 @@ experiment. Do not run both hosts for the same room zone.
   live index from received events. After a one-time `Reset all MIDI devices`, the
   resident preload reaches `ready` and stays durable across forced preloads with
   no manual step. The room-only 10-second audition
-  (`mix-audition-1786772630406031000`) was audible (Eric confirmed): 27 note-ons,
+  (`mix-audition-1786772630406031000`) was audible (the performer confirmed): 27 note-ons,
   25 note-offs, 2 terminal panics, none left sounding; note-on lateness median
   3.25 ms / p95 5.0 ms.
 - Analyze a known run with

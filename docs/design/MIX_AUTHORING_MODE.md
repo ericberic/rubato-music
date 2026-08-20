@@ -5,7 +5,7 @@
 
 ## Goal
 
-Provide a score-centered workspace where Eric authors spatial placement,
+Provide a score-centered workspace where the soloist authors spatial placement,
 piece-wide blends, swells, fades, and stem emphasis without seeing or editing
 rehearsal coverage, tracking corrections, or reactive beat anchors.
 

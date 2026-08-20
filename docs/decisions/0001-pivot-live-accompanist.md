@@ -6,22 +6,28 @@ Accepted on 2026-06-14.
 
 ## Context
 
-Rubato started as a symbolic style-transfer project for generating Eric-style vs
-OTHER-style piano MIDI. The user clarified that the immediate desired outcome is
-real-time orchestral accompaniment while playing the Chopin E minor concerto
-solo part on a Yamaha MIDI piano.
+Rubato started as a symbolic style-transfer project for generating soloist-style vs
+generic-style performances.
 
 ## Decision
 
-Rubato's active MVP is now live accompaniment for Chopin Piano Concerto No. 1 in
-E minor. Style transfer is deferred until the underlying score, MIDI, alignment,
-tracking, and feedback infrastructure is reliable.
+Pivot Rubato to a **live accompanist MVP**:
+
+> Provide real-time orchestral accompaniment for Chopin Piano Concerto No. 1 in
+> E minor while the soloist plays the solo piano part on a MIDI-capable piano.
+
+## Rationale
+
+- Live accompaniment solves a clear, high-value problem for soloist practice.
+- The style-transfer path required heavy training loops before proving basic utility.
+- Symbolic score following, tempo tracking, and accompaniment scheduling provide
+  immediate interactive feedback.
 
 ## Consequences
 
 - Documentation must optimize for live accompaniment.
 - Score following and section control become core modules.
-- A/B ERIC vs OTHER generation is legacy/future work.
+- A/B SOLOIST vs OTHER generation is legacy/future work.
 - Matchmaker and ACCompanion become priority research/integration references.
 - Rehearsal artifacts and human feedback become first-class data.
 
