@@ -323,6 +323,9 @@ class OrchestraLedFakeLiveRuntime:
     def renderer_status(self) -> OrchestraRendererStatus:
         return self.renderer
 
+    def renderer_status_for_client(self) -> OrchestraRendererStatus:
+        return self.renderer
+
     def preload_renderer(self, **_: object) -> OrchestraRendererStatus:
         return self.renderer
 
@@ -466,6 +469,7 @@ def live_server(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
     if not static_index.exists():
         pytest.fail("Web assets missing. Run 'cd webapp && npm run build' before tests.")
 
+    monkeypatch.setenv("AIMUSIC_STATE_ROOT", str(tmp_path / "state"))
     monkeypatch.setenv("AIMUSIC_DATA_ROOT", str(tmp_path / "data"))
     monkeypatch.setenv("AIMUSIC_RUNS_ROOT", str(tmp_path / "runs"))
     # Browser CI deliberately does not pull the large DVC score PDF. Serve
@@ -818,7 +822,7 @@ def test_idle_stage_keeps_live_record_and_sound_together_without_diagnostics(
     )
     expect(rail.get_by_role("button", name=re.compile(r"^Record m\. \d+$"))).to_be_visible()
     sound = page.get_by_test_id("inspector-toggle")
-    expect(sound).to_contain_text("Sound · 75%")
+    expect(sound).to_contain_text("Sound · 20%")
     assert page.get_by_role("button", name=re.compile(r"Start orchestra \+ go live")).count() == 0
     assert page.get_by_text("Play for", exact=True).count() == 0
 
@@ -835,10 +839,11 @@ def test_orchestra_readiness_reports_loading_progress_then_real_audio_ready(
     page: Page, live_server: str
 ) -> None:
     page.goto(f"{live_server}/app/", wait_until="networkidle")
-    page.get_by_test_id("inspector-toggle").click()
-    page.get_by_role("combobox", name="Orchestra output").select_option(
-        label="LG soundbar · BBCSO"
+    page.wait_for_function(
+        "() => window.__rubatoTakeEvents && window.__rubatoTakeEvents.status === 'open'"
     )
+    page.get_by_test_id("inspector-toggle").click()
+    page.get_by_role("combobox", name="Orchestra output").select_option(value="none")
     page.get_by_role("button", name="Close sound controls").click()
     readiness = page.get_by_test_id("orchestra-readiness")
     expect(readiness).to_contain_text("Orchestra Ready")
@@ -862,7 +867,7 @@ def test_orchestra_readiness_reports_loading_progress_then_real_audio_ready(
 
     expect(readiness).to_contain_text("Orchestra Loading")
     expect(readiness).to_contain_text("Loading BBCSO 2 of 4 · low strings")
-    expect(readiness.get_by_role("progressbar", name="BBCSO ensembles loaded")).to_have_attribute(
+    expect(readiness.get_by_role("progressbar", name="REAPER orchestra tracks ready")).to_have_attribute(
         "value", "1"
     )
     expect(page.get_by_test_id("perform-live")).to_be_disabled()
@@ -900,7 +905,7 @@ def test_orchestra_readiness_reports_loading_progress_then_real_audio_ready(
         )
     )
     expect(readiness).to_contain_text("Orchestra Ready")
-    expect(readiness).to_contain_text("BBCSO streaming to LG soundbar")
+    expect(readiness).to_contain_text("REAPER streaming BBCSO to LG soundbar")
     expect(page.get_by_test_id("perform-live")).to_be_enabled()
 
 
@@ -917,7 +922,7 @@ def test_output_picker_persists_and_selects_exactly_one_orchestra_renderer(
     page.goto(f"{live_server}/app/", wait_until="networkidle")
     page.get_by_test_id("inspector-toggle").click()
     output = page.get_by_role("combobox", name="Orchestra output")
-    output.select_option(label="LG soundbar · BBCSO")
+    output.select_option(value="none")
     page.reload(wait_until="networkidle")
     page.get_by_test_id("inspector-toggle").click()
     expect(output).to_have_value("none")
@@ -1985,7 +1990,7 @@ def test_lifecycle_events_update_hardware_and_refresh_materialized_coverage(
     )
     expect(page.locator(".state-word")).to_have_text("Orchestra Ready")
     expect(page.locator(".state-detail")).to_have_text(
-        "Yamaha MIDI output is ready · orchestra 75%"
+        "Yamaha MIDI output is ready · orchestra 20%"
     )
 
     with page.expect_request(lambda request: "/api/coverage/2" in request.url):

@@ -35,6 +35,7 @@ def live_server(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
     if not static_index.exists():
         pytest.fail("Web assets missing. Run 'cd webapp && npm run build' before tests.")
 
+    monkeypatch.setenv("AIMUSIC_STATE_ROOT", str(tmp_path / "state"))
     monkeypatch.setenv("AIMUSIC_DATA_ROOT", str(tmp_path / "data"))
     monkeypatch.setenv("AIMUSIC_RUNS_ROOT", str(tmp_path / "runs"))
 

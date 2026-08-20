@@ -1,13 +1,13 @@
 # Rubato Quickstart
 
-Use Rubato to rehearse Chopin Piano Concerto No. 1, Movement 2 with a Yamaha
-MIDI piano. Starting the local app is one command. After the browser opens, the
+Use Rubato to rehearse Chopin Piano Concerto No. 1, Movement 2 with a MIDI
+piano / keyboard. Starting the local app is one command. After the browser opens, the
 normal rehearsal loop stays in the UI: sound check, record, alignment,
 accompanied review, and experimental live following.
 
 ## Start Rubato (one command)
 
-Connect the Yamaha to the Mac by USB, then run this from the Rubato checkout:
+Connect your keyboard to the Mac by USB, then run this from the Rubato checkout:
 
 ```bash
 ./scripts/dev-server.sh
@@ -25,15 +25,15 @@ present and you deliberately want to skip the pull.
 
 ## Rehearse in the UI
 
-### 1. Check the Yamaha connection
+### 1. Check the keyboard connection
 
 ![Ready stage with device, orchestra, volume, and Silence controls](screenshots/01-ready-stage-current.jpg)
 
 1. Click **Sound** beside **Go live**.
-2. Under **Piano input**, select the Clavinova/Yamaha input.
-3. Under **Orchestra output**, select **Yamaha speakers** for Yamaha-synth
+2. Under **Piano input**, select your MIDI keyboard input.
+3. Under **Orchestra output**, select **Keyboard speakers** for synth
    playback and take review. For the BBCSO rehearsal route, select **LG
-   soundbar · REAPER/BBCSO** instead; this suppresses the Yamaha orchestral MIDI
+   soundbar · REAPER/BBCSO** instead; this suppresses the keyboard orchestral MIDI
    copy while Rubato sends the four ensemble channels to REAPER. Complete the
    one-time [REAPER orchestra setup](runbooks/reaper-orchestra-host.md) first.
 
@@ -85,7 +85,7 @@ controls; you should not scroll away from the music to record or review.
    names the bars the orchestra leads, the exact measure/beat where Rubato
    begins following, prior-take support there, and the learned tempo.
 3. Click **Record pass**. The orchestra and causal follower start at the
-   selected measure; enter according to the printed score. The same Yamaha
+   selected measure; enter according to the printed score. The same keyboard
    notes correct the follower and are captured automatically.
 4. Click **Stop Take**, or press **Space**.
 5. Use the sticky recording card to **Hear recording**, **Keep as rehearsal
@@ -98,7 +98,7 @@ controls; you should not scroll away from the music to record or review.
    the rehearsal profile.
 
 Turn **Orchestra cue** off before step 3 for an immediate solo recording; only
-the Yamaha input is required in that case. With no score selection, the free
+the keyboard input is required in that case. With no score selection, the free
 recording action remains available.
 
 Alignment is background work with durable job state. Refreshing or reopening
@@ -122,7 +122,7 @@ The **After this take** card says the take is **in the bank**, then shows
 ready, the placed span remains marked on the visible score:
 
 - Click **Hear take + orchestra** to play the recorded piano and retimed
-  orchestra together through the Yamaha output selected during Sound Check.
+  orchestra together through the output selected during Sound Check.
 - Click **Preview here** to load the same combined review into the browser
   player.
 - Click **Solo only** when you want to isolate the recorded piano.
@@ -135,9 +135,9 @@ before Rubato prepares the orchestra. This entire handoff is take-native and
 restart-safe; you do not create a session slot, upload the take again, copy an
 ID, or run `rubato render-offline`.
 
-### 6. Verify accompanied recording on the Yamaha
+### 6. Verify accompanied recording on the keyboard
 
-This requires both Yamaha input and output.
+This requires both MIDI input and output.
 
 1. Optionally open **Capture options** and set **Auto-stop after**. Leave it
    empty for manual stop.
@@ -160,16 +160,16 @@ register a dropout. This same input contrast is pinned by
 ### 7. Go live (experimental)
 
 The **Go Live** panel is wired to the streaming Matchmaker follower, causal
-scheduler, optional Yamaha renderer, configured live-audio zones, and runtime
+scheduler, optional keyboard renderer, configured live-audio zones, and runtime
 status stream. It reuses the input and output choice from sound check; there
 are no port names to re-enter. Rubato proactively records the performance as
 ephemeral debugging evidence. After stopping, hear it, keep it as a rehearsal
 take, or do nothing.
 
 1. Confirm **Piano input** is selected and no recording or playback job is
-   active. Choose **Yamaha speakers** for Yamaha orchestral MIDI, or **LG
+   active. Choose **Keyboard speakers** for keyboard orchestral MIDI, or **LG
    soundbar · REAPER/BBCSO** when REAPER should own the orchestra audio.
-   Yamaha Local Control is a setting on the piano, not in Rubato; leave it on
+   Local Control is a setting on the digital piano, not in Rubato; leave it on
    so the solo piano continues through its natural speakers.
 2. Click **Go Live**.
 3. Begin with a short 30–60 second passage.
@@ -213,7 +213,7 @@ required part of the at-piano workflow.
 - **Buttons stay dim:** free takes need input; orchestra playback, cued takes,
   take review, and calibration need a real MIDI output. Go Live needs input and
   either a MIDI output or a configured live-audio zone.
-- **No sound:** for Yamaha playback, confirm the Yamaha output and synth volume.
+- **No sound:** for keyboard playback, confirm the keyboard MIDI output and synth volume.
   For REAPER Go Live, confirm the PWA reports Ready, the Rubato bridge heartbeat
   is fresh, REAPER itself names the LG output, and Rubato's Orchestra volume is
   audible. See the [REAPER host runbook](runbooks/reaper-orchestra-host.md).

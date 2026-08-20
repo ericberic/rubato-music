@@ -27,7 +27,7 @@ Align only:
 
 ```bash
 uv run rubato align-midi \
-  --reference assets/scores/chopin_op11_ii_larghetto/derived/solo_reference.mid \
+  --reference data/scores/chopin_op11_movement_2/derived/solo_reference.mid \
   --reference-track-marker "PIANO SOLO" \
   --performance data/processed/<session_id>/solo.mid \
   --run-id <run_id>
@@ -37,10 +37,10 @@ Align and render accompaniment:
 
 ```bash
 uv run rubato render-offline \
-  --reference assets/scores/chopin_op11_ii_larghetto/derived/solo_reference.mid \
+  --reference data/scores/chopin_op11_movement_2/derived/solo_reference.mid \
   --reference-track-marker "PIANO SOLO" \
   --performance data/processed/<session_id>/solo.mid \
-  --accompaniment assets/scores/chopin_op11_ii_larghetto/derived/orchestra_accompaniment.mid \
+  --accompaniment data/scores/chopin_op11_movement_2/derived/orchestra_accompaniment.mid \
   --run-id <run_id>
 ```
 

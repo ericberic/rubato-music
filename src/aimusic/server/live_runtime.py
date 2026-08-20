@@ -1203,9 +1203,19 @@ class LiveRuntimeManager:
         trace_sink: JsonlTraceSink | None = None
         try:
             audio_config = self._audio_config_loader()
-            program = mix_store.load_program(
-                "chopin_op11", 2, program_id, require_current_score=True
-            )
+            try:
+                program = mix_store.load_program(
+                    "chopin_op11", 2, program_id, require_current_score=True
+                )
+            except mix_store.MixProgramNotFoundError:
+                program = mix_store.create_program(
+                    mix_store.MixProgramCreate(
+                        piece_id="chopin_op11",
+                        movement=2,
+                        program_id=program_id,
+                        name="Main spatial mix",
+                    )
+                )
             mix_policy = compile_mix_policy(program, self._mix_zones_factory(audio_config))
             key = self._renderer_key(audio_config, mix_policy)
             trace_sink = JsonlTraceSink(trace_path)

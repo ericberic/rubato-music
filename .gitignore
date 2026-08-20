@@ -240,9 +240,7 @@ docs/.obsidian/
 # derived from it. Fetch the source locally for private use, then regenerate the
 # derived files with `uv run python -m aimusic.cli extract-oguri --movement 2`.
 # Only the derivation code is committed. See docs/OPEN_SOURCE_READINESS.md.
-/assets/scores/chopin_op11_ii_larghetto/source/oguri_concerto_11_2.mid
-/assets/scores/chopin_op11_ii_larghetto/derived/solo_reference.mid
-/assets/scores/chopin_op11_ii_larghetto/derived/orchestra_accompaniment.mid
+/data/scores/chopin_op11_movement_2/source/oguri_concerto_11_2.mid
 
 # Test artifacts - local MIDI outputs for manual listening
 /tests/artifacts/*

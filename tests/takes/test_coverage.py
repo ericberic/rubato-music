@@ -364,7 +364,7 @@ def test_parse_midi_measures_derives_real_time_signature_and_solo_status() -> No
 
     reference_path = (
         Path(__file__).resolve().parents[2]
-        / "assets/scores/chopin_op11_ii_larghetto/derived/solo_reference.mid"
+        / "data/scores/chopin_op11_movement_2/derived/solo_reference.mid"
     )
     measures = coverage.parse_midi_measures(reference_path)
 

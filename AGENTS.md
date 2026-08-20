@@ -5,13 +5,13 @@
 Rubato is now scoped around one MVP:
 
 > Provide real-time orchestral accompaniment for Chopin Piano Concerto No. 1 in
-> E minor while Eric plays the solo piano part on a Yamaha MIDI-capable piano.
+> E minor while the soloist plays the solo piano part on a MIDI-capable piano.
 
 The project is local-first and symbolic-first. MIDI, MusicXML, score following,
 tempo modeling, section policy, accompaniment scheduling, and rehearsal feedback
 are the core work.
 
-Style transfer, ERIC-vs-OTHER generation, and raw audio are deferred.
+Style transfer, SOLOIST-vs-OTHER generation, and raw audio are deferred.
 
 ## Required Reading
 
@@ -37,7 +37,7 @@ When adding or reorganizing durable docs, also check
 [`docs/DOCUMENTATION_MAP.md`](docs/DOCUMENTATION_MAP.md) for the owning doc and
 update protocol.
 
-Eric may review `docs/` locally in Obsidian. Keep committed docs
+The user may review `docs/` locally in Obsidian. Keep committed docs
 Obsidian-friendly but not Obsidian-dependent: use standard relative Markdown
 links, avoid committed wikilinks, and do not rely on Dataview or vault plugins.
 See [`docs/OBSIDIAN.md`](docs/OBSIDIAN.md).
@@ -74,14 +74,14 @@ Agents must treat docs maintenance as part of the work, not a separate chore.
 ## Current Architecture
 
 ```text
-Yamaha MIDI Piano
+MIDI Piano / Keyboard
   -> MIDI input adapter
   -> score follower
   -> tempo model
   -> section policy
   -> accompaniment scheduler
   -> MIDI output adapter
-  -> Yamaha synth / IAC / Logic / Kontakt
+  -> Keyboard synth / IAC / Logic / Kontakt
 ```
 
 ## MVP Build Order
@@ -90,9 +90,9 @@ Yamaha MIDI Piano
 2. Align recorded solo MIDI to the score offline.
 3. Render accompaniment offline from the solo timing map.
 4. Replay recorded MIDI through the causal runtime path.
-5. Read live Yamaha MIDI input.
+5. Read live MIDI input.
 6. Emit live accompaniment MIDI output.
-7. Iterate from traces and Eric's feedback.
+7. Iterate from traces and performer feedback.
 
 ## Constraints
 
@@ -106,11 +106,8 @@ Yamaha MIDI Piano
 ## Git Workflow
 
 - Do not commit directly to `main`.
-- Keep `/Users/ehuang/code/Rubato` on `main`; treat it as the clean anchor checkout.
-- Do implementation work in git worktrees under `/Users/ehuang/code/Rubato-worktrees/`.
-- Create task worktrees with `git worktree add /Users/ehuang/code/Rubato-worktrees/<task> <branch>`.
-- Reuse or remove worktrees after branches merge; do not maintain Rubato2/Rubato3 clones.
-- Use `codex/` branch names in Codex Desktop.
+- Keep implementation work in clean worktree checkouts.
+- Reuse or remove worktrees after branches merge.
 
 ### DVC across worktrees
 
@@ -127,10 +124,10 @@ scope cannot see other worktrees' referenced objects); use `make dvc-gc`. See
 
 ## Human Loop
 
-Eric supplies:
+The user supplies:
 
 - Score/excerpt choices.
-- Yamaha MIDI hardware access.
+- MIDI hardware access.
 - Solo MIDI recordings.
 - Listening/playability feedback.
 - Musical annotations when the score alone is ambiguous.

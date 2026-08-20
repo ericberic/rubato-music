@@ -605,8 +605,9 @@ def _extract_oguri(args: argparse.Namespace) -> int:
         bundle_derived.mkdir(parents=True, exist_ok=True)
         for produced in (summary.solo_reference_path, summary.orchestra_accompaniment_path):
             mirrored = bundle_derived / produced.name
-            shutil.copy2(produced, mirrored)
-            print(f"mirrored={mirrored}")
+            if produced.resolve() != mirrored.resolve():
+                shutil.copy2(produced, mirrored)
+                print(f"mirrored={mirrored}")
     return 0
 
 

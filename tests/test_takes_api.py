@@ -23,7 +23,7 @@ from tests.oguri_guard import requires_oguri_derived
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SOLO_REFERENCE_PATH = (
-    REPO_ROOT / "assets/scores/chopin_op11_ii_larghetto/derived/solo_reference.mid"
+    REPO_ROOT / "data/scores/chopin_op11_movement_2/derived/solo_reference.mid"
 )
 
 

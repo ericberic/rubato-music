@@ -3,9 +3,9 @@
 ## Intent
 
 Rubato's MVP is a local, symbolic AI accompanist for Chopin Piano Concerto No. 1
-in E minor. Eric plays the solo piano part on a Yamaha CLP-795GP; Rubato follows
-his score position and timing, decides whether the orchestra should follow or
-lead by section, and emits synchronized symbolic accompaniment to the Yamaha
+in E minor. The soloist plays the solo piano part on a MIDI-capable piano; Rubato follows
+their score position and timing, decides whether the orchestra should follow or
+lead by section, and emits synchronized symbolic accompaniment to the keyboard
 synth, configured Pedalboard/BBCSO audio zones, or both.
 
 The product is not currently style transfer, composition, or raw audio. Style can
@@ -19,10 +19,10 @@ Rubato has three workflows:
 1. **Offline score bundling:** score sources become a canonical bundle with a
    solo reference, accompaniment events, source-to-beat maps, PDF geometry,
    section policy, and instruments.
-2. **Rehearsal takes:** completed Yamaha MIDI takes align symbolically to the
+2. **Rehearsal takes:** completed MIDI takes align symbolically to the
    bundle, producing performed-time warps, review playback, score coverage, and
-   Eric's interpretation profile.
-3. **Live performance:** incoming Yamaha MIDI drives the causal score follower;
+   the soloist's interpretation profile.
+3. **Live performance:** incoming MIDI drives the causal score follower;
    its position plus the frozen rehearsal profile feeds the tempo model,
    section policy, and scheduler that emits accompaniment through the selected
    MIDI/audio outputs.
@@ -56,7 +56,7 @@ live performance:
   order evidence identify which reference and performance MIDI events express
   each score location. Sparse human landmarks constrain ambiguous regions.
 - **The performance clock answers when.** Once identities are matched, MIDI
-  timestamps describe Eric's rubato and fit the score-to-wall-time warp.
+  timestamps describe the soloist's rubato and fit the score-to-wall-time warp.
 - **The profile separates pace from shape.** Each take has a robust baseline
   seconds-per-quarter; each canonical half-quarter cell stores its local
   seconds-per-quarter and the dimensionless ratio to that baseline. Repeated
@@ -74,7 +74,7 @@ approach live in [Decision 0006](decisions/0006-canonical-beat-evidence-fusion.m
 - First tracker wrapper: Matchmaker.
 - Reference architecture: ACCompanion.
 - Research-only for now: HeurMiT/neural score following.
-- Reliable fallback: Yamaha CLP-795GP GM/XG synth.
+- Reliable fallback: MIDI Piano GM/XG synth.
 - Current higher-fidelity experiment: a machine-local Pedalboard/BBCSO room
   zone through named CoreAudio output.
 - Primary rehearsal interface: local FastAPI-backed PWA.
@@ -82,7 +82,7 @@ approach live in [Decision 0006](decisions/0006-canonical-beat-evidence-fusion.m
 ## Build Sequence
 
 1. Prepare a short Chopin excerpt as a score bundle.
-2. Record/upload Eric's solo MIDI and render accompaniment offline.
+2. Record/upload solo MIDI and render accompaniment offline.
 3. Replay the same solo MIDI causally through the online path.
-4. Switch input/output adapters to live Yamaha MIDI.
-5. Iterate from traces, latency metrics, and Eric's playability feedback.
+4. Switch input/output adapters to live MIDI.
+5. Iterate from traces, latency metrics, and playability feedback.

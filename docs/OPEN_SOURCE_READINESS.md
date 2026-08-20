@@ -86,8 +86,7 @@ documented per bundle in `source_manifest.yaml` / `oguri_source_manifest.yaml`.
   non-commercial use only**, with redistribution limits. **Resolved on this
   branch:** the source and everything derived from it are now removed from git
   and `.gitignore`d, so none of it ships in the public snapshot:
-  - `assets/scores/chopin_op11_ii_larghetto/source/oguri_concerto_11_2.mid` (source)
-  - `assets/scores/chopin_op11_ii_larghetto/derived/{solo_reference,orchestra_accompaniment}.mid`
+  - `data/scores/chopin_op11_movement_2/source/oguri_concerto_11_2.mid` (source)
   - `data/scores/chopin_op11_movement_2/derived/{solo_reference,orchestra_accompaniment}.mid`
 
   Only the **derivation code** is committed (`src/aimusic/accompaniment/oguri*.py`,

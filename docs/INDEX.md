@@ -163,12 +163,12 @@ for the underlying pattern.
 
 ## Current MVP
 
-> Real-time accompaniment for Chopin Piano Concerto No. 1 in E minor while Eric
-> plays the solo piano part on a Yamaha MIDI-capable piano.
+> Real-time accompaniment for Chopin Piano Concerto No. 1 in E minor while the soloist
+> plays the solo piano part on a MIDI-capable piano.
 
 ## Deferred
 
-- Eric-style piano generation.
-- ERIC vs OTHER A/B output.
+- Soloist-style piano generation.
+- SOLOIST vs OTHER A/B output.
 - Raw audio pipelines.
 - Cloud training/inference.
