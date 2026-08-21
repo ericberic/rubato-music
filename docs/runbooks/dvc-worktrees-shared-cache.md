@@ -27,10 +27,10 @@ different branches/versions coexist safely (exactly like a DVC remote).
 
 ```bash
 # One-time, machine-wide. Inherited by every current and future worktree.
-mkdir -p /Users/ehuang/Rubato_dvc_cache
+mkdir -p ~/rubato_dvc_cache
 # Migrate whatever any existing checkout already has (content-addressed = safe):
-rsync -a /Users/ehuang/code/Rubato/.dvc/cache/files/ /Users/ehuang/Rubato_dvc_cache/files/
-dvc config --global cache.dir /Users/ehuang/Rubato_dvc_cache
+rsync -a ~/code/rubato-music/.dvc/cache/files/ ~/rubato_dvc_cache/files/
+dvc config --global cache.dir ~/rubato_dvc_cache
 ```
 
 `cache.dir` in the **user-global** DVC config (`~/Library/Application
@@ -40,7 +40,7 @@ never breaks CI (which has no such config and skips unreachable artifacts).
 Verify:
 
 ```bash
-dvc cache dir          # -> /Users/ehuang/Rubato_dvc_cache  (in main and every worktree)
+dvc cache dir          # -> ~/rubato_dvc_cache  (in main and every worktree)
 ```
 
 ## Per worktree

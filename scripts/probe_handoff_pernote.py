@@ -8,7 +8,9 @@ for a,b in zip(n,n[1:]):
     if b['beat']-a['beat']>3.0: passes.append([])
     passes[-1].append(b)
 passes=passes[1:]
-mid=mido.MidiFile('/Users/ehuang/code/Rubato/runs/take-6ca80e42/input/solo.mid')
+import sys
+mid_path = sys.argv[1] if len(sys.argv) > 1 else 'runs/take-6ca80e42/input/solo.mid'
+mid=mido.MidiFile(mid_path)
 neg=[]
 for tr in mid.tracks:
     t=0

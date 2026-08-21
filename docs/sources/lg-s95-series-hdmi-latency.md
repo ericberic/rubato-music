@@ -5,7 +5,7 @@
 
 ## Model Caveat
 
-Eric referred to an LG `S95A` soundbar. Current retail references commonly use
+The soloist referred to an LG `S95A` soundbar. Current retail references commonly use
 `S95AR` for LG's 2025 flagship, while the accessible numerical benchmark is for
 the earlier `S95QR`. Confirm the exact rear-label model before writing a
 hardware profile.
@@ -24,7 +24,7 @@ hardware profile.
 
 ## Accepted Project Assumption
 
-Eric accepts 59 ms as the planning value for direct-HDMI Game-mode design. This
+The soloist accepts 59 ms as the planning value for direct-HDMI Game-mode design. This
 is sufficient to design the route inside Rubato's normal 100 ms dispatch
 horizon. It is not a claim that the complete installed path has already been
 measured.

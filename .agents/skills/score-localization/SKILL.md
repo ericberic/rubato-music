@@ -120,9 +120,9 @@ note arrays (it needs an `is_grace` field the default omits).
 `source/musescore_orchestra_movement2.mxl` (used to produce
 `musescore_oguri_alignment.machine.json` / `orchestra_oguri_alignment.machine.json`,
 the independent cross-check for the Audiveris-derived beat map) are
-gitignored and live only on Eric's machine — publisher-licensed content isn't
+gitignored and live only on the soloist's machine — publisher-licensed content isn't
 committed. A fresh worktree or clone will not have them. If you need to
-re-derive or extend the cross-check, ask Eric for copies rather than
+re-derive or extend the cross-check, ask the performer for copies rather than
 searching git/DVC history for them.
 
 ## Workflow

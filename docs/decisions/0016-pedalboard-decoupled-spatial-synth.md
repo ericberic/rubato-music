@@ -13,7 +13,7 @@ windows, action-specific early-transfer rules, and musical-tolerance fields in
 every mix region.
 
 The intended room output is now a direct-HDMI LG flagship soundbar in Game
-mode. Eric accepts 59 ms as the MVP planning assumption, based on published
+mode. The soloist accepts 59 ms as the MVP planning assumption, based on published
 direct-HDMI S95-series evidence. Rubato's normal runtime already plans 500 ms
 ahead and commits its deadline prefix 100 ms ahead. A stable 59 ms route fits
 inside that existing boundary and does not justify making early commitment the

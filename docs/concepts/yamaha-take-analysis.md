@@ -24,7 +24,7 @@ These paths are ignored by git and should be DVC-managed if retained.
 - Captured solo note-ons: 881.
 - No solo input notes remained active at the end of the recorded MIDI.
 - First played note occurs at about 7.258 seconds into the take.
-- Nominal cue metadata expected the first solo entry at 8.0 seconds, so Eric
+- Nominal cue metadata expected the first solo entry at 8.0 seconds, so the soloist
   entered about 0.742 seconds before the coarse cue anchor.
 - Pitch-sequence alignment maps the take from the first solo entry through about
   Oguri score time 258.2 seconds, which is a natural stopping point in the first

@@ -2,7 +2,7 @@
 
 ## Summary
 
-Section policy decides whether the accompaniment follows Eric, leads without
+Section policy decides whether the accompaniment follows the soloist, leads without
 solo input, holds, or stops.
 
 ## Current Implementation

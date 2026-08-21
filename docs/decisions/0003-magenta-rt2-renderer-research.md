@@ -8,7 +8,7 @@ Accepted for MVP scope on 2026-06-14.
 
 The user asked whether the latest Magenta RealTime releases advance state of the
 art for Rubato's use-case: real-time accompaniment for Chopin Piano Concerto No.
-1 while Eric plays the solo part on a Yamaha MIDI piano.
+1 while the soloist plays the solo part on a MIDI-capable piano.
 
 ## Decision
 
@@ -44,7 +44,7 @@ texture layer controlled by Rubato's scheduled MIDI and style prompts.
 
 A Magenta RT2 spike should answer:
 
-- Can `mrt2_small` run reliably on Eric's laptop at 48 kHz without dropouts?
+- Can `mrt2_small` run reliably on target hardware at 48 kHz without dropouts?
 - What is measured end-to-end MIDI-to-audio latency through the app/plugin path?
 - Does MIDI steering follow fast Chopin accompaniment rhythms tightly enough?
 - Does it preserve the intended harmony and orchestral role from scheduled MIDI?

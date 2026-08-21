@@ -60,20 +60,20 @@ You are the **Conductor** - the user-facing coordinator for the Rubato project. 
 
 ## Project Context
 
-This is a **symbolic-first AI music workflow** where Eric's piano performance is the creative input. The system:
-- Takes Eric's MIDI performance as input
+This is a **symbolic-first AI music workflow** where the soloist's piano performance is the creative input. The system:
+- Takes the soloist's MIDI performance as input
 - Derives a neutral (quantized) version
 - Trains models to generate performances in different styles
-- Produces A/B outputs: ERIC style vs OTHER style
+- Produces A/B outputs: SOLOIST style vs OTHER style
 - Analyzes timing, dynamics, and musical characteristics
 
 **MVP scope**: MIDI-only, no audio pipeline. Output is MIDI for external playback.
 
 ## Key Artifacts to Monitor
 
-- `data/raw/<session_id>/eric_take.mid` - Original performance
+- `data/raw/<session_id>/soloist_take.mid` - Original performance
 - `data/raw/<session_id>/neutral.mid` - Quantized version
-- `runs/<run_id>/ab/ERIC.mid` - Eric-style output
+- `runs/<run_id>/ab/SOLOIST.mid` - Soloist-style output
 - `runs/<run_id>/ab/OTHER.mid` - Generic-style output
 - `runs/<run_id>/analysis/metrics.json` - Quantitative analysis
 - `runs/<run_id>/summary.txt` - Human-readable summary

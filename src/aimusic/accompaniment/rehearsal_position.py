@@ -67,7 +67,7 @@ MOVEMENT_2_VERIFIED_DOWNBEATS = (
     # The phrase-ending bass onset is the verified m.52 downbeat. The rolled
     # treble attack follows shortly and remains inside beat one.
     ProjectionAnchor(source_tick=123_906 * 4, display_measure=52, confidence=0.88),
-    # Eric's full-performance review established that the four reactive chords
+    # The soloist's full-performance review established that the four reactive chords
     # in m.93 resolve through the following downbeat. The orchestra's low
     # D-flat/C-sharp attack at native source tick 223_861 is that m.94 downbeat;
     # the solo-derived path otherwise places the boundary about an eighth late.

@@ -6,17 +6,23 @@ Accepted on 2026-07-06.
 
 ## Context
 
-Rubato is now developed as a long-running human-agent collaboration. Eric wants
-future agents to reuse accumulated project knowledge instead of rediscovering
-architecture, score-following behavior, Yamaha MIDI details, and experiment
-results.
+Rubato is now developed as a long-running human-agent collaboration. The team wants
+a durable documentation structure that keeps knowledge in repo and avoids
+re-researching the same core facts.
 
-Local reference repos have stronger wiki conventions:
+## Options Considered
 
-- Jesse & Eric has a full memory-wiki vault with schemas, structured claims,
-  dashboards, generated links, and lint/compile tooling.
-- `my-life` has a lightweight documentation ownership map and clear update
-  protocol for avoiding doc drift (see
+- **Full memory-wiki vault inline**: Import the full schema/claim tooling from
+  local project wiki.
+- **Karpathy-style plain Markdown repo**: Maintain a compact, durable wiki of
+  `docs/` as Markdown files with clear ownership and a central index.
+- **Standard software docs directory**: Traditional user/API docs only.
+
+## Decision
+
+Adopt a **Karpathy-style durable Markdown repo** inside `docs/`, borrowing
+lightweight memory conventions from local project wiki without forcing vault
+tooling onto CI.col for avoiding doc drift (see
   [Local Wiki Conventions](../sources/local-wiki-conventions.md) and
   [Documentation Map](../DOCUMENTATION_MAP.md)).
 
@@ -53,7 +59,7 @@ Do not adopt for now:
 
 - Agents have a clearer memory recall and write workflow without extra tooling.
 - Docs remain plain Markdown and easy to review in PRs.
-- Some advanced benefits from the Jesse & Eric vault, such as claim health and
+- Some advanced benefits from the local project wiki vault, such as claim health and
   contradiction reports, remain manual checks.
 - Future agents should update [Documentation Map](../DOCUMENTATION_MAP.md)
   before adding new root docs or new top-level documentation categories.

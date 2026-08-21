@@ -12,9 +12,9 @@ computer accompaniment.
 - Clean symbolic solo piano part.
 - Accompaniment events from full score, reduction, or MIDI arrangement.
 - PDF/source references for human checking.
-- Eric MIDI takes.
+- Soloist MIDI takes.
 - Section map.
-- Yamaha CLP-795GP input/output verification.
+- Keyboard input/output verification.
 
 ## Available Source Set
 
@@ -36,7 +36,7 @@ Known structure:
 3. Split or identify solo and accompaniment events.
 4. Create `sections.json` with follow/lead/hold/stop behavior.
 5. Create `instrument_map.yaml` for Yamaha GM/XG playback.
-6. Record 3-5 solo MIDI takes from Eric.
+6. Record 3-5 solo MIDI takes from the soloist.
 7. Run offline alignment against the solo reference.
 8. Render offline accompaniment from the aligned solo timing map.
 9. Review output on the Yamaha synth.

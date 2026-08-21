@@ -41,14 +41,14 @@ def oguri_movement_2() -> OguriMovement:
         source_url="https://kunstderfuge.com/-/mid.files/chopin/concerto_11_2_(c)oguri.mid",
         local_path=(
             paths.project_root()
-            / "assets"
+            / "data"
             / "scores"
-            / "chopin_op11_ii_larghetto"
+            / "chopin_op11_movement_2"
             / "source"
             / "oguri_concerto_11_2.mid"
         ),
         derived_dir=(
-            paths.project_root() / "assets" / "scores" / "chopin_op11_ii_larghetto" / "derived"
+            paths.project_root() / "data" / "scores" / "chopin_op11_movement_2" / "derived"
         ),
         expected_ticks_per_beat=240,
         expected_track_count=18,

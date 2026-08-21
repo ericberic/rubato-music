@@ -4,7 +4,7 @@ Status: **Accepted** (2026-07-29)
 
 ## Context
 
-Eric, after a take he could not debug:
+The soloist, after a take he could not debug:
 
 > "The UX is so bad it turned the page but the system was off of the viewport, I
 > had no ability to see where the cursor was... the more elements there are
@@ -49,7 +49,7 @@ Two rules make it trustworthy:
 
 - **Beats are floored, never rounded.** `beat_in_measure` runs `[0, 4)` in 4/4,
   so 3.999 just before a barline used to render as "beat 5.0" for one frame — a
-  beat that cannot exist. Eric spotted this independently.
+  beat that cannot exist. The soloist spotted this independently.
 - **Dead reckoning is labelled.** When the shown position comes from the
   transport projection rather than the follower, the readout says `projected`,
   so a drifting cursor is never mistaken for a tracking one.

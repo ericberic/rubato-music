@@ -14,7 +14,7 @@ isolating plug-in and CoreAudio behavior from the follower.
 ## Scope And Safety
 
 - Yamaha MIDI input remains the timing anchor. With Yamaha Local Control on,
-  Eric's solo continues through the piano's natural speakers even when Rubato
+  The solo continues through the piano's natural speakers even when Rubato
   sends no orchestral MIDI back to it.
 - One BBCSO instance owns one selected instrument patch. The full-fidelity CLI
   audition uses one patch per sounding Oguri section. The current live PWA
@@ -258,7 +258,7 @@ the same AirPods produced silence and remains a separate live-I/O issue.
 
 On 2026-08-09, the isolated live audition loaded the nine required patches in
 31.4 seconds and streamed Oguri m.43--45 for 16.1 seconds through MacBook Air
-Speakers. It dispatched 52 note-ons, exited cleanly, and Eric confirmed hearing
+Speakers. It dispatched 52 note-ons, exited cleanly, and the performer confirmed hearing
 the full orchestra with multiple correct instrument families. A single BBCSO
 instance measured 121.0 seconds with a 120-second Pedalboard initialization
 grace period, but only 1.96 seconds with a one-second grace period; applying the

@@ -18,7 +18,7 @@ from aimusic.takes import aligner, profile, store
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SOLO_REFERENCE_PATH = (
-    REPO_ROOT / "assets/scores/chopin_op11_ii_larghetto/derived/solo_reference.mid"
+    REPO_ROOT / "data/scores/chopin_op11_movement_2/derived/solo_reference.mid"
 )
 
 

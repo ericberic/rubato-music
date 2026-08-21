@@ -42,7 +42,7 @@ following.
 
 Implementation order:
 
-- Matchmaker simulation mode against recorded Eric MIDI.
+- Matchmaker simulation mode against recorded the soloist MIDI.
 - Matchmaker live MIDI mode or `BytesMidiStream` from the PWA/backend.
 - Compare `pthmm`, `hmm`, `arzt`, and `dixon` on the Chopin excerpt.
 - Add ACCompanion-inspired tempo and expressive rendering layers above the
@@ -85,7 +85,7 @@ Then iterate:
 - Phrase-level dynamic curves.
 - Anticipatory entrances.
 - Rehearsal-specific tempo priors.
-- Eric-specific preferences.
+- the soloist-specific preferences.
 
 ## Data Plan
 
@@ -95,7 +95,7 @@ Then iterate:
 - Solo piano part isolated from the score.
 - Orchestral accompaniment parts isolated from the score.
 - Section map with follow/lead/hold behavior.
-- Eric rehearsal MIDI takes.
+- the soloist rehearsal MIDI takes.
 - Optional reference recordings or MIDI performances for tempo priors.
 
 ### First Excerpt Selection

@@ -2,7 +2,7 @@
 
 > Record freely. The system does the bookkeeping. The score tells you what's left.
 
-This document designs the **take-driven rehearsal workflow**: Eric records many
+This document designs the **take-driven rehearsal workflow**: the soloist records many
 short, overlapping, imperfect takes of the solo part; the system aligns each
 take to the global score offline, fuses expression data where takes overlap,
 computes coverage of the piano part, and shows that coverage painted directly
@@ -22,7 +22,7 @@ seams). What is new here:
 4. The profile fold pipeline is generalized from "one take = one pass through
    the excerpt" to "many partial, overlapping takes accumulate per-region."
 
-The three phases in Eric's words map onto the system like this:
+The three phases in the soloist's words map onto the system like this:
 
 | Phase | System name | Owned by |
 |---|---|---|
@@ -198,7 +198,7 @@ alignment looks wrong:
   physical unit; `rubato_ratio` divides it by the take's robust baseline to
   separate local phrase shape from global pace. The fold consumes only these
   canonical samples; everything else is diagnostics.
-- `edge_trim_beats`: the first/last beats of a take are unreliable (Eric
+- `edge_trim_beats`: the first/last beats of a take are unreliable (the soloist
   settling in, releasing mid-gesture). Trim one beat at the head, half at the
   tail by default; cells inside the trim get `quality` scaled down, not
   excluded. Overlapping takes make edge data cheap to replace. Coverage and
@@ -365,7 +365,7 @@ Coverage is **derived, never stored independently** — computed from the profil
 
 ### 2.7 The background worker
 
-Alignment must never make Eric wait. A single in-process worker (same pattern
+Alignment must never make the soloist wait. A single in-process worker (same pattern
 as `LiveControl`: one thread, a queue, status inspectable over the API)
 processes takes strictly after Stop:
 
@@ -453,7 +453,7 @@ the score-position cursor.
 ### 3.2 Coverage face — the score with the overlay
 
 The key new surface. Reachable from the Ready face (`Coverage` sits beside the
-Library drawer) and shown on a loop between takes if Eric leaves it open on a
+Library drawer) and shown on a loop between takes if the soloist leaves it open on a
 second display/iPad — it is designed to be *ambient*.
 
 ```text
@@ -811,7 +811,7 @@ Vision item 5 ("Interpretation profile v1 — write path").
    overlay's green regions agree with the strip everywhere.
 
 8. **Coverage interactions.** Tap-region → cued-record-from-there; `needs
-   takes` list; ambiguous-take resolution cards. *Done when:* Eric can go from
+   takes` list; ambiguous-take resolution cards. *Done when:* the soloist can go from
    "gray gap on page 6" to recording that passage in two presses, and an
    ambiguous take is resolvable in one.
 
@@ -829,7 +829,7 @@ Vision item 5 ("Interpretation profile v1 — write path").
 
 11. **Pedal renderer hookup** (v1.1). Canonical cells already fold CC64;
     renderer consumes it in `LEAD` sections first. *Done when:* A/B renders
-    with and without learned pedaling are distinguishable and Eric prefers
+    with and without learned pedaling are distinguishable and the soloist prefers
     with.
 
 Dependency spine: **1 → 3 → 4 → {6, 10}**; **5 → {6 rollup-by-measure, 7}**;

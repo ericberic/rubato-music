@@ -73,7 +73,7 @@ This map keeps Rubato docs lean and prevents duplicated project memory.
 
 ## Borrowed Convention
 
-Rubato borrows the useful parts of the Jesse & Eric wiki and `my-life` docs
+Rubato borrows the useful parts of local project wiki and `my-life` docs
 (see [Local Wiki Conventions](sources/local-wiki-conventions.md) and
 [Decision 0004](decisions/0004-docs-memory-conventions.md)):
 search-before-create, merge-over-create, one-fact-one-place, source immutability,

@@ -34,7 +34,7 @@ single constant.
 ## Caveats
 
 - The stimuli were selected instrument pairs, not Chopin orchestra stems in
-  Eric's room.
+  the soloist's room.
 - The tested offsets do not validate a universal threshold for Rubato.
 - Perceived unity and acceptable accompaniment timing are related but different
   judgments.

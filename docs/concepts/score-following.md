@@ -3,7 +3,7 @@
 ## Summary
 
 Score following estimates a live or recorded performance's current position in a
-known score. For Rubato, the input is Eric's solo piano MIDI and the score is
+known score. For Rubato, the input is the soloist's solo piano MIDI and the score is
 Chopin Piano Concerto No. 1.
 
 ## Current Recommendation

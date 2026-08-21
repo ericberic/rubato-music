@@ -11,7 +11,7 @@ the GIL for tens of ms **uninterrupted and growing** (7 ms → 180 ms per note o
 30 s). This starves the other real-time loops — the input reader stalled up to
 80 ms, the processing loop spiked to 1.8 s — even though their own work is
 sub-millisecond. Chord serialization (fixed separately) and much of the "lag /
-out of sync" Eric hears under load trace back to this GIL starvation.
+out of sync" the soloist hears under load trace back to this GIL starvation.
 
 The system was built as one thread doing everything, with the follower and
 deadline-output on side threads. That is the wrong shape for a hard real-time

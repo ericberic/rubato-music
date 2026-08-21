@@ -10,7 +10,7 @@ knowledge.
 Reference pattern:
 https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
 
-Rubato also borrows lightweight conventions from Eric's local Jesse & Eric wiki
+Rubato also borrows lightweight conventions from local project wiki
 and `my-life` docs: search before creating, merge over create, one fact in one
 place, source immutability, path-of-entry links, and explicit documentation
 ownership. See [Documentation Map](DOCUMENTATION_MAP.md),
@@ -21,7 +21,7 @@ Rubato does not currently use Obsidian Dataview dashboards, structured
 frontmatter claims, generated related blocks, or OpenClaw memory-wiki compile
 tooling. Treat `docs/` as plain Markdown plus git.
 
-Eric may open `docs/` in Obsidian for design review. Keep committed docs
+Users may open `docs/` in Obsidian for design review. Keep committed docs
 Obsidian-friendly but not Obsidian-dependent. Use standard relative Markdown
 links, avoid wikilinks, and do not require vault plugins. See
 [Obsidian Review](OBSIDIAN.md).
@@ -182,7 +182,7 @@ Useful commands:
 
 ```bash
 make docs-health
-rg -n "docs/wiki|wiki/README|ERIC vs OTHER|style transfer" docs README.md AGENTS.md
+rg -n "docs/wiki|wiki/README|SOLOIST vs OTHER|style transfer" docs README.md AGENTS.md
 wc -w -l docs/*.md docs/concepts/*.md docs/sources/*.md docs/decisions/*.md docs/runbooks/*.md
 git diff --check
 ```

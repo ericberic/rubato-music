@@ -98,7 +98,7 @@ def parse_bundle_timeline_measures(
         # references, never an alternate score coordinate.
         solo_path = (
             paths.project_root()
-            / "assets/scores/chopin_op11_ii_larghetto/derived/solo_reference.mid"
+            / "data/scores/chopin_op11_movement_2/derived/solo_reference.mid"
         )
     if not solo_path.exists():
         return measures

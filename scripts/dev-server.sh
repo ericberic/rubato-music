@@ -59,7 +59,10 @@ if [[ "$DVC_MODE" == "skip" ]]; then
   echo "[dev-server] Skipping dvc pull as requested."
 else
   echo "[dev-server] Pulling DVC-managed score/data artifacts..."
-  (cd "$ROOT_DIR" && uv run dvc pull)
+  if ! (cd "$ROOT_DIR" && uv run dvc pull); then
+    echo "[dev-server] Warning: 'dvc pull' did not complete cleanly (DVC remote may not be available)." >&2
+    echo "[dev-server] Continuing with existing local artifacts..." >&2
+  fi
 fi
 
 maybe_install_deps() {

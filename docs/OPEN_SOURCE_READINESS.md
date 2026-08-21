@@ -9,7 +9,7 @@ procedure. Last reviewed: 2026-08-18.
 | --- | --- |
 | Secrets / credentials / tokens / keys | ✅ None found in the release tree |
 | Personal data (emails, home paths, IPs, device names) | ✅ Clean — machine-local bindings live outside git |
-| Source-code license | ✅ MIT (`LICENSE`, © Eric Huang) |
+| Source-code license | ✅ MIT (`LICENSE`, © the soloist Huang) |
 | Git history exposure | ⚠️ Publish from the orphan snapshot only — see below |
 | Musical asset licensing | ⚠️ Blocker — third-party MIDI is not redistributable |
 | Front door (README, screenshots, docs) | ✅ In good shape after this pass |
@@ -86,8 +86,7 @@ documented per bundle in `source_manifest.yaml` / `oguri_source_manifest.yaml`.
   non-commercial use only**, with redistribution limits. **Resolved on this
   branch:** the source and everything derived from it are now removed from git
   and `.gitignore`d, so none of it ships in the public snapshot:
-  - `assets/scores/chopin_op11_ii_larghetto/source/oguri_concerto_11_2.mid` (source)
-  - `assets/scores/chopin_op11_ii_larghetto/derived/{solo_reference,orchestra_accompaniment}.mid`
+  - `data/scores/chopin_op11_movement_2/source/oguri_concerto_11_2.mid` (source)
   - `data/scores/chopin_op11_movement_2/derived/{solo_reference,orchestra_accompaniment}.mid`
 
   Only the **derivation code** is committed (`src/aimusic/accompaniment/oguri*.py`,

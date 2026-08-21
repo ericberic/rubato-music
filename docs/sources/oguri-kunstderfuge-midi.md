@@ -6,7 +6,7 @@
 - Movement 2 direct file:
   `https://kunstderfuge.com/-/mid.files/chopin/concerto_11_2_(c)oguri.mid`
 - Local file:
-  `assets/scores/chopin_op11_ii_larghetto/source/oguri_concerto_11_2.mid`
+  `data/scores/chopin_op11_movement_2/source/oguri_concerto_11_2.mid`
 
 ## Date Read
 
@@ -14,7 +14,7 @@
 
 ## Why It Matters
 
-Eric preferred the Oguri/Kunst der Fuge MIDI playback quality over the committed
+The Oguri/Kunst der Fuge MIDI playback quality was preferred over the committed
 MuseScore-exported full-score MIDI. Movement 2 is slower and easier to sight
 read, so it is now the first live-following rehearsal target.
 
@@ -22,13 +22,13 @@ read, so it is now the first live-following rehearsal target.
 
 - The file is a Standard MIDI File type 1 with 18 tracks and 240 ticks per beat.
 - Runtime length is about 666 seconds.
-- Track 1 is named `PIANO SOLO` and is the reference part Eric will play.
+- Track 1 is named `PIANO SOLO` and is the reference part the soloist plays.
 - The remaining note-bearing tracks are orchestral accompaniment: strings,
   horns, flute, clarinet, bassoon, and related setup/empty tracks.
 - The solo and orchestra tracks share one expressive MIDI performance timeline,
   so they remain synchronized with each other and are useful for playback and
   follower experiments.
-- Manual Yamaha listening found the Oguri first movement beautiful at 50% and
+- Manual listening found the Oguri first movement beautiful at 50% and
   the preferred default for this source should be 75% global orchestra volume.
 
 ## Derived Files
@@ -41,8 +41,8 @@ uv run rubato extract-oguri --movement 2
 
 This writes:
 
-- `assets/scores/chopin_op11_ii_larghetto/derived/solo_reference.mid`
-- `assets/scores/chopin_op11_ii_larghetto/derived/orchestra_accompaniment.mid`
+- `data/scores/chopin_op11_movement_2/derived/solo_reference.mid`
+- `data/scores/chopin_op11_movement_2/derived/orchestra_accompaniment.mid`
 
 The solo reference preserves source timing/setup metadata plus the `PIANO SOLO`
 track. The orchestra accompaniment preserves source timing/setup metadata plus

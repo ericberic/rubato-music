@@ -26,8 +26,10 @@ def live_server(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
     if not static_index.exists():
         pytest.fail("Web assets missing. Run 'cd webapp && npm run build' before tests.")
 
+    state_root = tmp_path / "state"
     data_root = tmp_path / "data"
     runs_root = tmp_path / "runs"
+    monkeypatch.setenv("AIMUSIC_STATE_ROOT", str(state_root))
     monkeypatch.setenv("AIMUSIC_DATA_ROOT", str(data_root))
     monkeypatch.setenv("AIMUSIC_RUNS_ROOT", str(runs_root))
 
@@ -232,7 +234,7 @@ def test_mixing_is_separate_persistent_and_revisioned(page: Page, live_server: s
     page.mouse.up()
     expect(page.get_by_test_id("mix-selection").first).to_be_visible()
     expect(page.get_by_role("button", name="▶ Audition live")).to_be_disabled()
-    expect(page.get_by_text("Live BBCSO zone needs configuration and calibration.")).to_be_visible()
+    expect(page.get_by_text("Live orchestra zone needs configuration and calibration.")).to_be_visible()
 
     page.get_by_role("button", name="Create mix region").click()
     menu = page.get_by_test_id("mix-context-menu")

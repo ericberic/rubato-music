@@ -27,7 +27,7 @@ Align only:
 
 ```bash
 uv run rubato align-midi \
-  --reference assets/scores/chopin_op11_ii_larghetto/derived/solo_reference.mid \
+  --reference data/scores/chopin_op11_movement_2/derived/solo_reference.mid \
   --reference-track-marker "PIANO SOLO" \
   --performance data/processed/<session_id>/solo.mid \
   --run-id <run_id>
@@ -37,10 +37,10 @@ Align and render accompaniment:
 
 ```bash
 uv run rubato render-offline \
-  --reference assets/scores/chopin_op11_ii_larghetto/derived/solo_reference.mid \
+  --reference data/scores/chopin_op11_movement_2/derived/solo_reference.mid \
   --reference-track-marker "PIANO SOLO" \
   --performance data/processed/<session_id>/solo.mid \
-  --accompaniment assets/scores/chopin_op11_ii_larghetto/derived/orchestra_accompaniment.mid \
+  --accompaniment data/scores/chopin_op11_movement_2/derived/orchestra_accompaniment.mid \
   --run-id <run_id>
 ```
 
@@ -115,7 +115,7 @@ painted. Sparse verified landmarks constrain repeated or ambiguous symbolic
 windows without replacing automatic alignment.
 
 The CLI and session endpoint remain valuable for experiments and file-level
-inspection, but the normal UI does not ask Eric to run them. See
+inspection, but the normal UI does not ask the soloist to run them. See
 [PWA Rehearsal UI](pwa-rehearsal-ui.md#take-native-accompanied-review)
 and [Vision and UX Design](../VISION_AND_UX_DESIGN.md#64-the-after-face).
 
@@ -145,7 +145,7 @@ render policy:
   alignment uncertainty;
 - smooth the timing map so expressive rubato is preserved without copying local
   note mistakes into the accompaniment.
-- compare note-anchor and phrase-anchor renders against Eric's listening
+- compare note-anchor and phrase-anchor renders against the soloist's listening
   feedback on the same recorded take.
 
 ## Related

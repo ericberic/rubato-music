@@ -472,7 +472,7 @@
       setMessage(
         selectedBackendOutput === NO_MIDI_OUTPUT
           ? 'Live mix audition started through the LG soundbar.'
-          : 'Live mix audition started through Yamaha and the configured orchestra renderer.',
+          : 'Live mix audition started through Keyboard and the configured orchestra renderer.',
       );
     } catch (error) {
       setMessage(describeApiError(error, 'Could not start the live mix audition'));
@@ -2421,7 +2421,7 @@
     : rendererPreloadFailure
       ? rendererPreloadFailure
     : !orchestraUsesLiveVst && selectedBackendOutput
-      ? `Yamaha MIDI output is ready · orchestra ${orchestraVolume}%`
+      ? `Keyboard MIDI output is ready · orchestra ${orchestraVolume}%`
     : liveStartupPending
       ? `${runtimeStatus?.message ?? 'Connecting the REAPER orchestra'} · ${liveStartupElapsedSeconds}s`
       : orchestraUsesLiveVst && rendererPreloadPending
@@ -2774,13 +2774,13 @@
           String(confirmedOutputAdvanceMs),
         );
       }
-      setMessage(describeApiError(error, 'Could not change the Yamaha output advance'));
+      setMessage(describeApiError(error, 'Could not change the Keyboard output advance'));
     }
   }
 
   async function runLatencyCalibration() {
     if (!selectedBackendInput || !selectedBackendOutput) {
-      setMessage('Select a Yamaha input and output before calibrating latency.');
+      setMessage('Select a Keyboard input and output before calibrating latency.');
       return;
     }
     latencyCalibrating = true;
@@ -3321,7 +3321,7 @@
   async function playPerformanceRecordingOnYamaha() {
     if (!pendingPerformanceRecordingId) return;
     if (!selectedBackendOutput) {
-      setMessage('Select the Yamaha MIDI output first');
+      setMessage('Select the Keyboard MIDI output first');
       return;
     }
     playbackLoading = `performance-yamaha-${pendingPerformanceRecordingId}`;
@@ -3335,9 +3335,9 @@
         },
       });
       applyHardwareStatus(status, hardwareGeneration);
-      setMessage('Playing your recorded piano on the Yamaha');
+      setMessage('Playing your recorded piano on the Keyboard');
     } catch (error) {
-      setMessage(describeApiError(error, 'Could not play the performance on the Yamaha'));
+      setMessage(describeApiError(error, 'Could not play the performance on the Keyboard'));
     } finally {
       playbackLoading = null;
     }
@@ -4139,7 +4139,7 @@
         >
           {playbackLoading === `performance-yamaha-${pendingPerformanceRecordingId}`
             ? 'Loading…'
-            : '▶ Hear piano on Yamaha'}
+            : '▶ Hear piano on Keyboard'}
         </button>
         <button
           type="button"
@@ -4640,7 +4640,7 @@
             {#if mixZoneId !== 'yamaha_anchor'}
               {@const selectedZone = mixZones.find((zone) => zone.zone_id === mixZoneId)}
               {#if selectedZone?.health !== 'ready'}
-                <p class="mix-zone-warning">Needs calibration · live policy falls back to Yamaha.</p>
+                <p class="mix-zone-warning">Needs calibration · live policy falls back to Keyboard.</p>
               {/if}
             {/if}
             <div class="score-context-actions">
@@ -4834,7 +4834,7 @@
 
         <p class="sound-route-summary">
           {selectedBackendOutput === NO_MIDI_OUTPUT
-            ? 'Piano stays on the Yamaha · REAPER/BBCSO orchestra goes to the LG soundbar.'
+            ? 'Piano stays on the Keyboard · REAPER/BBCSO orchestra goes to the LG soundbar.'
             : `Piano input and orchestra MIDI use ${selectedOutputName}.`}
         </p>
         <div
@@ -4937,7 +4937,7 @@
         </p>
 
         <details class="hardware-timing">
-          <summary>Advanced Yamaha timing</summary>
+          <summary>Advanced Keyboard timing</summary>
           <div class="volume-console hardware-timing-control">
             <label class="volume-label" for="yamaha-output-advance">Output advance</label>
             <input
@@ -4950,7 +4950,7 @@
               bind:value={yamahaOutputAdvanceMs}
               on:input={saveYamahaOutputAdvance}
               style="--fill: {yamahaOutputAdvanceMs}%"
-              aria-label="Yamaha output advance in milliseconds"
+              aria-label="Keyboard output advance in milliseconds"
             />
             <output for="yamaha-output-advance" class="volume-readout">
               {yamahaOutputAdvanceMs} ms
@@ -4958,7 +4958,7 @@
           </div>
           <p class="tempo-hint">
             Fires the orchestra this many milliseconds earlier to offset a repeatable
-            Yamaha/Mac output delay. {liveRuntimeActive
+            Keyboard/Mac output delay. {liveRuntimeActive
               ? 'Applied live — nudge it until the orchestra locks with your playing.'
               : 'Applies live and to the next run; dial it in by ear during a performance.'}
             Leave at 0 unless the orchestra is consistently late; this cannot repair tracking
@@ -5002,7 +5002,7 @@
             {/if}
           </div>
           <p class="tempo-hint">
-            Plays a steady 90 BPM click through the Yamaha: 4 counts in, then 12 measured
+            Plays a steady 90 BPM click through the Keyboard: 4 counts in, then 12 measured
             beats. Keep pressing one key (any key), locked by ear. Estimates the systemic
             latency with a 95% interval; anticipation makes it a lower bound, so fine-tune
             by ear.
@@ -5038,7 +5038,7 @@
               {:else}
                 <option value="">Select output…</option>
                 {#each backendOutputs as output}
-                  <option value={output}>{output === 'Clavinova' ? 'Yamaha speakers' : output}</option>
+                  <option value={output}>{output === 'Clavinova' ? 'Keyboard speakers' : output}</option>
                 {/each}
               {/if}
               <option value={NO_MIDI_OUTPUT}>LG soundbar · REAPER/BBCSO</option>
@@ -5076,10 +5076,10 @@
             </p>
           {/if}
         {:else if !hardwareReady}
-          <p class="hint stage-hint">No backend MIDI output detected. Connect the Yamaha and refresh devices.</p>
+          <p class="hint stage-hint">No backend MIDI output detected. Connect the Keyboard and refresh devices.</p>
         {/if}
         <p class="local-control-note">
-          Rubato does not switch the Yamaha's own sound. If the piano keys are silent, enable Local Control on the piano itself.
+          Rubato does not switch the Keyboard's own sound. If the piano keys are silent, enable Local Control on the piano itself.
         </p>
 
       </section>
@@ -5202,24 +5202,24 @@
                   <p class="after-error">Nothing musical was captured. Leave orchestra cue on and record this passage again.</p>
                 {:else if selectedReviewTake.status === 'aligned' && selectedReviewTake.review?.state === 'ready'}
                   <div class="review-output-group">
-                    <span>On Yamaha</span>
+                    <span>On Keyboard</span>
                     <button
                       type="button"
                       class="btn btn-outline"
-                      aria-label={`Hear ${passLocationLabel(selectedReviewTake)} alone on Yamaha from measure ${selectedRehearsalMeasure.measure}`}
+                      aria-label={`Hear ${passLocationLabel(selectedReviewTake)} alone on Keyboard from measure ${selectedRehearsalMeasure.measure}`}
                       on:click={() => hearAlignedTake(selectedReviewTake, 'solo')}
                       disabled={!selectedBackendOutput || hardwareStatus.running}
                     >▶ Take only</button>
                     <button
                       type="button"
                       class="btn btn-primary"
-                      aria-label={`Hear ${passLocationLabel(selectedReviewTake)} with orchestra on Yamaha from measure ${selectedRehearsalMeasure.measure}`}
+                      aria-label={`Hear ${passLocationLabel(selectedReviewTake)} with orchestra on Keyboard from measure ${selectedRehearsalMeasure.measure}`}
                       on:click={() => hearAlignedTake(selectedReviewTake, 'ensemble')}
                       disabled={!selectedBackendOutput || hardwareStatus.running}
                     >▶ Take + orchestra</button>
                   </div>
                   {#if !selectedBackendOutput}
-                    <small>Select Yamaha out in Sound Check for hardware playback.</small>
+                    <small>Select Keyboard out in Sound Check for hardware playback.</small>
                   {/if}
                 {:else if selectedReviewTake.status === 'aligned' && selectedReviewTake.review?.state === 'failed'}
                   <p class="after-error">{selectedReviewTake.review.error || 'Playback preparation needs another try.'}</p>
@@ -5393,7 +5393,7 @@
               </label>
             </details>
             {#if !backendInputs.length}
-              <p class="hint">No backend MIDI input detected. Connect the Yamaha and refresh devices.</p>
+              <p class="hint">No backend MIDI input detected. Connect the Keyboard and refresh devices.</p>
             {/if}
           {/if}
 
@@ -5439,7 +5439,7 @@
                     <button
                       type="button"
                       class="t-btn t-play"
-                      aria-label={`Hear ${passLocationLabel(latestTake)} with orchestra on Yamaha`}
+                      aria-label={`Hear ${passLocationLabel(latestTake)} with orchestra on Keyboard`}
                       on:click={() => hearTakeWithOrchestra(latestTake)}
                       disabled={!selectedBackendOutput || hardwareStatus.running}
                     >
@@ -5572,16 +5572,16 @@
                           <button
                             type="button"
                             class="icon-action"
-                            title="Hear piano only on Yamaha"
-                            aria-label={`Hear ${passageTitle(group).toLowerCase()} piano only on Yamaha`}
+                            title="Hear piano only on Keyboard"
+                            aria-label={`Hear ${passageTitle(group).toLowerCase()} piano only on Keyboard`}
                             on:click={() => hearAlignedTake(selectedTake, 'solo')}
                             disabled={!selectedBackendOutput || hardwareStatus.running}
                           >♩</button>
                           <button
                             type="button"
                             class="icon-action primary"
-                            title="Hear take with orchestra on Yamaha"
-                            aria-label={`Hear ${passageTitle(group).toLowerCase()} with orchestra on Yamaha`}
+                            title="Hear take with orchestra on Keyboard"
+                            aria-label={`Hear ${passageTitle(group).toLowerCase()} with orchestra on Keyboard`}
                             on:click={() => hearAlignedTake(selectedTake, 'ensemble')}
                             disabled={!selectedBackendOutput || hardwareStatus.running}
                           >▶</button>

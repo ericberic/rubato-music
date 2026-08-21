@@ -14,7 +14,7 @@ command-to-render latency accumulated around 470--500 ms. BBCSO's actual
 underruns. The problem was the custom host and buffering topology, not sample
 synthesis throughput.
 
-Eric then observed both GarageBand live MIDI synthesis and system sounds over
+The soloist then observed both GarageBand live MIDI synthesis and system sounds over
 the same LG HDMI output at roughly acceptable interactive latency. This rules
 out an unavoidable 500--700 ms soundbar delay and makes the host boundary the
 next variable to replace.

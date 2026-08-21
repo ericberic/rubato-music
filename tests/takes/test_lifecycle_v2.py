@@ -182,7 +182,7 @@ def test_job_attempts_increment_on_start_and_failure_can_retry() -> None:
 
 
 def test_performance_profile_is_frozen_at_activation() -> None:
-    profile = ProfileRef(profile_id="eric", revision="profile-r7", bundle=BUNDLE)
+    profile = ProfileRef(profile_id="soloist", revision="profile-r7", bundle=BUNDLE)
     run = RunRecord(
         run_id="performance-1",
         mode=RunMode.PERFORMANCE,

@@ -5,11 +5,11 @@
 Use feature branches. In Codex Desktop, branches should use the `codex/` prefix.
 Do not commit directly to `main`.
 
-Keep `/Users/ehuang/code/Rubato` checked out on `main`. Agents should do active
+Keep the main branch clean. Agents and contributors should do active
 work in sibling git worktrees, for example:
 
 ```bash
-git worktree add /Users/ehuang/code/Rubato-worktrees/<task-name> codex/<branch-name>
+git worktree add ../rubato-worktrees/<task-name> <branch-name>
 ```
 
 When a task is done and merged, remove or recycle the worktree. Do not create

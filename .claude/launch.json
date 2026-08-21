@@ -6,7 +6,7 @@
       "runtimeExecutable": "sh",
       "runtimeArgs": [
         "-c",
-        "cd /Users/ehuang/code/Rubato-worktrees/cadenza-handoff-detector && PYTHONPATH=$PWD/src /Users/ehuang/code/Rubato/.venv/bin/python -m aimusic.server.app"
+        "PYTHONPATH=$PWD/src uv run python -m aimusic.server.app"
       ],
       "port": 8000
     },
@@ -15,7 +15,7 @@
       "runtimeExecutable": "sh",
       "runtimeArgs": [
         "-c",
-        "cd /Users/ehuang/code/Rubato-worktrees/cadenza-handoff-detector/webapp && npx vite --port 5173 --strictPort"
+        "cd webapp && npx vite --port 5173 --strictPort"
       ],
       "port": 5173,
       "url": "http://localhost:5173"

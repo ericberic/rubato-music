@@ -28,7 +28,7 @@ import pytest
 
 from aimusic.core import paths
 
-_BUNDLE = paths.project_root() / "assets" / "scores" / "chopin_op11_ii_larghetto"
+_BUNDLE = paths.project_root() / "data" / "scores" / "chopin_op11_movement_2"
 
 OGURI_SOURCE_PATH = _BUNDLE / "source" / "oguri_concerto_11_2.mid"
 SOLO_REFERENCE_PATH = _BUNDLE / "derived" / "solo_reference.mid"

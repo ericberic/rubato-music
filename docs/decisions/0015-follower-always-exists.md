@@ -10,7 +10,7 @@ interludes. Every time, the answer was some variant of "no, not on that path" or
 "no, not enough data" — and every time the performer's reasonable expectation was
 violated.
 
-Eric, closing the loop:
+The soloist, closing the loop:
 
 > "A follower should always be able to be in existence. Its functionality just
 > needs to be able to handle this state and distinguish between insufficient data
@@ -70,7 +70,7 @@ a real gap.
 
 `support == 0` currently means both TACET and UNREHEARSED. They demand opposite
 things from the performer — *do nothing* versus *record a pass* — which is why the
-surface has been telling Eric to rehearse silence.
+surface has been telling the soloist to rehearse silence.
 
 ### 5. Silence is an anomaly only where the score predicted sound
 

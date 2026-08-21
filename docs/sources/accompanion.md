@@ -30,7 +30,7 @@ desired MVP: symbolic real-time accompaniment from MIDI input to MIDI output.
 
 - Rubato should preserve ACCompanion's modular split: score follower, tempo
   model, accompaniment renderer, and MIDI routing.
-- For Chopin, pre-recorded Eric reference takes may be useful for OLTW/LTE-style
+- For Chopin, pre-recorded soloist reference takes may be useful for OLTW/LTE-style
   rehearsal-specific priors.
 - A pure HMM follower is unlikely to be enough for dense Romantic material.
 - A purely reactive tempo model is musically dangerous; it can amplify mistakes

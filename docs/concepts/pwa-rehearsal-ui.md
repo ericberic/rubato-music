@@ -2,7 +2,7 @@
 
 ## Summary
 
-Rubato needs a local web UI/PWA because Eric will be at the piano and needs a
+Rubato needs a local web UI/PWA because the soloist will be at the piano and needs a
 low-friction way to start, stop, recover, choose devices, set volume, and capture
 feedback without editing code.
 
@@ -14,7 +14,7 @@ and long-running accompaniment sessions.
 
 ### Rehearsal Mode
 
-Eric should be able to:
+the soloist should be able to:
 
 - Select score bundle and excerpt.
 - Select Yamaha MIDI input and choose Yamaha orchestral MIDI, VST-only live
@@ -39,7 +39,7 @@ Record Take
   -> record again or Go Live
 ```
 
-Alignment and review preparation are system work, not buttons Eric must know
+Alignment and review preparation are system work, not buttons the soloist must know
 to press. Ambiguity is the one legitimate interruption: Rubato asks which
 candidate location is correct, then resumes preparation from that choice.
 There is no session creation, upload, CLI render, run-ID entry, or manual file
@@ -108,7 +108,7 @@ The first-class review path implements the following contract:
   another** and **Go live · Experimental**.
 - Failure is local and recoverable: placement ambiguity offers candidate
   choices in the take list; render failure offers **Retry orchestral review**;
-  an unavailable output directs Eric back to Sound Check selection/refresh.
+  an unavailable output directs the soloist back to Sound Check selection/refresh.
   The raw take and successful alignment are retained.
 
 The existing synchronous session render endpoint remains available for
@@ -119,7 +119,7 @@ renderer boundary.
 
 ### Source Prep Mode
 
-Eric or an agent should be able to:
+the soloist or an agent should be able to:
 
 - Register source files for a score bundle.
 - Mark authoritative solo/accompaniment files.

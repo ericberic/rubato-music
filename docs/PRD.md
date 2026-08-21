@@ -2,14 +2,14 @@
 
 ## Product Goal
 
-Rubato gives Eric a real-time orchestral accompanist for Chopin Piano Concerto
-No. 1 in E minor. Eric plays the solo piano part on his Yamaha CLP-795GP;
+Rubato gives the soloist a real-time orchestral accompanist for Chopin Piano Concerto
+No. 1 in E minor. the soloist plays the solo piano part on his Yamaha CLP-795GP;
 Rubato follows his score position and timing and plays the orchestra part back
 through the Yamaha synth, a configured local orchestral-audio zone, or both, in
 sync with his rubato. The current room renderer hosts BBCSO through Pedalboard
 and sends its audio to a named CoreAudio device such as the LG soundbar.
 
-The product is local-first and symbolic-first: everything runs on Eric's
+The product is local-first and symbolic-first: everything runs on the soloist's
 machine, and the musical representation is MIDI/MusicXML, not audio. The pivot
 rationale is recorded in
 [Decision 0001](decisions/0001-pivot-live-accompanist.md). Product intent,
@@ -19,12 +19,12 @@ scope, success criteria, users, and non-goals.
 
 ## Users
 
-- **Eric (soloist)** is the only end user. He is at the piano, mid-rehearsal,
+- **the soloist (soloist)** is the only end user. He is at the piano, mid-rehearsal,
   and needs low-friction controls: pick an excerpt, start, play, stop or
   silence instantly when something goes wrong, and leave quick feedback.
 - **Agents (operators)** prepare score bundles, run experiments, and analyze
   rehearsal traces between sessions. The product must leave enough artifacts
-  behind that agents can iterate without Eric present.
+  behind that agents can iterate without the soloist present.
 
 ## Scope
 
@@ -42,7 +42,7 @@ The MVP covers, in rough delivery order (see the MVP Build Order in
 - **Live rehearsal**: read live Yamaha MIDI input, follow the score, apply
   section policy (follow/lead/hold/stop), and emit accompaniment to the Yamaha
   synth, configured BBCSO/CoreAudio zones, or both.
-- **Interpretation profile**: learn Eric's tempo and dynamic shape from kept
+- **Interpretation profile**: learn the soloist's tempo and dynamic shape from kept
   rehearsal takes so the orchestra anticipates rather than merely reacts;
   learning is a byproduct of playing, never of labeling (see the learning
   model in [Vision and UX Design](VISION_AND_UX_DESIGN.md)).
@@ -60,11 +60,11 @@ Architecture and data contracts are owned by
 
 ## Success Criteria
 
-- Eric can rehearse a 1-3 minute excerpt with live MIDI input and
+- the soloist can rehearse a 1-3 minute excerpt with live MIDI input and
   accompaniment timing he judges acceptable. This is also the revisit trigger
   for [Decision 0001](decisions/0001-pivot-live-accompanist.md).
 - Entrances land: the orchestra neither rushes ahead of nor lags behind solo
-  entries, follows Eric's rubato in FOLLOW sections, and holds steady in LEAD
+  entries, follows the soloist's rubato in FOLLOW sections, and holds steady in LEAD
   sections (see [Section Policy](concepts/section-policy.md)).
 - Rehearsal compounds: kept takes sharpen the interpretation profile with no
   labeling or configuration effort, and everything learned in rehearsal
@@ -80,12 +80,12 @@ Architecture and data contracts are owned by
 - The offline and simulated-online paths stay covered by deterministic base
   tests, so regressions are caught without hardware.
 
-Playability is judged by Eric's rehearsal feedback rather than a fixed latency
+Playability is judged by the soloist's rehearsal feedback rather than a fixed latency
 number; traces record the timing data needed to debug his reports.
 
 ## Non-Goals
 
-- Eric-style piano generation, style transfer, or ERIC-vs-OTHER A/B output
+- the soloist-style piano generation, style transfer, or SOLOIST-vs-OTHER A/B output
   (deferred, per [Decision 0001](decisions/0001-pivot-live-accompanist.md)).
 - Raw-audio score following, analysis, or neural generation; the implemented
   BBCSO path remains symbolic MIDI driving a deterministic local instrument

@@ -62,7 +62,7 @@ accompaniment output.
 
 ```mermaid
 flowchart LR
-    A["Solo Piano MIDI In<br/>(Yamaha / CoreMIDI)"] --> B["Latency Calibration<br/>& Event Ingress"]
+    A["Solo Piano MIDI In<br/>(Keyboard / CoreMIDI)"] --> B["Latency Calibration<br/>& Event Ingress"]
     B --> C["Score & State Tracking<br/>(Matchmaker / Follower)"]
     C --> D["Tempo Model<br/>& Section Policy"]
     D --> E["Accompaniment Scheduler"]
@@ -73,8 +73,8 @@ flowchart LR
   MIDI streams instead of heavy audio models.
 - **Section policy control** — configurable rules for where the orchestra
   follows the soloist, leads, holds, or waits for a cued entry.
-- **Dual output routing** — synchronized MIDI to a hardware synth (e.g. a Yamaha
-  Clavinova), or to an external VST host (REAPER with the BBC Symphony
+- **Dual output routing** — synchronized MIDI to a hardware synth (e.g. a MIDI
+  keyboard), or to an external VST host (REAPER with the BBC Symphony
   Orchestra), or both.
 - **Run traces** — full telemetry of score position, tempo prediction, output
   latency, and rehearsal feedback for every take.

@@ -59,7 +59,7 @@ scheduler.
 - Treat MRT2 output as generative audio. It may be musically useful, but it is
   not guaranteed to play the exact Chopin orchestral notes or preserve entrances
   required by concerto rehearsal.
-- For Eric's likely MacBook Air target, only `mrt2_small` should be assumed
+- For the soloist's likely MacBook Air target, only `mrt2_small` should be assumed
   real-time until hardware tests prove otherwise.
 - A future spike should measure end-to-end latency, attack precision, and
   harmonic drift against the Chopin excerpt before making MRT2 part of the

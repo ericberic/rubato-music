@@ -2,15 +2,15 @@
 
 ## Source
 
-- `/Users/ehuang/code/jesse-and-eric/AGENTS.md`
-- `/Users/ehuang/code/jesse-and-eric/wiki/AGENTS.md`
-- `/Users/ehuang/code/jesse-and-eric/wiki/SCHEMA.md`
-- `/Users/ehuang/code/jesse-and-eric/.agents/skills/wiki-curator/SKILL.md`
-- `/Users/ehuang/code/jesse-and-eric/.agents/skills/wiki-lint/SKILL.md`
-- `/Users/ehuang/code/my-life/AGENTS.md`
-- `/Users/ehuang/code/my-life/docs/DOCUMENTATION_MAP.md`
-- `/Users/ehuang/code/my-life/docs/WIKI_INGEST_BOUNDARY.md`
-- `/Users/ehuang/code/my-life/docs/SELF_IMPROVEMENT.md`
+- `~/code/project-wiki/AGENTS.md`
+- `~/code/project-wiki/wiki/AGENTS.md`
+- `~/code/project-wiki/wiki/SCHEMA.md`
+- `~/code/project-wiki/.agents/skills/wiki-curator/SKILL.md`
+- `~/code/project-wiki/.agents/skills/wiki-lint/SKILL.md`
+- `~/code/personal-docs/AGENTS.md`
+- `~/code/personal-docs/docs/DOCUMENTATION_MAP.md`
+- `~/code/personal-docs/docs/WIKI_INGEST_BOUNDARY.md`
+- `~/code/personal-docs/docs/SELF_IMPROVEMENT.md`
 
 ## Date Read
 
@@ -18,18 +18,18 @@
 
 ## Why It Matters
 
-Eric asked whether Rubato should borrow conventions from the local Jesse & Eric
+The soloist asked whether Rubato should borrow conventions from local project
 wiki and `my-life` documentation systems so Rubato's `docs/` directory can act
 as compounding agent memory during ML/accompaniment development.
 
 ## Key Facts
 
-- Jesse & Eric uses a full memory-wiki/Obsidian-style vault with `entities/`,
+- The local project wiki uses a full memory-wiki/Obsidian-style vault with `entities/`,
   `concepts/`, `syntheses/`, `sources/`, `reports/`, and `views/`.
 - Its strongest reusable curation rules are: merge over create, search before
   creating, one fact in one place, source immutability, path-of-entry linkage,
   and cross-link density.
-- Jesse & Eric also uses structured frontmatter claims, entity schemas,
+- The local project wiki also uses structured frontmatter claims, entity schemas,
   Dataview dashboards, generated related blocks, and compile output.
 - `my-life` keeps a lightweight `DOCUMENTATION_MAP.md` that defines which doc
   owns which kind of knowledge and says to update the owning doc first.
@@ -41,7 +41,7 @@ as compounding agent memory during ML/accompaniment development.
 
 ## Caveats
 
-- The full Jesse & Eric memory-wiki stack is too heavy for Rubato right now.
+- The full local project wiki stack is too heavy for Rubato right now.
   Rubato does not need Obsidian dashboards, managed compile blocks, structured
   claims, or generated reports for the Chopin accompanist MVP.
 - Rubato's `docs/` directory is project memory, not a personal knowledge vault.

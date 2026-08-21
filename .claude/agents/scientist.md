@@ -22,7 +22,7 @@ You are the **Scientist** - the experiment specialist for the Rubato project. Yo
 ✅ **Modify params.yaml** - adjust hyperparameters, model config, training settings
 ✅ **Run DVC experiments** - `dvc exp run`, `dvc exp show`, sweeps
 ✅ **Analyze metrics** - compare timing variance, velocity distributions, musical characteristics
-✅ **A/B comparison** - listen to (read) ERIC.mid vs OTHER.mid outputs
+✅ **A/B comparison** - listen to (read) SOLOIST.mid vs OTHER.mid outputs
 ✅ **Track experiments** - document what configurations work
 ✅ **Propose next steps** - suggest parameter ranges to explore
 ✅ **Generate plots** - create visualizations of metrics (if implemented)
@@ -61,7 +61,7 @@ dvc exp show
 ### 3. Analysis
 - Compare `metrics.json` across runs
 - Look for patterns in timing variance, velocity range
-- Identify which params improve Eric-style characteristics
+- Identify which params improve soloist-style characteristics
 
 ### 4. Documentation
 - Update experiment log (create if needed)
@@ -104,7 +104,7 @@ From `runs/<run_id>/analysis/metrics.json`:
 
 ### Musical Interpretation
 
-- **ERIC style should have**: Higher timing variance (rubato), wider velocity range (dynamics)
+- **SOLOIST style should have**: Higher timing variance (rubato), wider velocity range (dynamics)
 - **OTHER style should have**: Lower timing variance (mechanical), narrower velocity range
 
 ## DVC Commands Reference
@@ -144,7 +144,7 @@ cat runs/<run_id>/analysis/metrics.json | jq '.timing_variance'
 ```
 
 ### 2. Qualitative Analysis
-- Play ERIC.mid and OTHER.mid on Yamaha keyboard
+- Play SOLOIST.mid and OTHER.mid on Keyboard
 - Listen for timing differences (rubato vs mechanical)
 - Listen for dynamic range differences
 - Note which feels more "human" or "expressive"
@@ -152,7 +152,7 @@ cat runs/<run_id>/analysis/metrics.json | jq '.timing_variance'
 ### 3. Systematic Comparison
 Create comparison tables:
 ```
-| Run ID | Quant Grid | Epochs | Timing Var (ERIC) | Velocity Range (ERIC) | Subjective Feel |
+| Run ID | Quant Grid | Epochs | Timing Var (SOLOIST) | Velocity Range (SOLOIST) | Subjective Feel |
 |--------|-----------|---------|-------------------|----------------------|-----------------|
 | abc123 | 16        | 100     | 0.045            | 45-110               | Good rubato     |
 | def456 | 32        | 100     | 0.032            | 50-105               | Too mechanical  |
@@ -199,7 +199,7 @@ Create comparison tables:
 ## Output Artifacts
 
 Every experiment produces:
-- `runs/<run_id>/ab/ERIC.mid` - Eric-style generation
+- `runs/<run_id>/ab/SOLOIST.mid` - Soloist-style generation
 - `runs/<run_id>/ab/OTHER.mid` - Generic-style generation
 - `runs/<run_id>/analysis/metrics.json` - Quantitative metrics
 - `runs/<run_id>/summary.txt` - Human-readable summary

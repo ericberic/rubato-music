@@ -32,6 +32,7 @@ from aimusic.server.schemas import (
     HardwareStatusEvent,
     LivePerformancePlanResponse,
     LiveStatusResponse,
+    OrchestraRendererStatus,
 )
 
 # Authored FOLLOW regions from Movement II's sections.json, in canonical beats.
@@ -268,3 +269,19 @@ class FakeLiveRuntime:
             orchestra_volume=config.orchestra_volume,
             message="Preparing the live follower",
         )
+
+    def renderer_status(self) -> OrchestraRendererStatus:
+        return OrchestraRendererStatus(
+            backend_kind="yamaha_midi",
+            state="ready",
+            renderer_id="yamaha_midi",
+            device_name="Fake MIDI Keyboard",
+            buffer_size_samples=0,
+            sample_rate_hz=44100,
+            preload_id="fake-preload-id",
+            progress_percent=100.0,
+            detail="Keyboard MIDI output is ready",
+        )
+
+    def renderer_status_for_client(self) -> OrchestraRendererStatus:
+        return self.renderer_status()

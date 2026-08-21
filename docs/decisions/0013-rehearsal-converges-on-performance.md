@@ -5,7 +5,7 @@ Status: **Accepted** (2026-07-29; amended 2026-08-10)
 ## The principle
 
 > Rehearsals get us closer and closer to the live performance, just like real
-> musicians. — Eric
+> musicians. — Soloist
 
 Every rehearsal pass is a joint attempt at the real thing. The accompanist plays
 with everything it has learned so far; the performer adapts to what they hear;
