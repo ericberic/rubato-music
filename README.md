@@ -14,15 +14,11 @@ directly on symbolic MIDI so it can stay fast and run entirely on your machine.
 
 The active target is Chopin's *Piano Concerto No. 1 in E minor, Op. 11*.
 
-<!-- Autoplaying GIF preview (committed GIF); the full sound-on cut below is a
-     GitHub user-attachment asset URL, which GitHub renders as an inline player. -->
-<p align="center">
-  <img src="docs/rubato-demo.gif" width="820" alt="Rubato demo — an AI orchestra that listens and follows your lead">
-</p>
+<!-- Portrait promo as a GitHub user-attachment asset URL, which GitHub renders
+     as an inline video player (sound + controls). -->
+https://github.com/user-attachments/assets/cf53581a-a652-47c9-895f-71468d37a7ab
 
-<p align="center"><sub><em>▶ an AI orchestra that listens and follows your lead — full 66-second cut, sound on, below · <a href="docs/screenshots/01-ready-stage-current.jpg">rehearsal cockpit screenshot</a></em></sub></p>
-
-https://github.com/user-attachments/assets/d7ec6bee-cb6c-4c58-970b-1ec90239f278
+<p align="center"><sub><em>▶ An AI orchestra that listens and follows your lead — a live Chopin passage (sound on). · <a href="docs/screenshots/01-ready-stage-current.jpg">rehearsal cockpit screenshot</a></em></sub></p>
 
 ---
 
