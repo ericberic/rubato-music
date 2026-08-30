@@ -14,15 +14,16 @@ directly on symbolic MIDI so it can stay fast and run entirely on your machine.
 
 The active target is Chopin's *Piano Concerto No. 1 in E minor, Op. 11*.
 
-<!-- Linked poster → GitHub's video player. (README HTML can't use the
-     upload-generated asset URL that autoplays inline, so we link the poster.) -->
+<!-- Autoplaying GIF hero: GitHub inline-renders committed GIFs (a supported image
+     format) but strips <video> tags and won't inline-play committed .mp4 for
+     anonymous visitors, so the full sound-on cut is linked below. -->
 <p align="center">
-  <a href="https://github.com/ericberic/rubato-music/blob/main/docs/rubato-demo.mp4">
-    <img src="docs/rubato-demo-poster.jpg" width="820" alt="Watch the Rubato demo — an AI orchestra that listens and follows your lead">
+  <a href="https://github.com/ericberic/rubato-music/raw/main/docs/rubato-demo.mp4">
+    <img src="docs/rubato-demo.gif" width="820" alt="Rubato demo — an AI orchestra that listens and follows your lead">
   </a>
 </p>
 
-<p align="center"><sub><em>▶ An AI orchestra that listens and follows your lead — <a href="https://github.com/ericberic/rubato-music/blob/main/docs/rubato-demo.mp4">watch the 66-second demo</a> (sound on) · <a href="docs/screenshots/01-ready-stage-current.jpg">rehearsal cockpit screenshot</a></em></sub></p>
+<p align="center"><sub><em>▶ An AI orchestra that listens and follows your lead — <a href="https://github.com/ericberic/rubato-music/raw/main/docs/rubato-demo.mp4">download the full 66-second cut</a> (sound on) · <a href="docs/screenshots/01-ready-stage-current.jpg">rehearsal cockpit screenshot</a></em></sub></p>
 
 ---
 
