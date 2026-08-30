@@ -17,12 +17,12 @@ The active target is Chopin's *Piano Concerto No. 1 in E minor, Op. 11*.
 <!-- Linked poster → GitHub's video player. (README HTML can't use the
      upload-generated asset URL that autoplays inline, so we link the poster.) -->
 <p align="center">
-  <a href="https://github.com/ericberic/rubato-music/raw/main/docs/rubato-demo.mp4">
+  <a href="https://github.com/ericberic/rubato-music/blob/main/docs/rubato-demo.mp4">
     <img src="docs/rubato-demo-poster.jpg" width="820" alt="Watch the Rubato demo — an AI orchestra that listens and follows your lead">
   </a>
 </p>
 
-<p align="center"><sub><em>▶ An AI orchestra that listens and follows your lead — <a href="https://github.com/ericberic/rubato-music/raw/main/docs/rubato-demo.mp4">watch the 66-second demo</a> (sound on) · <a href="docs/screenshots/01-ready-stage-current.jpg">rehearsal cockpit screenshot</a></em></sub></p>
+<p align="center"><sub><em>▶ An AI orchestra that listens and follows your lead — <a href="https://github.com/ericberic/rubato-music/blob/main/docs/rubato-demo.mp4">watch the 66-second demo</a> (sound on) · <a href="docs/screenshots/01-ready-stage-current.jpg">rehearsal cockpit screenshot</a></em></sub></p>
 
 ---
 
