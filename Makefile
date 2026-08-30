@@ -1,7 +1,13 @@
-.PHONY: docs-health check-types dvc-sync dvc-gc secrets-scan
+.PHONY: docs-health check-types dvc-sync dvc-gc secrets-scan verify-bundles
 
 docs-health:
 	python3 scripts/docs_health.py
+
+# Verify every score bundle's artifacts against the sha256 hashes recorded in
+# its bundle.yaml -- catches a drifted source-of-truth (e.g. a beat map rebuilt
+# without updating its recorded hash) with one command instead of forensics.
+verify-bundles:
+	uv run python scripts/verify_score_bundle.py
 
 # Full-history secret scan (API keys, tokens, private keys). Run before any push
 # to a public remote. Requires gitleaks (`brew install gitleaks`); CI runs the

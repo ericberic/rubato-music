@@ -159,6 +159,8 @@ for the underlying pattern.
 - [BBCSO Secondary Audio-Zone Audition](runbooks/bbcso-audio-zone.md)
 - [REAPER Orchestra Host](runbooks/reaper-orchestra-host.md)
 - [Live Run Forensics](runbooks/live-run-forensics.md)
+- [Known-Good Releases](runbooks/known-good-releases.md)
+- [Live Take Audio Render](runbooks/live-take-audio-render.md)
 - [DVC + git worktrees: shared cache](runbooks/dvc-worktrees-shared-cache.md)
 
 ## Current MVP

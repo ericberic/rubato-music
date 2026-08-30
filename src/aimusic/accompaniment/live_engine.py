@@ -815,13 +815,16 @@ class LiveEngine:
                 # only guards the start of acquisition; once certified, later
                 # onsets are gathered even as the pianist plays past this beat.
                 orchestra_position = self._orchestra_lead_in_state_at(now)
-                section = self.section_map.section_at(orchestra_position.score_beat)
+                # The orchestra now waits at the authored entry boundary. Certify
+                # the entry when a confident follower position lands in the solo
+                # (a FOLLOW section) at or ahead of that boundary: a soloist who
+                # played on while the follower locked is still a valid, on-time
+                # entry. Only a position *behind* the waiting orchestra is a
+                # stale/spurious match and is rejected (see the stale-cue test).
+                piano_section = self.section_map.section_at(update.score_beat)
                 position_matches = (
-                    section.mode is AccompanimentMode.FOLLOW
-                    and self._is_expected_entry_candidate(
-                        update,
-                        orchestra_position.score_beat,
-                    )
+                    piano_section.mode is AccompanimentMode.FOLLOW
+                    and update.score_beat >= orchestra_position.score_beat - 0.5
                 )
                 if not position_matches:
                     self.trace_sink.write(
@@ -2141,15 +2144,30 @@ class LiveEngine:
         assert anchor is not None
         if now <= anchor.perf_time:
             return replace(anchor, confidence=0.0, coasting=True)
+        # Hold at the authored entry boundary instead of racing past it. The
+        # pre-entry orchestra must arrive at the handoff point (the end of the
+        # LEAD section it started in) and WAIT for the pianist there, not run
+        # ahead on the source clock. Regression live-1788038221669: the lead-in
+        # projected to canonical beat ~99 while the soloist entered at ~47, so
+        # the entry proximity gate never certified and LEAD never handed off to
+        # FOLLOW. This clamps only the projected canonical position used for
+        # display and entry matching; the source-clock audio playback is
+        # unaffected.
+        entry_section = self.section_map.section_at(anchor.score_beat)
+        boundary_beat = entry_section.end_beat
+        boundary_reference = self.scheduler.reference_beat_at_score_beat(boundary_beat)
         reference_beat = anchor.reference_beat
         if reference_beat is not None and anchor.reference_beat_period_seconds is not None:
             reference_beat += (now - anchor.perf_time) / anchor.reference_beat_period_seconds
+            if boundary_reference is not None:
+                reference_beat = min(reference_beat, boundary_reference)
             projected = self.scheduler.score_beat_at_reference_beat(reference_beat)
             score_beat = projected if projected is not None else anchor.score_beat
         else:
             score_beat = anchor.score_beat + (
                 (now - anchor.perf_time) / anchor.beat_period_seconds
             )
+        score_beat = min(score_beat, boundary_beat)
         return self._state_on_reference_clock(
             perf_time=now,
             score_beat=score_beat,

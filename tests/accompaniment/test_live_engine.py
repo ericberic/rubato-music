@@ -514,6 +514,110 @@ def test_orchestra_entry_clamps_to_piano_pace_not_lead_in_seed() -> None:
     )
 
 
+def test_orchestra_lead_in_hands_off_when_follower_locks_after_the_entry() -> None:
+    """Regression for live-1788038221669.
+
+    The orchestra lead-in raced past the authored entry boundary on the source
+    clock while the follower spent a few onsets locking. By the time the pianist
+    had a confident position, it sat well behind the runaway orchestra, the
+    entry proximity gate never certified, and the orchestra led autonomously for
+    the entire take (policy stuck in LEAD, ``orchestra_entry_position_mismatch``
+    on every follower row).
+
+    The lead-in must hold at the entry boundary and certify the soloist's
+    confident entry even when the follower locks a few beats late.
+    """
+
+    class LateLockSlowFollower:
+        """Enters at the boundary, plays ~50 BPM, and only gains confidence
+        after two warm-up onsets -- so the first confident position is a few
+        beats past the boundary while the 120 BPM lead-in has raced ahead."""
+
+        def __init__(self) -> None:
+            self._entry_beat: float | None = None
+            self._entry_time: float | None = None
+            self.observations = 0
+
+        def reposition_for_entry(
+            self, *, score_beat: float, reference_beat: float | None
+        ) -> None:
+            self._entry_beat = score_beat
+            self._entry_time = None
+
+        def observe(self, note: PerformedNote) -> FollowerUpdate:
+            self.observations += 1
+            if self._entry_beat is None:
+                self._entry_beat = note.score_beat or 0.0
+            if self._entry_time is None:
+                self._entry_time = note.perf_time
+            beat = self._entry_beat + (note.perf_time - self._entry_time) * (50.0 / 60.0)
+            return FollowerUpdate(
+                perf_time=note.perf_time,
+                score_beat=beat,
+                reference_beat=beat,
+                confidence=0.0 if self.observations <= 2 else 0.5,
+                raw_state={"follower": "matchmaker", "stable_update_count": self.observations},
+            )
+
+    bundle = _identity_reference_bundle(
+        sections=(
+            Section("opening", 0.0, 4.0, AccompanimentMode.LEAD),
+            Section("solo", 4.0, 8.0, AccompanimentMode.FOLLOW),
+        )
+    )
+    clock = ManualClock(10.0)
+    output = CapturingOutput()
+    trace = MemoryTraceSink()
+    engine = LiveEngine.from_bundle(
+        bundle=bundle,
+        config=RuntimeConfig(
+            run_id="orchestra-entry-late-lock",
+            initial_tempo_bpm=120,
+            minimum_follower_confidence=0.5,
+            planning_horizon_ms=1500,
+            dispatch_horizon_ms=100,
+        ),
+        clock=clock,
+        follower=LateLockSlowFollower(),
+        output=output,
+        trace_sink=trace,
+    )
+
+    # The 120 BPM lead-in reaches the beat-4 entry boundary at t=12.0 s.
+    engine.start(start_beat=0.0, entry_perf_time=10.0, orchestra_lead_in=True)
+
+    statuses = []
+    for step in range(10):
+        perf_time = 12.0 + step * 0.3
+        clock.advance_to(perf_time)
+        engine.tick()
+        statuses.append(
+            engine.process_note(PerformedNote(perf_time=perf_time, pitch=60, velocity=80))
+        )
+
+    # The handoff certifies and reaches FOLLOW instead of leading autonomously.
+    assert statuses[-1].state_word is LiveStateWord.FOLLOWING
+    assert any(
+        row.type == "policy" and row.section_mode is AccompanimentMode.FOLLOW
+        for row in trace.records
+    )
+    # The regression signature -- never leaving LEAD on a permanent mismatch --
+    # must be gone.
+    assert not all(
+        row.position_action == "orchestra_entry_position_mismatch"
+        for row in trace.records
+        if row.type == "follower" and row.confidence and row.confidence >= 0.5
+    )
+    # The pre-entry orchestra held at the boundary rather than racing past it.
+    orchestra_beats = [
+        row.score_beat
+        for row in trace.records
+        if row.type == "follower" and row.position_action == "orchestra_entry_position_mismatch"
+    ]
+    assert all(beat <= 4.5 for beat in orchestra_beats)
+    assert not output.panics
+
+
 def test_uncertain_measure_entry_remains_cue_led_until_grace_expires() -> None:
     bundle = _identity_reference_bundle()
     clock = ManualClock(10.0)

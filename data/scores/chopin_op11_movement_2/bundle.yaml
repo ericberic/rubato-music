@@ -64,7 +64,7 @@ derived:
       - joseffy_audiveris_semantic
       - display_map_machine
       - oguri_performance
-    sha256: c5ef2609a61d5fc50c183199fae778b557ee39b0309ff02b2ef2de59a1ed3da9
+    sha256: ceb68d614acab537843be9698973aacc383558ad134c39c6cbd0d57288b2f42a
   - artifact_id: movement_2_sections
     role: sections
     path: derived/sections.json
