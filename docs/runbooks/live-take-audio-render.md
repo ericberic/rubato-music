@@ -79,5 +79,5 @@ Guarded by `tests/scripts/test_render_take_audio.py`:
 
 Replaying is only needed for takes already played. For future takes, record the
 instrument's audio input **live during the performance** — the instrument already
-mixs solo (local) + orchestra (from Rubato) with real pedal, so a live audio
+mixes solo (local) + orchestra (from Rubato) with real pedal, so a live audio
 recorder yields a WAV with zero reconstruction.
