@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,6 +19,9 @@ from aimusic.mixing.models import (
     MixRoute,
     ScoreIdentityStatus,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class MixProgramNotFoundError(LookupError):
@@ -60,15 +64,25 @@ def load_program(
     program_id: str,
     *,
     require_current_score: bool = False,
+    repair_benign_drift: bool = False,
 ) -> MixProgram:
     document = paths.mix_program_path(piece_id, movement, program_id, create=False)
     if not document.exists():
         raise MixProgramNotFoundError(f"Mix program not found: {program_id}")
     program = MixProgram.model_validate_json(document.read_text(encoding="utf-8"))
-    program = _with_score_identity_status(program)
+    healed = _with_score_identity_status(program)
+    if (
+        repair_benign_drift
+        and healed.score_identity_status is ScoreIdentityStatus.CURRENT
+        and healed.score_bundle_revision != program.score_bundle_revision
+    ):
+        # A benign checksum-only drift was detected; persist the corrected
+        # fingerprint once so it stops re-tripping the guard. Pure reads (GET /
+        # list) leave this off and self-heal only in memory.
+        healed = _persist_benign_identity_repair(piece_id, movement, program_id)
     if require_current_score:
-        _require_current_score(program)
-    return program
+        _require_current_score(healed)
+    return healed
 
 
 def create_program(request: MixProgramCreate) -> MixProgram:
@@ -342,26 +356,85 @@ def _score_identity(piece_id: str, movement: int) -> tuple[str, str, str]:
     return root.name, bundle_digest[:12], timeline_digest
 
 
-def _with_score_identity_status(program: MixProgram) -> MixProgram:
+def _classify_score_identity(program: MixProgram) -> tuple[ScoreIdentityStatus, str | None]:
+    """Classify a program against the current score files.
+
+    Only the *timeline* (note timing) and the bundle id are musically meaningful
+    to a mix -- its routes and envelopes are keyed to score ticks that the
+    timeline defines. ``bundle.yaml``'s own byte digest
+    (``score_bundle_revision``) also feeds the guard, but a manifest edit that
+    leaves the timeline untouched -- e.g. correcting a stale artifact-checksum
+    record inside ``bundle.yaml`` -- is a *benign* false positive: nothing the
+    mix depends on actually changed. Treat that as CURRENT and return the corrected
+    bundle revision so callers can self-heal the record instead of failing
+    closed. A changed timeline or bundle id is a genuine change and stays STALE.
+    """
+
     bundle_id, revision, timeline_digest = _score_identity(
         program.piece_id, program.movement
     )
-    status = (
-        ScoreIdentityStatus.STALE
-        if (
-            program.score_bundle_id != bundle_id
-            or program.score_bundle_revision != revision
-            or program.timeline_digest != timeline_digest
+    if program.score_bundle_id != bundle_id or program.timeline_digest != timeline_digest:
+        return ScoreIdentityStatus.STALE, None
+    corrected = revision if program.score_bundle_revision != revision else None
+    return ScoreIdentityStatus.CURRENT, corrected
+
+
+def _with_score_identity_status(program: MixProgram) -> MixProgram:
+    status, corrected = _classify_score_identity(program)
+    update: dict[str, object] = {"score_identity_status": status}
+    if corrected is not None:
+        # Heal the benign checksum drift in memory so every caller sees a
+        # consistent, current fingerprint even before it is persisted.
+        update["score_bundle_revision"] = corrected
+    return program.model_copy(update=update)
+
+
+def _persist_benign_identity_repair(
+    piece_id: str, movement: int, program_id: str
+) -> MixProgram:
+    """Durably re-pin a benign (checksum-only) identity drift.
+
+    A metadata-only heal: it corrects ``score_bundle_revision`` and bumps the
+    revision like a rebind, but deliberately does not enter the artistic Undo
+    history. Re-reads under the lock so a concurrent artistic edit is never
+    clobbered, and is a no-op when the drift is not benign.
+    """
+
+    with _program_lock(piece_id, movement, program_id):
+        document = paths.mix_program_path(piece_id, movement, program_id, create=False)
+        program = MixProgram.model_validate_json(document.read_text(encoding="utf-8"))
+        status, corrected = _classify_score_identity(program)
+        if status is not ScoreIdentityStatus.CURRENT or corrected is None:
+            return _with_score_identity_status(program)
+        repaired = program.model_copy(
+            update={
+                "score_bundle_revision": corrected,
+                "score_identity_status": ScoreIdentityStatus.CURRENT,
+                "revision": program.revision + 1,
+                "schema_version": 2,
+                "updated_at": datetime.now(timezone.utc),
+            }
         )
-        else ScoreIdentityStatus.CURRENT
-    )
-    return program.model_copy(update={"score_identity_status": status})
+        _write_snapshot(repaired)
+        logger.info(
+            "Auto-repaired benign mix score-identity drift for %s/%s/%s "
+            "(bundle revision %s -> %s); timeline unchanged, mix content preserved",
+            piece_id,
+            movement,
+            program_id,
+            program.score_bundle_revision,
+            corrected,
+        )
+        return repaired
 
 
 def _require_current_score(program: MixProgram) -> None:
     if program.score_identity_status is ScoreIdentityStatus.STALE:
         raise MixScoreIdentityError(
-            "Mix program score identity is stale; review it against the current timeline"
+            "Mix program score identity is stale: the score timeline changed "
+            "since this mix was authored. Review it against the current "
+            "timeline, then rebind (POST /api/mix/programs/"
+            f"{program.program_id}/rebind) to re-pin it."
         )
 
 

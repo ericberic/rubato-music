@@ -579,16 +579,22 @@ def _start_live_vst_router(
     *,
     startup_observer: Callable[[dict[str, Any]], None] | None = None,
 ) -> Any | None:
+    # A route is only "active" for renderer selection if it can actually be
+    # heard. A muted route (level 0) -- e.g. a REAPER room zone deliberately
+    # silenced in favour of the Yamaha anchor -- must not force or fail an audio
+    # host it does not need; otherwise a dead REAPER bridge bricks a mix that is
+    # audibly Yamaha-only.
     active_zone_ids = {
         route.active_zone_id
         for route in mix_policy.default_routes
-        if route.active_zone_id is not None
+        if route.active_zone_id is not None and route.level > 0
     }
     active_zone_ids.update(
         route.active_zone_id
         for region in mix_policy.regions
+        if region.enabled
         for route in region.routes
-        if route.active_zone_id is not None
+        if route.active_zone_id is not None and route.level > 0
     )
     active_zones = tuple(zone for zone in audio_config.zones if zone.zone_id in active_zone_ids)
     reaper_zones = tuple(zone for zone in active_zones if zone.renderer == "reaper")
@@ -1205,7 +1211,11 @@ class LiveRuntimeManager:
             audio_config = self._audio_config_loader()
             try:
                 program = mix_store.load_program(
-                    "chopin_op11", 2, program_id, require_current_score=True
+                    "chopin_op11",
+                    2,
+                    program_id,
+                    require_current_score=True,
+                    repair_benign_drift=True,
                 )
             except mix_store.MixProgramNotFoundError:
                 program = mix_store.create_program(
@@ -1291,7 +1301,36 @@ class LiveRuntimeManager:
                 startup_observer=observe,
             )
             if router is None:
-                raise LiveVstError("the selected mix has no active orchestra audio zone")
+                # No audible external audio host in this mix (e.g. the REAPER
+                # room zone is muted and the orchestra plays through the Yamaha
+                # anchor's own synth). There is nothing to preload, so report a
+                # benign ready state rather than failing closed -- Go Live can
+                # proceed and the orchestra sounds through the direct MIDI path.
+                trace_sink.close()
+                with self._renderer_lock:
+                    if self._renderer_status.preload_id != preload_id:
+                        return
+                    ready_status = self._renderer_status.model_copy(
+                        update={
+                            "state": "ready",
+                            "instrument_id": None,
+                            "zone_id": None,
+                            "loaded_instruments": 0,
+                            "total_instruments": 0,
+                            "updated_at_monotonic": time.monotonic(),
+                            "message": (
+                                "No external orchestra renderer needed; the "
+                                "orchestra plays through the Yamaha."
+                            ),
+                        }
+                    )
+                    self._renderer_status = ready_status
+                events.publish(
+                    OrchestraRendererStatusEvent(
+                        type="runtime:renderer_status", status=ready_status
+                    )
+                )
+                return
             with self._renderer_lock:
                 if self._renderer_status.preload_id != preload_id:
                     router.close()
