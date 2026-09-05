@@ -1836,7 +1836,7 @@ def test_live_vst_router_isolates_and_quiesces_each_patch_during_startup(
         instruments=bindings,
     )
     policy = SimpleNamespace(
-        default_routes=(SimpleNamespace(active_zone_id="room_center"),),
+        default_routes=(SimpleNamespace(active_zone_id="room_center", level=100.0),),
         regions=(),
     )
     constructed: list[str] = []
@@ -1938,7 +1938,7 @@ def test_live_vst_router_retries_one_native_cold_start_failure(
         instruments=(binding,),
     )
     policy = SimpleNamespace(
-        default_routes=(SimpleNamespace(active_zone_id="room_center"),),
+        default_routes=(SimpleNamespace(active_zone_id="room_center", level=100.0),),
         regions=(),
     )
     attempts = 0
@@ -2353,3 +2353,67 @@ def test_resident_router_fails_after_sustained_unhealth() -> None:
         _RESIDENT_HEALTH_GRACE_SECONDS + 1
     )
     assert manager._resident_router_failed(router) is True
+
+
+def _reaper_router_probe(monkeypatch: pytest.MonkeyPatch) -> list:
+    """Replace ReaperMidiRouter with a probe recording each construction."""
+
+    constructed: list = []
+
+    class _FakeReaperRouter:
+        def __init__(self, zone, mix_policy, *, trace_sink=None, startup_observer=None):
+            constructed.append(zone.zone_id)
+            self.zone = zone
+
+        def close(self) -> None:  # pragma: no cover - not exercised here
+            pass
+
+    monkeypatch.setattr(
+        "aimusic.server.live_runtime.ReaperMidiRouter", _FakeReaperRouter
+    )
+    return constructed
+
+
+def test_muted_reaper_zone_does_not_force_the_reaper_host(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A REAPER room zone muted (level 0) in favour of the Yamaha anchor must not
+    make the orchestra render host REAPER, so a dead REAPER bridge can't brick a
+    mix that is audibly Yamaha-only."""
+
+    constructed = _reaper_router_probe(monkeypatch)
+    # The VST/room audio config holds only external-host zones; the Yamaha anchor
+    # (direct MIDI) is handled outside this router.
+    audio_config = SimpleNamespace(
+        zones=(SimpleNamespace(zone_id="room_center", renderer="reaper", instruments=()),)
+    )
+    policy = SimpleNamespace(
+        default_routes=(
+            SimpleNamespace(active_zone_id="room_center", level=0.0),
+            SimpleNamespace(active_zone_id="yamaha_anchor", level=100.0),
+        ),
+        regions=(),
+    )
+
+    router = _start_live_vst_router(audio_config, policy, object())
+
+    assert router is None
+    assert constructed == []  # REAPER was never even attempted
+
+
+def test_active_reaper_zone_is_still_selected(monkeypatch: pytest.MonkeyPatch) -> None:
+    """An audible (level > 0) REAPER route still routes the orchestra to REAPER."""
+
+    constructed = _reaper_router_probe(monkeypatch)
+    audio_config = SimpleNamespace(
+        zones=(SimpleNamespace(zone_id="room_center", renderer="reaper", instruments=()),)
+    )
+    policy = SimpleNamespace(
+        default_routes=(SimpleNamespace(active_zone_id="room_center", level=100.0),),
+        regions=(),
+    )
+
+    router = _start_live_vst_router(audio_config, policy, object())
+
+    assert router is not None
+    assert constructed == ["room_center"]

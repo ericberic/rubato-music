@@ -8,7 +8,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from aimusic.mixing import store
-from aimusic.mixing.models import MixProgramCreate, MixRoute
+from aimusic.mixing.models import MixProgramCreate, MixRoute, ScoreIdentityStatus
 from aimusic.server.app import create_app
 
 
@@ -212,3 +212,84 @@ def test_mix_zone_contract_is_explicit_about_uncalibrated_soundbar(
     assert zones["yamaha_anchor"]["health"] == "ready"
     assert zones["room_center"]["configured_output_advance_ms"] == 59
     assert zones["room_center"]["health"] == "needs_calibration"
+
+
+def test_checksum_only_drift_is_benign_and_never_blocks(
+    isolated_data: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A bundle.yaml byte change that leaves the timeline intact is a false
+    positive: the program stays CURRENT, self-heals in memory, and never raises.
+    Regression guard for a checksum-record correction inside bundle.yaml, which
+    otherwise bricked a saved mix program until a manual rebind."""
+
+    created = store.create_program(MixProgramCreate(piece_id="chopin_op11", movement=2))
+
+    # Simulate correcting a checksum *inside* bundle.yaml: its own digest moves,
+    # but the timeline digest is unchanged.
+    drifted_revision = "deadbeefcafe"
+    assert created.score_bundle_revision != drifted_revision
+    monkeypatch.setattr(
+        store,
+        "_score_identity",
+        lambda piece_id, movement: (
+            created.score_bundle_id,
+            drifted_revision,
+            created.timeline_digest,
+        ),
+    )
+
+    # Pure read: classified CURRENT, corrected in memory, no persisted write.
+    pure = store.load_program("chopin_op11", 2, "main")
+    assert pure.score_identity_status is ScoreIdentityStatus.CURRENT
+    assert pure.score_bundle_revision == drifted_revision
+    assert pure.revision == created.revision  # not persisted yet
+
+    # Requiring a current score must NOT raise for benign drift.
+    store.load_program("chopin_op11", 2, "main", require_current_score=True)
+
+    # The renderer path repairs it durably, exactly once.
+    healed = store.load_program(
+        "chopin_op11", 2, "main", require_current_score=True, repair_benign_drift=True
+    )
+    assert healed.score_identity_status is ScoreIdentityStatus.CURRENT
+    assert healed.score_bundle_revision == drifted_revision
+    assert healed.revision == created.revision + 1
+
+    again = store.load_program(
+        "chopin_op11", 2, "main", require_current_score=True, repair_benign_drift=True
+    )
+    assert again.revision == healed.revision  # stable: no further churn
+
+    # The heal preserved the authored mix content untouched.
+    assert again.default_routes == created.default_routes
+
+
+def test_timeline_drift_stays_stale_and_blocks(
+    isolated_data: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A genuine timeline change still gates the mix and raises an actionable
+    error naming the rebind endpoint."""
+
+    created = store.create_program(MixProgramCreate(piece_id="chopin_op11", movement=2))
+    monkeypatch.setattr(
+        store,
+        "_score_identity",
+        lambda piece_id, movement: (
+            created.score_bundle_id,
+            created.score_bundle_revision,
+            "a_different_timeline_digest",
+        ),
+    )
+
+    assert (
+        store.load_program("chopin_op11", 2, "main").score_identity_status
+        is ScoreIdentityStatus.STALE
+    )
+    with pytest.raises(store.MixScoreIdentityError) as excinfo:
+        store.load_program("chopin_op11", 2, "main", require_current_score=True)
+    assert "rebind" in str(excinfo.value)
+    # A genuine change is never silently auto-repaired.
+    with pytest.raises(store.MixScoreIdentityError):
+        store.load_program(
+            "chopin_op11", 2, "main", require_current_score=True, repair_benign_drift=True
+        )
