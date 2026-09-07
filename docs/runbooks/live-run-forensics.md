@@ -55,6 +55,36 @@ musical event. Preserve the run ID and cite event-level rows when concluding
 that alignment, following, scheduling, output, rendering, or UI projection was
 responsible.
 
+## Slow startup or silent Go live
+
+The analyzer's `startup` array includes the ordered request and worker timeline,
+including preparation before the first orchestra note. `run.startup_diagnostics`
+links the underlying files under the run's `trace/` directory:
+
+- `startup-request.jsonl`: resolve clock, load audio config, resolve mix, project
+  score, and load interpretation, each with start/completion or error timestamps.
+- `follower-startup.jsonl`: flushed milestones for spawn, importing the narrow
+  pitch-HMM dependency, parsing reference MIDI, HMM construction, prior seeding,
+  and tracker readiness. Every five seconds without completion adds a waiting
+  row without extending the timeout.
+- `follower-startup-stacks.txt`: Python thread stacks every 15 seconds while the
+  child initializes. These distinguish an import, subprocess, score parse, and
+  HMM computation even if startup never returns.
+- `runtime.jsonl`: typed follower progress plus output opening, input readiness,
+  engine start, and startup errors, followed by normal performance events.
+
+A follower gets 60 seconds per stage and a hard 180-second total deadline.
+Only child milestones reset the stage deadline. Stop cancels the wait, child
+exit is detected promptly, and every failed construction closes queues and
+reaps the process. Errors name the stage and elapsed time.
+
+The live worker parses the prepared follower-reference MIDI with Mido and
+constructs Matchmaker's `PitchHMM` from only `onset_beat` and `pitch`. This keeps
+Librosa, Matplotlib, font discovery, MusicXML tooling, and offline analysis out
+of the spawned process. SciPy remains because the HMM uses its signal and
+probability routines. Matchmaker is pinned to 0.3.0 because this adapter uses an
+internal seam.
+
 ## Regression Boundary
 
 Turn each confirmed cause into the smallest deterministic regression: a score

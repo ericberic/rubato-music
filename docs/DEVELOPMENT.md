@@ -48,6 +48,11 @@ server, via an `INT`/`TERM`/`EXIT` trap rather than a bare foreground exec
 (rubato#99). See [PWA Rehearsal UI](concepts/pwa-rehearsal-ui.md) for the
 cockpit itself.
 
+The live PTHMM worker uses the prepared follower-reference MIDI directly. It
+does not import the offline Partitura score loader, Matchmaker audio features,
+Librosa, or Matplotlib. Matchmaker is pinned to 0.3.0 because this adapter uses
+its internal pitch-HMM seam; review and remeasure startup before upgrading it.
+
 Training/style-transfer extras are deferred and should not be installed unless a
 future task explicitly reactivates them.
 

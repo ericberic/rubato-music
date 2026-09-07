@@ -13,7 +13,6 @@ dependencies = [
     "numpy>=1.26.0",
     "dvc>=3.40.0",
     "pyyaml>=6.0.1",
-    "matplotlib>=3.8.0",
     "filelock>=3.20.0",
 ]
 
@@ -29,7 +28,9 @@ dev = [
 ]
 live = [
     "python-rtmidi>=1.5.8",
-    "pymatchmaker[devices]>=0.3.0",
+    # The live adapter intentionally uses a narrow internal PTHMM seam to avoid
+    # Matchmaker's eager audio/plotting imports. Review before upgrading.
+    "pymatchmaker[devices]==0.3.0",
 ]
 # Offline score-bundle tooling: MusicXML theory analysis and PDF geometry.
 # Deliberately NOT a runtime dependency -- the live server must never import
