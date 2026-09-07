@@ -18,11 +18,17 @@ difference and every existing test double still applies.
 
 from __future__ import annotations
 
+import faulthandler
+import json
 import multiprocessing as mp
+import os
 import queue
 import time
+import traceback
 from dataclasses import dataclass
-from typing import Any
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Callable
 
 from aimusic.accompaniment.following import FollowerUpdate, PerformedNote
 from aimusic.realtime.gauges import GaugeBlock
@@ -48,25 +54,52 @@ def _child_main(
     requests: Any,
     responses: Any,
     gauges: GaugeBlock | None,
+    diagnostics_dir: str | None = None,
 ) -> None:
     """Child entry point: own the HMM, answer note/reposition requests."""
 
-    from aimusic.accompaniment.matchmaker_follower import MatchmakerStreamFollower
+    started = time.monotonic()
+    diagnostic_file = None
+    if diagnostics_dir is not None:
+        diagnostic_file = open(Path(diagnostics_dir) / "follower-startup-stacks.txt", "a")
+        faulthandler.enable(file=diagnostic_file)
+        faulthandler.dump_traceback_later(15, repeat=True, file=diagnostic_file)
+
+    def progress(stage: str) -> None:
+        responses.put(
+            (
+                "startup",
+                {
+                    "stage": stage,
+                    "monotonic_time": time.monotonic(),
+                    "elapsed_seconds": time.monotonic() - started,
+                    "pid": os.getpid(),
+                },
+            )
+        )
 
     publisher = gauges.publisher("follower") if gauges is not None else None
     try:
-        follower = MatchmakerStreamFollower(
+        progress("import_adapter")
+        from aimusic.accompaniment.pthmm_live_follower import PthmmLiveFollower
+
+        follower = PthmmLiveFollower(
             spec.score_file,
-            method=spec.method,
             tempo_bpm=spec.tempo_bpm,
-            unfold_score=spec.unfold_score,
             provisional_confidence=spec.provisional_confidence,
             minimum_lock_updates=spec.minimum_lock_updates,
             initial_reference_beat=spec.initial_reference_beat,
+            startup_observer=progress,
         )
-    except BaseException as exc:  # surface construction failure to the parent
-        responses.put(("error", repr(exc)))
+    except BaseException:  # surface construction failure to the parent
+        responses.put(("error", traceback.format_exc()))
         return
+    finally:
+        if diagnostic_file is not None:
+            faulthandler.cancel_dump_traceback_later()
+            faulthandler.disable()
+            diagnostic_file.close()
+    progress("ready")
     responses.put(("ready", None))
 
     while True:
@@ -97,9 +130,7 @@ def _child_main(
                 )
             elif kind == "reposition":
                 score_beat, reference_beat = payload
-                follower.reposition_for_entry(
-                    score_beat=score_beat, reference_beat=reference_beat
-                )
+                follower.reposition_for_entry(score_beat=score_beat, reference_beat=reference_beat)
             elif kind == "relocalize":
                 follower.relocalize()
         except BaseException as exc:
@@ -135,7 +166,15 @@ class ProcessFollower:
         max_wait_seconds: float = 0.25,
         start_timeout_seconds: float = 60.0,
         context: Any | None = None,
+        startup_observer: Callable[[dict[str, Any]], None] | None = None,
+        diagnostics_dir: str | None = None,
+        cancel_event: Any | None = None,
+        startup_total_timeout_seconds: float = 180.0,
     ) -> None:
+        if start_timeout_seconds <= 0 or startup_total_timeout_seconds <= 0:
+            raise ValueError("Follower startup timeouts must be positive")
+        if diagnostics_dir is not None:
+            Path(diagnostics_dir).mkdir(parents=True, exist_ok=True)
         self._spec = spec
         self._gauges = gauges
         self._max_wait_seconds = max_wait_seconds
@@ -146,16 +185,100 @@ class ProcessFollower:
         self._responses: Any = self._ctx.Queue()
         self._process = self._ctx.Process(
             target=_child_main,
-            args=(spec, self._requests, self._responses, gauges),
+            args=(spec, self._requests, self._responses, gauges, diagnostics_dir),
             name="rubato-follower",
             daemon=True,
         )
         self._closed = False
-        self._process.start()
-        kind, payload = self._responses.get(timeout=start_timeout_seconds)
-        if kind == "error":
-            self._process.terminate()
-            raise RuntimeError(f"follower process failed to start: {payload}")
+        started = time.monotonic()
+        last_progress = started
+        last_report = started
+        stage = "spawn"
+
+        def report(event: str, **fields: Any) -> None:
+            row = {
+                "type": "follower_startup",
+                "event": event,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "stage": stage,
+                "monotonic_time": time.monotonic(),
+                "elapsed_seconds": time.monotonic() - started,
+                "pid": self._process.pid,
+                **fields,
+            }
+            if diagnostics_dir is not None:
+                # Flush every milestone, independently of the runtime trace queue.
+                with open(Path(diagnostics_dir) / "follower-startup.jsonl", "a") as stream:
+                    stream.write(json.dumps(row) + "\n")
+            if startup_observer is not None:
+                startup_observer(row)
+
+        try:
+            self._process.start()
+            report(
+                "started",
+                score_file=spec.score_file,
+                stage_timeout_seconds=start_timeout_seconds,
+                total_timeout_seconds=startup_total_timeout_seconds,
+            )
+            while True:
+                now = time.monotonic()
+                if cancel_event is not None and cancel_event.is_set():
+                    raise RuntimeError(f"Follower startup cancelled during {stage}")
+                if (
+                    now - last_progress >= start_timeout_seconds
+                    or now - started >= startup_total_timeout_seconds
+                ):
+                    raise TimeoutError(
+                        f"Score follower startup timed out after {now - started:.1f}s "
+                        f"during {stage} ({now - last_progress:.1f}s in this stage; "
+                        f"pid={self._process.pid}). See follower-startup.jsonl "
+                        "and follower-startup-stacks.txt in the run trace directory."
+                    )
+                try:
+                    kind, payload = self._responses.get(
+                        timeout=min(
+                            0.1,
+                            start_timeout_seconds - (now - last_progress),
+                            startup_total_timeout_seconds - (now - started),
+                        )
+                    )
+                except queue.Empty:
+                    if not self._process.is_alive():
+                        raise RuntimeError(
+                            f"Score follower exited during {stage} "
+                            f"(exit code {self._process.exitcode})"
+                        )
+                    if now - last_report >= 5:
+                        report("waiting", stage_elapsed_seconds=now - last_progress)
+                        last_report = now
+                    continue
+                if kind == "startup":
+                    stage = payload["stage"]
+                    last_progress = time.monotonic()
+                    report(
+                        "progress",
+                        child_monotonic_time=payload["monotonic_time"],
+                        child_elapsed_seconds=payload["elapsed_seconds"],
+                    )
+                elif kind == "error":
+                    raise RuntimeError(f"Score follower failed during {stage}: {payload}")
+                elif kind == "ready":
+                    report("ready")
+                    break
+                else:
+                    raise RuntimeError(f"Unexpected follower startup response: {kind!r}")
+        except BaseException as exc:
+            try:
+                report(
+                    "failed",
+                    error_type=type(exc).__name__,
+                    error=str(exc) or repr(exc),
+                    traceback=traceback.format_exc(),
+                )
+            finally:
+                self.close()
+            raise
 
     @property
     def is_alive(self) -> bool:
@@ -216,9 +339,7 @@ class ProcessFollower:
             raw_state=raw_state,
         )
 
-    def reposition_for_entry(
-        self, *, score_beat: float, reference_beat: float | None
-    ) -> None:
+    def reposition_for_entry(self, *, score_beat: float, reference_beat: float | None) -> None:
         if self._closed:
             raise RuntimeError("follower process is closed")
         # Fire-and-forget: the request queue is FIFO, so the child applies this
@@ -239,10 +360,17 @@ class ProcessFollower:
             self._requests.put(_SENTINEL)
         except (OSError, ValueError):
             pass
-        self._process.join(timeout=2.0)
-        if self._process.is_alive():
-            self._process.terminate()
-            self._process.join(timeout=1.0)
+        if self._process.pid is not None:
+            self._process.join(timeout=2.0)
+            if self._process.is_alive():
+                self._process.terminate()
+                self._process.join(timeout=1.0)
+            if self._process.is_alive():
+                self._process.kill()
+                self._process.join(timeout=1.0)
+        for channel in (self._requests, self._responses):
+            channel.cancel_join_thread()
+            channel.close()
 
 
 __all__ = ["FollowerSpec", "ProcessFollower"]

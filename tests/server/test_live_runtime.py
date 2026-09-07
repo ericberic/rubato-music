@@ -2417,3 +2417,35 @@ def test_active_reaper_zone_is_still_selected(monkeypatch: pytest.MonkeyPatch) -
 
     assert router is not None
     assert constructed == ["room_center"]
+
+
+def test_follower_startup_error_is_visible_and_traced(tmp_path, monkeypatch) -> None:
+    class BrokenFollower:
+        def __init__(self, *args, **kwargs):
+            raise TimeoutError("Score follower timed out during import_pitch_hmm")
+
+    monkeypatch.setenv("AIMUSIC_RUNS_ROOT", str(tmp_path / "runs"))
+    monkeypatch.setenv("RUBATO_FOLLOWER_PROCESS", "1")
+    monkeypatch.setattr("aimusic.server.live_runtime.ProcessFollower", BrokenFollower)
+    monkeypatch.setattr("aimusic.server.live_runtime.find_spec", lambda _: object())
+    control = LiveControl()
+    manager = LiveRuntimeManager(
+        hardware_control=control,
+        input_factory=lambda _: FakeInput(),
+        output_factory=lambda _: FakePort(),
+    )
+    manager.start_follow(
+        bundle_id="synthetic_movement_2",
+        revision="fixture-v1",
+        _bundle_root=make_midi_v2_bundle(tmp_path),
+        input_name="fake-in",
+        output_name="fake-out",
+        config=RuntimeConfig(run_id="startup-error"),
+    )
+    control.wait_until_idle(timeout=2)
+    assert manager.status().phase is RunPhase.FAILED
+    assert "import_pitch_hmm" in manager.status().message
+    trace = tmp_path / "runs/startup-error/trace/runtime.jsonl"
+    rows = [json.loads(line) for line in trace.read_text().splitlines()]
+    assert rows[-1]["stage"] == "failed"
+    assert rows[-1]["error_type"] == "TimeoutError"

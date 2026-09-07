@@ -53,6 +53,7 @@ from aimusic.accompaniment.runtime_contracts import (
     RuntimeConfig,
     RuntimeScorePosition,
     RuntimeStatus,
+    StartupTrace,
     TelemetryLevel,
 )
 from aimusic.accompaniment.runtime_io import (
@@ -1935,15 +1936,46 @@ class LiveRuntimeManager:
         path without making every performance training evidence.
         """
 
+        request_started = time.monotonic()
+        request_trace = paths.run_trace_dir(config.run_id) / "startup-request.jsonl"
+
+        def prepare(stage: str, action: Callable[[], Any]) -> Any:
+            def record(event: str, error: Exception | None = None) -> None:
+                row = StartupTrace(
+                    type="runtime_startup",
+                    stage=stage,
+                    event=event,
+                    monotonic_time=time.monotonic(),
+                    elapsed_seconds=time.monotonic() - request_started,
+                    error_type=type(error).__name__ if error is not None else None,
+                    error=(str(error) or repr(error)) if error is not None else None,
+                )
+                with request_trace.open("a") as stream:
+                    stream.write(row.model_dump_json() + "\n")
+
+            record("started")
+            try:
+                result = action()
+            except Exception as error:
+                record("failed", error)
+                raise
+            record("completed")
+            return result
+
         if duration_seconds is not None and duration_seconds <= 0:
             raise ValueError("duration_seconds must be positive")
-        config = _resolve_follow_clock(config)
-        audio_config = self._audio_config_loader()
-        mix_policy, config = self._resolve_mix_policy(config, audio_config)
-        logger.info("Starting live FOLLOW run with %r clock", config.follow_clock)
-        projection = self._projection(bundle_id, revision, _bundle_root)
+        config = prepare("resolve_clock", lambda: _resolve_follow_clock(config))
+        audio_config = prepare("load_audio_config", self._audio_config_loader)
+        mix_policy, config = prepare(
+            "resolve_mix", lambda: self._resolve_mix_policy(config, audio_config)
+        )
+        projection = prepare(
+            "project_score", lambda: self._projection(bundle_id, revision, _bundle_root)
+        )
         bundle = projection.bundle
-        arrival_curve = _interpretation_arrival_curve(projection, config)
+        arrival_curve = prepare(
+            "load_interpretation", lambda: _interpretation_arrival_curve(projection, config)
+        )
         entry = _runtime_entry_point(
             projection,
             start_measure=start_measure,
@@ -2054,6 +2086,40 @@ class LiveRuntimeManager:
             input_reader: threading.Thread | None = None
             try:
                 trace_sink = JsonlTraceSink(paths.run_trace_dir(config.run_id) / "runtime.jsonl")
+                startup_started = clock.now()
+
+                def startup_progress(row: dict[str, Any]) -> None:
+                    trace_sink.write(StartupTrace.model_validate(row))
+                    with self._lock:
+                        current = self._status
+                    if current is not None and current.phase is RunPhase.PREPARING:
+                        self._publish(
+                            current.model_copy(
+                                update={
+                                    "monotonic_time": clock.now(),
+                                    "message": (
+                                        "Preparing score follower · "
+                                        f"{row.get('stage', 'starting').replace('_', ' ')}"
+                                        f" · {row.get('elapsed_seconds', 0):.0f}s"
+                                    ),
+                                }
+                            ),
+                            projection=projection,
+                        )
+
+                def startup_stage(stage: str) -> None:
+                    trace_sink.write(
+                        StartupTrace.model_validate(
+                            {
+                                "type": "runtime_startup",
+                                "stage": stage,
+                                "monotonic_time": clock.now(),
+                                "elapsed_seconds": clock.now() - startup_started,
+                            }
+                        )
+                    )
+
+                startup_stage("follower")
                 if _follower_in_subprocess():
                     # The PTHMM holds the GIL for tens of ms per note and that
                     # cost grows through a performance, starving every other
@@ -2066,7 +2132,10 @@ class LiveRuntimeManager:
                             tempo_bpm=config.initial_tempo_bpm,
                             minimum_lock_updates=2 if entry is not None else 3,
                             initial_reference_beat=initial_reference_beat,
-                        )
+                        ),
+                        startup_observer=startup_progress,
+                        diagnostics_dir=str(paths.run_trace_dir(config.run_id)),
+                        cancel_event=stop_event,
                     )
                 else:
                     raw_follower = MatchmakerStreamFollower(
@@ -2076,6 +2145,7 @@ class LiveRuntimeManager:
                         minimum_lock_updates=2 if entry is not None else 3,
                         initial_reference_beat=initial_reference_beat,
                     )
+                startup_stage("follower_ready")
                 follower = _runtime_follower(raw_follower, projection)
                 # Recover a tracker that mis-locks early and would otherwise stay
                 # tens of beats behind for the whole take (Decision 0018). Wraps
@@ -2096,6 +2166,7 @@ class LiveRuntimeManager:
                 # so the orchestra sounds only through the live audio zones (e.g.
                 # BBCSO to a room speaker) with no MIDI copy to double it. Open the
                 # port only when one was named.
+                startup_stage("open_outputs")
                 yamaha_output: DeadlineAccompanimentOutput | None = None
                 if output_name:
                     opened_output_port = self._output_factory(output_name)
@@ -2150,6 +2221,7 @@ class LiveRuntimeManager:
                         "no orchestra output: choose a MIDI output, or configure a "
                         "live audio zone the mix routes to"
                     )
+                startup_stage("outputs_ready")
                 output = MultiZoneAccompanimentOutput(yamaha_output, vst_router)
                 # The Yamaha adapter receives the initial master level in its
                 # constructor; live audio zones must receive the same value so
@@ -2199,6 +2271,7 @@ class LiveRuntimeManager:
                         name="rubato-midi-input",
                         daemon=True,
                     )
+                    startup_stage("input_ready")
                     input_reader.start()
                     recording_started_at = clock.now()
                     if entry is not None:
@@ -2211,6 +2284,7 @@ class LiveRuntimeManager:
                         )
                     else:
                         self._publish(engine.start(), projection=projection)
+                    startup_stage("playing")
                     while not stop_event.is_set():
                         if (
                             duration_seconds is not None
@@ -2286,11 +2360,24 @@ class LiveRuntimeManager:
                 self._publish(engine.stop(), projection=projection)
                 return "Live FOLLOW run stopped"
             except Exception as exc:
-                tempo_commands.close(str(exc))
-                volume_commands.close(str(exc))
-                output_advance_commands.close(str(exc))
+                error_message = str(exc) or f"{type(exc).__name__}: startup failed"
+                if trace_sink is not None:
+                    trace_sink.write(
+                        StartupTrace.model_validate(
+                            {
+                                "type": "runtime_startup",
+                                "stage": "failed",
+                                "monotonic_time": clock.now(),
+                                "error_type": type(exc).__name__,
+                                "error": error_message,
+                            }
+                        )
+                    )
+                tempo_commands.close(error_message)
+                volume_commands.close(error_message)
+                output_advance_commands.close(error_message)
                 if engine is not None:
-                    self._publish(engine.fail(str(exc)), projection=projection)
+                    self._publish(engine.fail(error_message), projection=projection)
                 else:
                     self._publish(
                         RuntimeStatus(
@@ -2299,7 +2386,7 @@ class LiveRuntimeManager:
                             phase=RunPhase.FAILED,
                             state_word="Silent",
                             monotonic_time=clock.now(),
-                            message=str(exc),
+                            message=error_message,
                         ),
                         projection=projection,
                     )

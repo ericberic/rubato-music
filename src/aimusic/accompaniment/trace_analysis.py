@@ -62,6 +62,15 @@ def describe_live_run_artifacts(
     return {
         "run_id": run_id,
         "runtime_trace": str(trace),
+        "startup_diagnostics": {
+            name: str(trace.parent / name)
+            for name in (
+                "startup-request.jsonl",
+                "follower-startup.jsonl",
+                "follower-startup-stacks.txt",
+            )
+            if (trace.parent / name).is_file()
+        },
         "cursor_trace": str(cursor_trace.resolve()) if cursor_trace.is_file() else None,
         "captured_midi": str(captured_midi.resolve()) if captured_midi.is_file() else None,
         "scratch_marker": (
@@ -79,6 +88,10 @@ def analyze_runtime_trace(path: Path | str) -> dict[str, Any]:
     """Summarize follower, tempo, policy, and MIDI dispatch behavior."""
 
     rows = [json.loads(line) for line in Path(path).read_text(encoding="utf-8").splitlines()]
+    request_trace = Path(path).parent / "startup-request.jsonl"
+    if request_trace.is_file():
+        rows.extend(json.loads(line) for line in request_trace.read_text().splitlines())
+
     type_counts = Counter(str(row.get("type", "unknown")) for row in rows)
     follower_rows = [row for row in rows if row.get("type") == "follower"]
     tempo_rows = [row for row in rows if row.get("type") == "tempo"]
@@ -365,6 +378,10 @@ def analyze_runtime_trace(path: Path | str) -> dict[str, Any]:
     return {
         "path": str(Path(path)),
         "row_counts": dict(sorted(type_counts.items())),
+        "startup": sorted(
+            (row for row in rows if row.get("type") in ("runtime_startup", "follower_startup")),
+            key=lambda row: row["monotonic_time"],
+        ),
         "follower": {
             "updates": len(follower_rows),
             "raw_backward_updates": backward_raw_updates,

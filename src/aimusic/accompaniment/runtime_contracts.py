@@ -433,6 +433,27 @@ class StateTrace(StrictModel):
     status: RuntimeStatus
 
 
+class StartupTrace(StrictModel):
+    """Startup-only diagnostics; elapsed times share the monotonic clock."""
+
+    type: Literal["follower_startup", "runtime_startup"]
+    stage: str
+    monotonic_time: float
+    elapsed_seconds: float = 0.0
+    event: str | None = None
+    timestamp: str | None = None
+    pid: int | None = None
+    child_monotonic_time: float | None = None
+    child_elapsed_seconds: float | None = None
+    stage_elapsed_seconds: float | None = None
+    stage_timeout_seconds: float | None = None
+    total_timeout_seconds: float | None = None
+    score_file: str | None = None
+    error_type: str | None = None
+    error: str | None = None
+    traceback: str | None = None
+
+
 class LoopTimingTrace(StrictModel):
     """Periodic cadence/work stats for one real-time loop or stage.
 
@@ -534,6 +555,7 @@ RuntimeTrace = Annotated[
     | FreeRegionTrace
     | StateTrace
     | LoopTimingTrace
+    | StartupTrace
     | AudioWorkerTrace
     | MixStateTrace,
     Field(discriminator="type"),
