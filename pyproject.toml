@@ -11,6 +11,11 @@ dependencies = [
     "python-multipart>=0.0.6",
     "mido>=1.3.0",
     "numpy>=1.26.0",
+    # Directly imported: the banded PTHMM transition is a scipy.sparse matrix
+    # (accompaniment/matchmaker_follower.py). It used to arrive transitively via
+    # matchmaker, but the follower's own test doubles reach that code without
+    # the `live` extra installed, so it must be declared.
+    "scipy>=1.11.0",
     "dvc>=3.40.0",
     "pyyaml>=6.0.1",
     "filelock>=3.20.0",
@@ -28,8 +33,9 @@ dev = [
 ]
 live = [
     "python-rtmidi>=1.5.8",
-    # The live adapter intentionally uses a narrow internal PTHMM seam to avoid
-    # Matchmaker's eager audio/plotting imports. Review before upgrading.
+    # Pinned exactly: Rubato replaces this package's PTHMM transition matvec
+    # and observation model in place (see accompaniment/matchmaker_follower.py),
+    # which depends on internal attribute names a patch release could rename.
     "pymatchmaker[devices]==0.3.0",
 ]
 # Offline score-bundle tooling: MusicXML theory analysis and PDF geometry.

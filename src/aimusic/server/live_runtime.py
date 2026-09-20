@@ -95,6 +95,7 @@ from aimusic.mixing.policy import compile_mix_policy
 from aimusic.mixing.zones import room_zones
 from aimusic.realtime.follower_preparation import FollowerPreparation, FollowerPreparationStatus
 from aimusic.realtime.follower_process import FollowerSpec, ProcessFollower
+from aimusic.realtime.monitor import VitalsMonitor
 from aimusic.server.live_control import LiveControl, live_control
 from aimusic.server.schemas import (
     LivePerformancePlanResponse,
@@ -2123,6 +2124,7 @@ class LiveRuntimeManager:
             clock = SystemMonotonicClock()
             follower: ScoreFollower | None = None
             raw_follower: MatchmakerStreamFollower | ProcessFollower | None = None
+            vitals: VitalsMonitor | None = None
             output: MultiZoneAccompanimentOutput | None = None
             vst_router: LiveVstRouter | None = None
             engine: LiveEngine | None = None
@@ -2164,6 +2166,21 @@ class LiveRuntimeManager:
                         self._follower_identity(score_file),
                         stop_event,
                     )
+                    # Vitals are sampled from outside (Decision 0011): the events
+                    # worth measuring are stalls, and an in-process sampler is
+                    # descheduled by the very stall it should record. The follower
+                    # carries the gauge block it was prepared with; workers only
+                    # do ~0.4 us lock-free stores into it.
+                    gauges = getattr(raw_follower, "gauges", None)
+                    if gauges is not None:
+                        try:
+                            vitals = VitalsMonitor(
+                                gauges,
+                                paths.run_trace_dir(config.run_id) / "vitals.jsonl",
+                            )
+                        except Exception:  # an observer must never fail a run
+                            logger.exception("Could not start the vitals monitor")
+                            vitals = None
                 else:
                     raw_follower = MatchmakerStreamFollower(
                         score_file,
@@ -2458,6 +2475,13 @@ class LiveRuntimeManager:
                     raw_follower.close()
                     if _follower_in_subprocess():
                         self._follower_preparation.release()
+                if vitals is not None:
+                    # After the follower, so the last samples include its
+                    # shutdown; best-effort, never fails the run.
+                    try:
+                        vitals.close()
+                    except Exception:
+                        logger.exception("Could not stop the vitals monitor")
                 if output is not None:
                     output.close()
                     vst_router = None

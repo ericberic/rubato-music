@@ -60,21 +60,29 @@ or an audio device. See
 
 ## Running Tests
 
+Run the test suite (deterministic Python tests and webapp unit tests):
+
 ```bash
-uv run pytest
+make test
 ```
 
-Hardware tests should be opt-in and never required in CI.
+Pass arguments to pytest via `ARGS`:
 
 ```bash
-uv run pytest -m hardware
+make test ARGS="tests/test_server_api.py"
 ```
 
-Matchmaker package tests are also optional:
+Hardware tests are opt-in and never required in CI:
 
 ```bash
-uv sync --extra dev --extra live
-uv run pytest -m matchmaker
+make test ARGS="-m hardware"
+```
+
+Matchmaker package tests are also optional (requires the `live` extra,
+installed by `make run` or `uv sync --extra dev --extra live`):
+
+```bash
+make test ARGS="-m matchmaker"
 ```
 
 The Pedalboard/BBCSO renderer is implemented in live FOLLOW but remains an
