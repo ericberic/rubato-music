@@ -645,9 +645,23 @@ def _scheduler_target_at(path: Path, *, score_beat: float) -> float:
 def test_mocked_midi_follow_uses_shared_hardware_lock(tmp_path, monkeypatch) -> None:
     monkeypatch.setenv("AIMUSIC_RUNS_ROOT", str(tmp_path / "runs"))
     monkeypatch.setenv("RUBATO_FOLLOWER_PROCESS", "0")
-    monkeypatch.setattr("aimusic.server.live_runtime.MatchmakerStreamFollower", FakeFollower)
+    note_sent, input_observed = threading.Event(), threading.Event()
+
+    class SignallingFollower(FakeFollower):
+        def observe(self, note):
+            update = super().observe(note)
+            input_observed.set()
+            return update
+
+    class SignallingPort(FakePort):
+        def send(self, message):
+            super().send(message)
+            if message.type == "note_on":
+                note_sent.set()
+
+    monkeypatch.setattr("aimusic.server.live_runtime.MatchmakerStreamFollower", SignallingFollower)
     monkeypatch.setattr("aimusic.server.live_runtime.find_spec", lambda _: object())
-    port = FakePort()
+    port = SignallingPort()
     control = LiveControl()
     root = make_midi_v2_bundle(tmp_path)
     manager = LiveRuntimeManager(
@@ -676,6 +690,8 @@ def test_mocked_midi_follow_uses_shared_hardware_lock(tmp_path, monkeypatch) -> 
     else:
         raise AssertionError("a second hardware job should have been rejected")
 
+    assert input_observed.wait(3)
+    assert note_sent.wait(3)
     manager.stop()
     control.wait_until_idle()
     assert manager.status().phase is RunPhase.COMPLETED

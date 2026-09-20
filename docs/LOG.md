@@ -1,5 +1,14 @@
 # Knowledge Log
 
+## [2026-09-19] Browser regression coverage for prepared startup
+
+Updated browser runtime doubles for follower readiness. Kept automatic passage
+suggestions in the rehearsal inspector while making idle Perform navigation
+independent: measure 1 until explicit selection. The browser regression checks
+that opening the app and loading coverage preserves measure 1. Hardware-lock
+tests now wait for actual input/output events before stopping, removing a
+scheduler race from their assertions.
+
 ## [2026-09-19] Prepare followers before Go Live
 
 Adapted background one-shot preparation to the public lightweight PTHMM,

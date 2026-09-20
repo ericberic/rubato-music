@@ -277,6 +277,13 @@ class OrchestraLedFakeLiveRuntime:
             message="BBCSO ready on LG TV SSCR2",
         )
 
+    def follower_status(self):
+        from aimusic.realtime.follower_preparation import FollowerPreparationStatus
+        return FollowerPreparationStatus(state="ready", message="Score follower ready")
+
+    def preload_follower(self, **kwargs):
+        return self.follower_status()
+
     def _position(self, *, source_tick: int) -> RuntimeScorePosition:
         position = self.projection.position_at_source_tick(source_tick)
         return RuntimeScorePosition(
@@ -810,6 +817,11 @@ def test_idle_stage_keeps_live_record_and_sound_together_without_diagnostics(
 ) -> None:
     page.goto(f"{live_server}/app/", wait_until="networkidle")
 
+    # Coverage suggestions may pick a later rehearsal passage, but the idle
+    # Perform score must remain at measure 1 before Go Live.
+    expect(page.get_by_test_id("score-measure-label-1")).to_have_class(re.compile("is-selected"))
+    expect(page.get_by_test_id("follower-readiness")).to_contain_text("Score follower ready")
+
     # The score is the whole idle surface. The former prose-heavy intent cards
     # are gone; live, record, and the nearby sound drawer remain in one line.
     expect(page.get_by_test_id("intent-launcher")).to_have_count(0)
@@ -867,9 +879,8 @@ def test_orchestra_readiness_reports_loading_progress_then_real_audio_ready(
 
     expect(readiness).to_contain_text("Orchestra Loading")
     expect(readiness).to_contain_text("Loading BBCSO 2 of 4 · low strings")
-    expect(readiness.get_by_role("progressbar", name="REAPER orchestra tracks ready")).to_have_attribute(
-        "value", "1"
-    )
+    progress = readiness.get_by_role("progressbar", name="REAPER orchestra tracks ready")
+    expect(progress).to_have_attribute("value", "1")
     expect(page.get_by_test_id("perform-live")).to_be_disabled()
 
     shared_events.publish(

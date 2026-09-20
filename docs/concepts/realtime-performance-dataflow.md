@@ -82,8 +82,9 @@ Before the soloist starts playing, Rubato loads:
 
 ### Prepared score-follower lifecycle
 
-Perform opens at measure 1. Automatic coverage suggestions stay in Data view;
-explicit measure selection and an active performance still take precedence.
+Perform opens at measure 1. Automatic coverage suggestions still populate the
+rehearsal inspector but do not navigate the idle Perform score. Explicit
+measure selection and an active performance take precedence.
 
 Opening the movement requests `POST /api/runtime/follower/preload` with its
 tempo. The server prepares one untouched `ProcessFollower` in the background,

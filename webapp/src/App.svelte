@@ -227,7 +227,7 @@
   let scoreShellEl: HTMLElement | null = null;
   let scoreStageEl: HTMLDivElement | null = null;
   let scoreOverlayEl: PdfCoverageOverlay | null = null;
-  let selectedRehearsalMeasureNumber: number | null = 1;
+  let selectedRehearsalMeasureNumber: number | null = null;
   let liveStartMeasureNumber: number | null = null;
   let suggestionContext = '';
   let selectedForTakeId = '';
@@ -2306,10 +2306,7 @@
         selectedEntryPasses.length,
         scoreTakeCounts[selectedRehearsalMeasureNumber] ?? 0,
       );
-  // Perform opens at the beginning; coverage suggestions belong to Data.
-  // Otherwise an asynchronous take/coverage response jumps the idle score
-  // to a later uncovered passage just before the performer presses Go live.
-  $: if (coverageData && workspaceMode === 'data') {
+  $: if (coverageData) {
     const takeId = latestTake?.take_id ?? 'no-take';
     const context = `${takeId}:${coverageData.revision}:${coverageData.algorithm_revision}`;
     if (suggestionContext !== context) {
@@ -2575,6 +2572,9 @@
     }
   }
 
+  // Rehearsal suggestions may update the inspector after coverage arrives.
+  // The Perform score stays at the beginning until an explicit measure click
+  // sets liveStartMeasureNumber; active transport positions still win.
   $: displayedScoreMeasure = displayedScorePosition
     ? displayedScorePosition.measure_index + 1
     : null;
@@ -4403,7 +4403,9 @@
           latestTakeEndMeasure={latestTakeSpan ? latestTakeSpan.end.measure_index + 1 : null}
           latestTakeStartScoreBeat={latestTakeSpan?.start.score_beat ?? null}
           latestTakeEndScoreBeat={latestTakeSpan?.end.score_beat ?? null}
-          selectedMeasure={selectedRehearsalMeasureNumber}
+          selectedMeasure={workspaceMode === 'perform' && liveStartMeasureNumber === null
+            ? 1
+            : selectedRehearsalMeasureNumber}
           takeCountsByMeasure={scoreTakeCounts}
           {needsInfo}
           bind:currentPage={scoreOverlayPage}
