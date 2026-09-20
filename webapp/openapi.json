@@ -1066,6 +1066,88 @@
         "title": "EnvelopePoint",
         "type": "object"
       },
+      "FollowerPreloadRequest": {
+        "properties": {
+          "bundle_id": {
+            "minLength": 1,
+            "title": "Bundle Id",
+            "type": "string"
+          },
+          "force": {
+            "default": false,
+            "title": "Force",
+            "type": "boolean"
+          },
+          "revision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revision"
+          },
+          "tempo_bpm": {
+            "default": 68.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Tempo Bpm",
+            "type": "number"
+          }
+        },
+        "required": [
+          "bundle_id"
+        ],
+        "title": "FollowerPreloadRequest",
+        "type": "object"
+      },
+      "FollowerPreparationStatus": {
+        "properties": {
+          "elapsed_seconds": {
+            "default": 0.0,
+            "title": "Elapsed Seconds",
+            "type": "number"
+          },
+          "message": {
+            "default": "Follower preparation has not started",
+            "title": "Message",
+            "type": "string"
+          },
+          "preparation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preparation Id"
+          },
+          "state": {
+            "default": "not_loaded",
+            "enum": [
+              "not_loaded",
+              "preparing",
+              "ready",
+              "in_use",
+              "failed"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "timings_ms": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Timings Ms",
+            "type": "object"
+          }
+        },
+        "title": "FollowerPreparationStatus",
+        "type": "object"
+      },
       "FreeRegion": {
         "properties": {
           "detector_model": {
@@ -1197,6 +1279,7 @@
         "description": "Lifecycle phase of the process-wide hardware job slot.",
         "enum": [
           "idle",
+          "preparing",
           "running",
           "stopping",
           "completed",
@@ -6637,6 +6720,68 @@
           }
         },
         "summary": "Start Live Runtime Follow",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/runtime/follower/preload": {
+      "post": {
+        "operationId": "preloadFollower",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowerPreloadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowerPreparationStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Preload Follower",
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/api/runtime/follower/status": {
+      "get": {
+        "operationId": "followerPreparationStatus",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowerPreparationStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Follower Preparation Status",
         "tags": [
           "sessions"
         ]

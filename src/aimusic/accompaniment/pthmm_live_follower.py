@@ -68,6 +68,7 @@ class PthmmLiveFollower:
             else None
         )
         self._last_score_beat: float | None = self._warm_start_reference_beat
+        self._configured_for_run = False
         self._closed = False
         self._error: BaseException | None = None
         self._thread = threading.Thread(
@@ -77,6 +78,15 @@ class PthmmLiveFollower:
         )
         progress("start_tracking_thread")
         self._thread.start()
+
+    def configure_entry(self, reference_beat: float | None, minimum_lock_updates: int) -> None:
+        """Configure once, before input; this is deliberately not a take reset."""
+        if self._configured_for_run or self._stable_updates:
+            raise RuntimeError("Only a pristine follower can be claimed")
+        self._configured_for_run = True
+        self._minimum_lock_updates = minimum_lock_updates
+        if reference_beat is not None:
+            self.reposition_for_entry(score_beat=reference_beat, reference_beat=reference_beat)
 
     def observe(self, note: PerformedNote) -> FollowerUpdate | None:
         if self._closed:

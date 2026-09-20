@@ -298,3 +298,28 @@ For each live rehearsal:
 Deterministic tests verify that events are journaled even with no WebSocket
 loop, correlation fields and UTC timestamps are present, exception tracebacks
 are retained, and a journal write failure cannot escape a worker error path.
+
+## Follower Startup Timing
+
+Background preparation is tested with deterministic gated builders and a logical
+clock: cold Go Live waits without emitting MIDI, ready checkout performs no
+construction, and later takes receive fresh children. Tests also cover
+cancellation, shutdown, stale keys, dead children, and failure/retry. Existing
+public startup-failure diagnostics and the lightweight PTHMM remain covered.
+
+```bash
+uv run pytest tests/realtime/test_follower_preparation.py tests/server/test_live_runtime.py
+uv run python scripts/benchmark_follower_startup.py \
+  --score-file path/to/solo_reference.mid --max-ready-ms 500 \
+  --output /tmp/rubato-follower-startup.json
+```
+
+The optional benchmark spawns real cold processes and then times prepared
+checkout, without MIDI/audio devices. It keeps OS caches. The 500 ms budget is
+for follower checkout/entry acknowledgement only, not complete sound onset;
+base CI asserts logical construction cost rather than machine-dependent speed.
+See the [follower lifecycle](concepts/realtime-performance-dataflow.md#prepared-score-follower-lifecycle).
+
+A local fresh-process run on 2026-09-19 measured 3,225 ms cold versus 0.36 ms
+prepared checkout with the public lightweight follower (OS caches retained).
+This is a measured example, not a cross-machine performance guarantee.

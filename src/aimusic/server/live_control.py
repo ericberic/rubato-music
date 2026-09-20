@@ -78,7 +78,11 @@ class LiveJobStatus:
                 phase = HardwareJobPhase.RUNNING
             else:
                 phase = HardwareJobPhase.IDLE
-        expected_running = phase in {HardwareJobPhase.RUNNING, HardwareJobPhase.STOPPING}
+        expected_running = phase in {
+            HardwareJobPhase.PREPARING,
+            HardwareJobPhase.RUNNING,
+            HardwareJobPhase.STOPPING,
+        }
         if running is not expected_running:
             raise ValueError(f"Hardware phase {phase.value} requires running={expected_running}")
         object.__setattr__(self, "phase", phase)
@@ -92,7 +96,20 @@ class LiveJobStatus:
 
 _LEGAL_PHASE_TRANSITIONS: dict[HardwareJobPhase, frozenset[HardwareJobPhase]] = {
     HardwareJobPhase.IDLE: frozenset(
-        {HardwareJobPhase.RUNNING, HardwareJobPhase.COMPLETED, HardwareJobPhase.FAILED}
+        {
+            HardwareJobPhase.PREPARING,
+            HardwareJobPhase.RUNNING,
+            HardwareJobPhase.COMPLETED,
+            HardwareJobPhase.FAILED,
+        }
+    ),
+    HardwareJobPhase.PREPARING: frozenset(
+        {
+            HardwareJobPhase.RUNNING,
+            HardwareJobPhase.STOPPING,
+            HardwareJobPhase.COMPLETED,
+            HardwareJobPhase.FAILED,
+        }
     ),
     HardwareJobPhase.RUNNING: frozenset(
         {
@@ -103,10 +120,20 @@ _LEGAL_PHASE_TRANSITIONS: dict[HardwareJobPhase, frozenset[HardwareJobPhase]] = 
     ),
     HardwareJobPhase.STOPPING: frozenset({HardwareJobPhase.COMPLETED, HardwareJobPhase.FAILED}),
     HardwareJobPhase.COMPLETED: frozenset(
-        {HardwareJobPhase.IDLE, HardwareJobPhase.RUNNING, HardwareJobPhase.FAILED}
+        {
+            HardwareJobPhase.IDLE,
+            HardwareJobPhase.PREPARING,
+            HardwareJobPhase.RUNNING,
+            HardwareJobPhase.FAILED,
+        }
     ),
     HardwareJobPhase.FAILED: frozenset(
-        {HardwareJobPhase.IDLE, HardwareJobPhase.RUNNING, HardwareJobPhase.COMPLETED}
+        {
+            HardwareJobPhase.IDLE,
+            HardwareJobPhase.PREPARING,
+            HardwareJobPhase.RUNNING,
+            HardwareJobPhase.COMPLETED,
+        }
     ),
 }
 
@@ -278,6 +305,7 @@ class LiveControl:
         message: str,
         target: Callable[[threading.Event], str | None],
         session_id: str | None = None,
+        preparing: bool = False,
     ) -> LiveJobStatus:
         """Run another Yamaha workflow under the shared hardware-job lock."""
 
@@ -286,7 +314,7 @@ class LiveControl:
             stop_event = threading.Event()
             self._stop_event = stop_event
             status = self._transition_locked(
-                phase=HardwareJobPhase.RUNNING,
+                phase=HardwareJobPhase.PREPARING if preparing else HardwareJobPhase.RUNNING,
                 kind=kind,
                 running=True,
                 started_at=utc_now(),
@@ -304,6 +332,18 @@ class LiveControl:
             )
             self._thread.start()
             return status
+
+    def mark_managed_ready(self) -> None:
+        with self._lock:
+            if self._status.phase is HardwareJobPhase.PREPARING:
+                self._transition_locked(
+                    phase=HardwareJobPhase.RUNNING,
+                    kind=self._status.kind,
+                    running=True,
+                    started_at=self._status.started_at,
+                    session_id=self._status.session_id,
+                    message="Live follower and orchestra ready",
+                )
 
     def attach_score_transport(self, score_transport: ScoreTransportResponse) -> LiveJobStatus:
         """Attach score-time anchors to the currently running hardware job.

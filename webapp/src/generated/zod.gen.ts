@@ -398,6 +398,33 @@ export const zCompiledRegion = z.object({
 });
 
 /**
+ * FollowerPreloadRequest
+ */
+export const zFollowerPreloadRequest = z.object({
+    bundle_id: z.string().min(1),
+    force: z.boolean().optional().default(false),
+    revision: z.string().nullish(),
+    tempo_bpm: z.number().gt(0).optional().default(68)
+});
+
+/**
+ * FollowerPreparationStatus
+ */
+export const zFollowerPreparationStatus = z.object({
+    elapsed_seconds: z.number().optional().default(0),
+    message: z.string().optional().default('Follower preparation has not started'),
+    preparation_id: z.string().nullish(),
+    state: z.enum([
+        'not_loaded',
+        'preparing',
+        'ready',
+        'in_use',
+        'failed'
+    ]).optional().default('not_loaded'),
+    timings_ms: z.record(z.string(), z.number()).optional()
+});
+
+/**
  * FreeRegion
  */
 export const zFreeRegion = z.object({
@@ -449,6 +476,7 @@ export const zGesture = z.enum([
  */
 export const zHardwareJobPhase = z.enum([
     'idle',
+    'preparing',
     'running',
     'stopping',
     'completed',
@@ -1909,6 +1937,18 @@ export const zStartLiveRuntimeFollowBody = zLiveFollowStartRequest;
  * Successful Response
  */
 export const zStartLiveRuntimeFollowResponse = zRuntimeStatus;
+
+export const zPreloadFollowerBody = zFollowerPreloadRequest;
+
+/**
+ * Successful Response
+ */
+export const zPreloadFollowerResponse = zFollowerPreparationStatus;
+
+/**
+ * Successful Response
+ */
+export const zFollowerPreparationStatusResponse = zFollowerPreparationStatus;
 
 export const zUpdateLiveRuntimeOutputAdvanceBody = zLiveOutputAdvanceUpdateRequest;
 

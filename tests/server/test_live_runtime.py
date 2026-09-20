@@ -75,11 +75,10 @@ from aimusic.server.live_runtime import (
     _start_live_vst_router,
 )
 from aimusic.takes.models import Interpretation, PerformanceProfileCell
+from tests.oguri_guard import requires_oguri_derived
 
 V2_FIXTURE = Path("tests/fixtures/score_bundles/synthetic_v2")
 
-
-from tests.oguri_guard import requires_oguri_derived
 
 @pytest.fixture(autouse=True)
 def isolate_runtime_recordings(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -1948,9 +1947,7 @@ def test_live_vst_router_retries_one_native_cold_start_failure(
             nonlocal attempts
             attempts += 1
             if attempts == 1:
-                raise LiveVstError(
-                    "native cold-start failure", worker_exit_code=worker_exit_code
-                )
+                raise LiveVstError("native cold-start failure", worker_exit_code=worker_exit_code)
             kwargs["startup_observer"](
                 {
                     "state": "ready",
@@ -2262,9 +2259,7 @@ def test_input_reader_without_factory_stops_quietly_on_error() -> None:
             raise OSError("closed under us")
 
     # Should return promptly rather than raise or loop forever.
-    lr._read_input_into_queue(
-        FailingPort(), _Clock(), _deque(), [], threading.Event(), None
-    )
+    lr._read_input_into_queue(FailingPort(), _Clock(), _deque(), [], threading.Event(), None)
 
 
 def test_keep_awake_starts_and_releases_a_wake_assertion(
@@ -2349,9 +2344,7 @@ def test_resident_router_fails_after_sustained_unhealth() -> None:
 
     assert manager._resident_router_failed(router) is False  # grace starts
     # Simulate the grace window elapsing.
-    manager._resident_unhealthy_monotonic = time.monotonic() - (
-        _RESIDENT_HEALTH_GRACE_SECONDS + 1
-    )
+    manager._resident_unhealthy_monotonic = time.monotonic() - (_RESIDENT_HEALTH_GRACE_SECONDS + 1)
     assert manager._resident_router_failed(router) is True
 
 
@@ -2368,9 +2361,7 @@ def _reaper_router_probe(monkeypatch: pytest.MonkeyPatch) -> list:
         def close(self) -> None:  # pragma: no cover - not exercised here
             pass
 
-    monkeypatch.setattr(
-        "aimusic.server.live_runtime.ReaperMidiRouter", _FakeReaperRouter
-    )
+    monkeypatch.setattr("aimusic.server.live_runtime.ReaperMidiRouter", _FakeReaperRouter)
     return constructed
 
 
@@ -2449,3 +2440,96 @@ def test_follower_startup_error_is_visible_and_traced(tmp_path, monkeypatch) -> 
     rows = [json.loads(line) for line in trace.read_text().splitlines()]
     assert rows[-1]["stage"] == "failed"
     assert rows[-1]["error_type"] == "TimeoutError"
+
+
+def test_prepared_follower_runtime_cold_start_and_next_take(tmp_path, monkeypatch):
+    from aimusic.realtime.follower_preparation import FollowerPreparation
+    from aimusic.server.schemas import HardwareJobPhase
+
+    monkeypatch.setenv("AIMUSIC_RUNS_ROOT", str(tmp_path / "runs"))
+    monkeypatch.setenv("RUBATO_FOLLOWER_PROCESS", "1")
+    monkeypatch.setattr("aimusic.server.live_runtime.find_spec", lambda _: object())
+    entered, finish, ready, active = (threading.Event() for _ in range(4))
+    instances = []
+
+    class PreparedFake(FakeFollower):
+        is_alive = True
+        startup_timings_ms = {"imports": 123.0}
+
+        def configure_entry(self, beat, minimum):
+            self.entry = (beat, minimum)
+
+        def close(self):
+            self.is_alive = False
+
+    def factory(spec, cancel_event):
+        entered.set()
+        assert finish.wait(3)
+        child = PreparedFake()
+        instances.append(child)
+        return child
+
+    port = FakePort()
+    control = LiveControl()
+    root = make_midi_v2_bundle(tmp_path)
+    manager = LiveRuntimeManager(
+        hardware_control=control,
+        input_factory=lambda _: FakeInput(),
+        output_factory=lambda _: port,
+    )
+    manager._follower_preparation = FollowerPreparation(
+        factory,
+        lambda s: ready.set() if s.state == "ready" else None,
+    )
+    original_publish = manager._publish
+
+    def publish(status, **kwargs):
+        original_publish(status, **kwargs)
+        if status.phase is RunPhase.ACTIVE:
+            active.set()
+
+    monkeypatch.setattr(manager, "_publish", publish)
+
+    def start(run_id):
+        manager.start_follow(
+            bundle_id="synthetic_movement_2",
+            revision="fixture-v1",
+            _bundle_root=root,
+            input_name="fake-in",
+            output_name="fake-out",
+            config=RuntimeConfig(run_id=run_id),
+        )
+
+    try:
+        start("cold-start")
+        assert entered.wait(3)
+        assert manager.status().phase is RunPhase.PREPARING
+        assert control.status().phase is HardwareJobPhase.PREPARING
+        assert not port.messages  # no hardware output while waiting for follower
+        finish.set()
+        assert active.wait(3)
+        assert control.status().phase is HardwareJobPhase.RUNNING
+        ready.clear()
+        manager.stop()
+        assert ready.wait(3)
+        assert not instances[0].is_alive
+        assert len(instances) == 2
+        active.clear()
+        start("prepared-start")
+        assert active.wait(3)
+        assert len(instances) == 2  # warmed Go Live does not construct again
+        manager.stop()  # drain the asynchronous trace writer before inspecting stages
+        for run in ("cold-start", "prepared-start"):
+            rows = [
+                json.loads(line)
+                for line in (tmp_path / "runs" / run / "trace" / "runtime.jsonl")
+                .read_text()
+                .splitlines()
+            ]
+            stages = [r["stage"] for r in rows if r["type"] == "runtime_startup"]
+            assert "follower_ready" in stages
+            assert "input_ready" in stages
+            assert "playing" in stages
+    finally:
+        finish.set()
+        manager.shutdown()

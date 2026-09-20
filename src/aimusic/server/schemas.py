@@ -169,6 +169,7 @@ class HardwareJobPhase(str, Enum):
     """Lifecycle phase of the process-wide hardware job slot."""
 
     IDLE = "idle"
+    PREPARING = "preparing"
     RUNNING = "running"
     STOPPING = "stopping"
     COMPLETED = "completed"
@@ -187,6 +188,7 @@ class LiveStatusResponse(BaseModel):
     @model_validator(mode="after")
     def validate_phase_running_invariant(self) -> "LiveStatusResponse":
         expected_running = self.phase in {
+            HardwareJobPhase.PREPARING,
             HardwareJobPhase.RUNNING,
             HardwareJobPhase.STOPPING,
         }
@@ -787,6 +789,13 @@ class LiveRuntimeStatusEvent(BaseModel):
 class OrchestraRendererStatusEvent(BaseModel):
     type: Literal["runtime:renderer_status"]
     status: OrchestraRendererStatus
+
+
+class FollowerPreloadRequest(BaseModel):
+    bundle_id: str = Field(min_length=1)
+    revision: str | None = None
+    tempo_bpm: float = Field(default=68.0, gt=0)
+    force: bool = False
 
 
 class OrchestraRendererPreloadRequest(BaseModel):

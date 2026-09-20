@@ -80,6 +80,44 @@ Before the soloist starts playing, Rubato loads:
 - output instrument map
 - selected MIDI input/output devices
 
+### Prepared score-follower lifecycle
+
+Perform opens at measure 1. Automatic coverage suggestions stay in Data view;
+explicit measure selection and an active performance still take precedence.
+
+Opening the movement requests `POST /api/runtime/follower/preload` with its
+tempo. The server prepares one untouched `ProcessFollower` in the background,
+using the public release's lightweight `PthmmLiveFollower`, without opening
+MIDI/audio ports. `GET /api/runtime/follower/status` reports `not_loaded`,
+`preparing`, `ready`, `in_use`, or `failed`, elapsed preparation, and timings.
+The PWA polls this snapshot once per second and offers explicit Retry on failure.
+
+The preparation key includes the resolved reference path, modification time and
+size, method, tempo, and constructor options. Unchanged requests share one
+builder; changed keys cancel and supersede the previous generation. Go Live
+claims the matching child once and acknowledges the selected entry prior and
+lock threshold before input. If still cold, Go Live waits on the same builder
+and remains visibly preparing. Cancel ends that wait without opening outputs;
+the background preparation may finish for the next attempt.
+
+The hardware slot remains occupied during preparation (`running=true`), but its
+phase becomes `running` only at input/playback readiness. Each used follower is
+closed after its take; a fresh child is prepared for the next one. Used tracking
+state is never returned to the ready slot. Shutdown cancels preparation and
+closes both resident and active resources. The diagnostic
+`RUBATO_FOLLOWER_PROCESS=0` path bypasses preloading.
+
+Preparation transitions and totals live in
+`runs/follower-preload-*/trace/startup.jsonl`. The public process retains its
+per-stage `follower-startup.jsonl`, timed stack dumps, and timeout diagnostics
+in that preparation's trace directory. Per-run `runtime_startup` rows carry
+`preparation_id` to join these files and retain the output/input/playing stages.
+The existing per-request startup trace remains unchanged. Timings include
+`spawn_and_prepare` as a total; do not sum it with its component stages.
+
+For deterministic cold/ready/cancel/retry/stale-child tests and a hardware-free
+wall-clock benchmark, see [Testing](../TESTING.md#follower-startup-timing).
+
 The REAPER/BBCSO route has an explicit asynchronous, resident readiness
 lifecycle. By default the PWA requests connection at mount rather than waiting
 for `Go live`. Rubato opens one CoreMIDI virtual source named `Rubato Orchestra`;

@@ -109,7 +109,11 @@ def _child_main(
         kind, payload = message
         started = time.monotonic()
         try:
-            if kind == "note":
+            if kind == "configure_entry":
+                reference_beat, minimum_lock_updates = payload
+                follower.configure_entry(reference_beat, minimum_lock_updates)
+                responses.put(("configured", None))
+            elif kind == "note":
                 perf_time, pitch, velocity = payload
                 update = follower.observe(
                     PerformedNote(perf_time=perf_time, pitch=pitch, velocity=velocity)
@@ -190,6 +194,7 @@ class ProcessFollower:
             daemon=True,
         )
         self._closed = False
+        self.startup_timings_ms: dict[str, float] = {}
         started = time.monotonic()
         last_progress = started
         last_report = started
@@ -254,6 +259,7 @@ class ProcessFollower:
                         last_report = now
                     continue
                 if kind == "startup":
+                    self.startup_timings_ms[stage] = (time.monotonic() - last_progress) * 1000
                     stage = payload["stage"]
                     last_progress = time.monotonic()
                     report(
@@ -265,6 +271,9 @@ class ProcessFollower:
                     raise RuntimeError(f"Score follower failed during {stage}: {payload}")
                 elif kind == "ready":
                     report("ready")
+                    self.startup_timings_ms["spawn_and_prepare"] = (
+                        time.monotonic() - started
+                    ) * 1000
                     break
                 else:
                     raise RuntimeError(f"Unexpected follower startup response: {kind!r}")
@@ -279,6 +288,13 @@ class ProcessFollower:
             finally:
                 self.close()
             raise
+
+    def configure_entry(self, reference_beat: float | None, minimum_lock_updates: int) -> None:
+        """Acknowledged configuration of a pristine child, before any notes."""
+        self._requests.put(("configure_entry", (reference_beat, minimum_lock_updates)))
+        kind, payload = self._responses.get(timeout=5.0)
+        if kind != "configured":
+            raise RuntimeError(f"Follower entry configuration failed: {payload}")
 
     @property
     def is_alive(self) -> bool:

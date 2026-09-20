@@ -59,6 +59,8 @@
     playSessionMidi,
     playTakeReview,
     preloadOrchestraRenderer,
+    preloadFollower,
+    followerPreparationStatus,
     prepareTakeReview,
     rebindMixProgram,
     renderOfflineSession,
@@ -86,6 +88,7 @@
     updateMixRegion,
   } from './generated';
   import type {
+    FollowerPreparationStatus,
     Anchor,
     CoverageDoc,
     FreeRegion,
@@ -224,7 +227,7 @@
   let scoreShellEl: HTMLElement | null = null;
   let scoreStageEl: HTMLDivElement | null = null;
   let scoreOverlayEl: PdfCoverageOverlay | null = null;
-  let selectedRehearsalMeasureNumber: number | null = null;
+  let selectedRehearsalMeasureNumber: number | null = 1;
   let liveStartMeasureNumber: number | null = null;
   let suggestionContext = '';
   let selectedForTakeId = '';
@@ -2303,7 +2306,10 @@
         selectedEntryPasses.length,
         scoreTakeCounts[selectedRehearsalMeasureNumber] ?? 0,
       );
-  $: if (coverageData) {
+  // Perform opens at the beginning; coverage suggestions belong to Data.
+  // Otherwise an asynchronous take/coverage response jumps the idle score
+  // to a later uncovered passage just before the performer presses Go live.
+  $: if (coverageData && workspaceMode === 'data') {
     const takeId = latestTake?.take_id ?? 'no-take';
     const context = `${takeId}:${coverageData.revision}:${coverageData.algorithm_revision}`;
     if (suggestionContext !== context) {
@@ -2356,7 +2362,7 @@
         ? 'playing'
         : 'idle';
   $: stateLabel = liveStartupPending
-    ? 'Loading orchestra'
+    ? 'Preparing live performance'
     : liveRuntimeActive
     ? liveStateWord
     : isHardwareRecording
@@ -2389,12 +2395,8 @@
   $: rendererPreloadPending = ['loading', 'opening_audio'].includes(
     rendererStatus.state ?? 'not_loaded',
   );
-  $: liveStartupPending =
-    orchestraUsesLiveVst &&
-    (goingLive ||
-      (liveRuntimeActive &&
-        runtimeStatus?.phase === 'preparing' &&
-        ['loading', 'opening_audio'].includes(runtimeStatus.orchestra_renderer_state ?? 'loading')));
+  $: liveStartupPending = goingLive ||
+    (liveRuntimeActive && runtimeStatus?.phase === 'preparing');
   $: liveStartupElapsedSeconds = liveStartupStartedAtMs === null
     ? 0
     : Math.max(0, Math.floor((positionClockMs - liveStartupStartedAtMs) / 1000));
@@ -2409,21 +2411,21 @@
     orchestraUsesLiveVst && ['failed', 'unavailable'].includes(rendererStatus.state ?? 'not_loaded')
       ? rendererStatus.message ?? 'REAPER orchestra is unavailable'
       : '';
-  $: orchestraReadinessLabel = liveStartupFailure || rendererPreloadFailure
+  $: orchestraReadinessLabel = liveStartupFailure || rendererPreloadFailure || followerStatus.state === 'failed'
     ? 'Failed'
-    : liveStartupPending || (orchestraUsesLiveVst && rendererPreloadPending)
+    : liveStartupPending || followerStatus.state === 'preparing' || (orchestraUsesLiveVst && rendererPreloadPending)
       ? 'Loading'
-      : orchestraRendererReady
+      : orchestraRendererReady && ['ready', 'in_use'].includes(followerStatus.state ?? '')
         ? 'Ready'
         : 'Not loaded';
   $: orchestraReadinessDetail = liveStartupFailure
     ? `Orchestra did not start: ${liveStartupFailure}. No performance was recorded.`
     : rendererPreloadFailure
       ? rendererPreloadFailure
+    : liveStartupPending
+      ? `${runtimeStatus?.message ?? 'Preparing the live performance'} · ${liveStartupElapsedSeconds}s`
     : !orchestraUsesLiveVst && selectedBackendOutput
       ? `Keyboard MIDI output is ready · orchestra ${orchestraVolume}%`
-    : liveStartupPending
-      ? `${runtimeStatus?.message ?? 'Connecting the REAPER orchestra'} · ${liveStartupElapsedSeconds}s`
       : orchestraUsesLiveVst && rendererPreloadPending
         ? rendererStatus.message
       : orchestraRendererReady
@@ -2648,6 +2650,35 @@
     }
   }
 
+  let followerStatus: FollowerPreparationStatus = {
+    state: 'not_loaded', message: 'Preparing the score follower',
+  };
+  let followerPollBusy = false;
+  async function refreshFollowerStatus() {
+    if (followerPollBusy) return;
+    followerPollBusy = true;
+    try {
+      followerStatus = await followerPreparationStatus();
+    } catch (error) {
+      followerStatus = { state: 'failed', message: describeApiError(error, 'Follower status unavailable') };
+    } finally {
+      followerPollBusy = false;
+    }
+  }
+  async function prepareFollower(force = false) {
+    try {
+      followerStatus = await preloadFollower({ body: {
+        bundle_id: 'chopin_op11_movement_2', tempo_bpm: orchestraTempoBpm, force,
+      } });
+    } catch (error) {
+      followerStatus = { state: 'failed', message: describeApiError(error, 'Follower preparation failed') };
+    }
+  }
+  onMount(() => {
+    const timer = setInterval(() => void refreshFollowerStatus(), 1000);
+    return () => clearInterval(timer);
+  });
+
   onMount(() => {
     void refreshFreeRegions();
     void refreshNeedsInfo();
@@ -2710,6 +2741,7 @@
   function saveOrchestraTempo() {
     orchestraTempoBpm = Math.max(40, Math.min(200, Math.round(orchestraTempoBpm)));
     orchestraTempoCustomized = true;
+    void prepareFollower();
     localStorage.setItem('rubato-orchestra-tempo-bpm', String(orchestraTempoBpm));
     liveTempoEditRevision += 1;
     const revision = liveTempoEditRevision;
@@ -3153,6 +3185,7 @@
         orchestraTempoBpm = Math.round(livePlan.initial_tempo_bpm);
         confirmedOrchestraTempoBpm = orchestraTempoBpm;
       }
+      void prepareFollower();
       const firstEntranceMeasure = livePlan.first_solo_entry?.measure_index != null
         ? livePlan.first_solo_entry.measure_index + 1
         : null;
@@ -3273,13 +3306,7 @@
       });
       confirmedOrchestraTempoBpm = orchestraTempoBpm;
       confirmedOrchestraVolume = orchestraVolume;
-      setMessage(
-        startMeasure !== null
-          ? `Orchestra leading from measure ${startMeasure} — join when ready.`
-          : livePlan.orchestra_starts_automatically
-          ? `Live — orchestra leading from measure ${livePlan.orchestra_start?.measure_label ?? '1'}.`
-          : 'Live — listening for your entry.',
-      );
+      setMessage('Preparing the score follower and orchestra…');
     } catch (error) {
       activePerformanceRecordingId = '';
       liveStartupStartedAtMs = null;
@@ -4235,6 +4262,16 @@
                 hardwareStatus.running ||
                 (orchestraUsesLiveVst && preloadBbcsoOnStartup && !orchestraRendererReady)}
           ><span aria-hidden="true">{liveStartupPending ? '×' : liveRuntimeActive ? '■' : '▶'}</span> {liveStartupPending ? 'Cancel loading' : liveRuntimeActive ? 'Stop live' : 'Go live'}</button>
+          <span role="status" data-testid="follower-readiness">
+            {followerStatus.message}
+            {#if followerStatus.state === 'preparing'}
+              · {Math.floor(followerStatus.elapsed_seconds ?? 0)}s
+            {/if}
+          </span>
+          {#if followerStatus.state === 'failed' && !liveRuntimeActive}
+            <button class="btn" on:click={() => prepareFollower(true)}>Retry follower</button>
+          {/if}
+
           <button
             type="button"
             class="action-chip"
@@ -4245,8 +4282,8 @@
         </nav>
         <div
           class="orchestra-readiness"
-          class:is-loading={liveStartupPending || rendererPreloadPending}
-          class:is-ready={orchestraRendererReady}
+          class:is-loading={orchestraReadinessLabel === 'Loading'}
+          class:is-ready={orchestraReadinessLabel === 'Ready'}
           class:is-error={!!liveStartupFailure || !!rendererPreloadFailure}
           role={liveStartupFailure || rendererPreloadFailure ? 'alert' : 'status'}
           aria-live="polite"

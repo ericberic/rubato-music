@@ -709,6 +709,56 @@ export type EnvelopePoint = {
 };
 
 /**
+ * FollowerPreloadRequest
+ */
+export type FollowerPreloadRequest = {
+    /**
+     * Bundle Id
+     */
+    bundle_id: string;
+    /**
+     * Force
+     */
+    force?: boolean;
+    /**
+     * Revision
+     */
+    revision?: string | null;
+    /**
+     * Tempo Bpm
+     */
+    tempo_bpm?: number;
+};
+
+/**
+ * FollowerPreparationStatus
+ */
+export type FollowerPreparationStatus = {
+    /**
+     * Elapsed Seconds
+     */
+    elapsed_seconds?: number;
+    /**
+     * Message
+     */
+    message?: string;
+    /**
+     * Preparation Id
+     */
+    preparation_id?: string | null;
+    /**
+     * State
+     */
+    state?: 'not_loaded' | 'preparing' | 'ready' | 'in_use' | 'failed';
+    /**
+     * Timings Ms
+     */
+    timings_ms?: {
+        [key: string]: number;
+    };
+};
+
+/**
  * FreeRegion
  */
 export type FreeRegion = {
@@ -796,7 +846,7 @@ export type HttpValidationError = {
  *
  * Lifecycle phase of the process-wide hardware job slot.
  */
-export type HardwareJobPhase = 'idle' | 'running' | 'stopping' | 'completed' | 'failed';
+export type HardwareJobPhase = 'idle' | 'preparing' | 'running' | 'stopping' | 'completed' | 'failed';
 
 /**
  * HardwareRecordStartRequest
@@ -3906,6 +3956,47 @@ export type StartLiveRuntimeFollowResponses = {
 };
 
 export type StartLiveRuntimeFollowResponse = StartLiveRuntimeFollowResponses[keyof StartLiveRuntimeFollowResponses];
+
+export type PreloadFollowerData = {
+    body: FollowerPreloadRequest;
+    path?: never;
+    query?: never;
+    url: '/api/runtime/follower/preload';
+};
+
+export type PreloadFollowerErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type PreloadFollowerError = PreloadFollowerErrors[keyof PreloadFollowerErrors];
+
+export type PreloadFollowerResponses = {
+    /**
+     * Successful Response
+     */
+    200: FollowerPreparationStatus;
+};
+
+export type PreloadFollowerResponse = PreloadFollowerResponses[keyof PreloadFollowerResponses];
+
+export type FollowerPreparationStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/runtime/follower/status';
+};
+
+export type FollowerPreparationStatusResponses = {
+    /**
+     * Successful Response
+     */
+    200: FollowerPreparationStatus;
+};
+
+export type FollowerPreparationStatusResponse = FollowerPreparationStatusResponses[keyof FollowerPreparationStatusResponses];
 
 export type UpdateLiveRuntimeOutputAdvanceData = {
     body: LiveOutputAdvanceUpdateRequest;

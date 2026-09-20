@@ -438,6 +438,7 @@ class StartupTrace(StrictModel):
 
     type: Literal["follower_startup", "runtime_startup"]
     stage: str
+    preparation_id: str | None = None
     monotonic_time: float
     elapsed_seconds: float = 0.0
     event: str | None = None

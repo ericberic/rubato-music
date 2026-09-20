@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import gc
 import inspect
+import json
 import logging
 import os
 import subprocess
@@ -92,6 +93,7 @@ from aimusic.core.events import events
 from aimusic.mixing import store as mix_store
 from aimusic.mixing.policy import compile_mix_policy
 from aimusic.mixing.zones import room_zones
+from aimusic.realtime.follower_preparation import FollowerPreparation, FollowerPreparationStatus
 from aimusic.realtime.follower_process import FollowerSpec, ProcessFollower
 from aimusic.server.live_control import LiveControl, live_control
 from aimusic.server.schemas import (
@@ -830,9 +832,7 @@ def _read_input_into_queue(
                 if stop_event.is_set() or not reconnect_enabled:
                     # Intentional teardown, or no way to recover: stop quietly.
                     return
-                logger.warning(
-                    "MIDI input %r stopped delivering mid-run; reconnecting", input_name
-                )
+                logger.warning("MIDI input %r stopped delivering mid-run; reconnecting", input_name)
                 if owns_current:
                     _safe_close_port(current)
                 assert input_name is not None and input_factory is not None
@@ -944,6 +944,9 @@ class LiveRuntimeManager:
             [Any, Any, TraceSink, TelemetryLevel], Any
         ] = _start_live_vst_router,
     ) -> None:
+        self._follower_preparation = FollowerPreparation(
+            factory=self._create_prepared_follower, observer=self._record_follower_preparation
+        )
         self._hardware_control = hardware_control
         self._input_factory = input_factory
         self._output_factory = output_factory
@@ -967,6 +970,56 @@ class LiveRuntimeManager:
         self._renderer_thread: threading.Thread | None = None
         self._renderer_auto_retry_monotonic = 0.0
         self._resident_unhealthy_monotonic: float | None = None
+
+    def _create_prepared_follower(self, spec, *, cancel_event):
+        preparation_id = self.follower_status().preparation_id
+        return ProcessFollower(
+            spec,
+            cancel_event=cancel_event,
+            diagnostics_dir=str(paths.run_trace_dir(preparation_id)),
+        )
+
+    @staticmethod
+    def _record_follower_preparation(status: FollowerPreparationStatus) -> None:
+        if status.preparation_id is None:
+            return
+        path = paths.run_trace_dir(status.preparation_id) / "startup.jsonl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            with path.open("a") as stream:
+                stream.write(
+                    json.dumps({"monotonic_time": time.monotonic(), **status.model_dump()}) + "\n"
+                )
+        except OSError:
+            logger.exception("Could not record follower preparation")
+
+    @staticmethod
+    def _follower_identity(score_file: Path) -> tuple:
+        stat = score_file.stat()
+        return (str(score_file.resolve()), stat.st_mtime_ns, stat.st_size)
+
+    def follower_status(self) -> FollowerPreparationStatus:
+        return self._follower_preparation.status()
+
+    def preload_follower(
+        self,
+        *,
+        bundle_id: str,
+        revision: str | None = None,
+        tempo_bpm: float = 68.0,
+        force: bool = False,
+    ) -> FollowerPreparationStatus:
+        if not _follower_in_subprocess():
+            return FollowerPreparationStatus(
+                message="Follower preloading is disabled in in-process mode"
+            )
+        projection = self._projection(bundle_id, revision, None)
+        score_file = projection.follower_reference_path
+        return self._follower_preparation.prepare(
+            FollowerSpec(score_file=str(score_file), tempo_bpm=tempo_bpm),
+            self._follower_identity(score_file),
+            force=force,
+        )
 
     def status(self) -> RuntimeStatus | None:
         with self._lock:
@@ -1136,6 +1189,9 @@ class LiveRuntimeManager:
         return status.model_copy(deep=True)
 
     def shutdown(self) -> None:
+        self._follower_preparation.close()
+        self._hardware_control.stop()
+        self._hardware_control.wait_until_idle(timeout=10.0)
         try:
             self.stop_preloaded_renderer()
         except RuntimeError:
@@ -1690,9 +1746,7 @@ class LiveRuntimeManager:
                         event_observer=trace_sink.write,
                         master_volume=1.0,
                         mix_level_resolver=lambda part_id, score_tick: (
-                            policy.audio_gain_for_part_at(
-                                "yamaha_anchor", part_id, score_tick
-                            )
+                            policy.audio_gain_for_part_at("yamaha_anchor", part_id, score_tick)
                         ),
                     )
                     yamaha_output = DeadlineAccompanimentOutput(
@@ -1996,20 +2050,12 @@ class LiveRuntimeManager:
             run_id=config.run_id,
             run_mode=config.run_mode,
             phase=RunPhase.PREPARING,
-            state_word="Listening",
+            state_word="Silent",
             monotonic_time=time.monotonic(),
             orchestra_tempo_bpm=config.initial_tempo_bpm,
             orchestra_volume=config.orchestra_volume,
             orchestra_renderer_state="loading" if mix_policy is not None else "not_loaded",
-            message=(
-                "Preparing the orchestra renderer in the background"
-                if mix_policy is not None
-                else (
-                    f"Count-off preparing for measure {entry.measure}"
-                    if entry is not None
-                    else "Live FOLLOW preparing"
-                )
-            ),
+            message="Preparing the score follower and orchestra",
             coordinate_system=projection.coordinate_system,
             canonical_position=projection.canonical,
             performance_ready=projection.performance_ready,
@@ -2088,31 +2134,13 @@ class LiveRuntimeManager:
                 trace_sink = JsonlTraceSink(paths.run_trace_dir(config.run_id) / "runtime.jsonl")
                 startup_started = clock.now()
 
-                def startup_progress(row: dict[str, Any]) -> None:
-                    trace_sink.write(StartupTrace.model_validate(row))
-                    with self._lock:
-                        current = self._status
-                    if current is not None and current.phase is RunPhase.PREPARING:
-                        self._publish(
-                            current.model_copy(
-                                update={
-                                    "monotonic_time": clock.now(),
-                                    "message": (
-                                        "Preparing score follower · "
-                                        f"{row.get('stage', 'starting').replace('_', ' ')}"
-                                        f" · {row.get('elapsed_seconds', 0):.0f}s"
-                                    ),
-                                }
-                            ),
-                            projection=projection,
-                        )
-
                 def startup_stage(stage: str) -> None:
                     trace_sink.write(
                         StartupTrace.model_validate(
                             {
                                 "type": "runtime_startup",
                                 "stage": stage,
+                                "preparation_id": self.follower_status().preparation_id,
                                 "monotonic_time": clock.now(),
                                 "elapsed_seconds": clock.now() - startup_started,
                             }
@@ -2125,7 +2153,7 @@ class LiveRuntimeManager:
                     # cost grows through a performance, starving every other
                     # real-time loop. Isolate it on its own core; the observe()
                     # contract is unchanged (Decision 0011).
-                    raw_follower = ProcessFollower(
+                    raw_follower = self._follower_preparation.claim(
                         FollowerSpec(
                             score_file=str(score_file),
                             method=follower_method,
@@ -2133,9 +2161,8 @@ class LiveRuntimeManager:
                             minimum_lock_updates=2 if entry is not None else 3,
                             initial_reference_beat=initial_reference_beat,
                         ),
-                        startup_observer=startup_progress,
-                        diagnostics_dir=str(paths.run_trace_dir(config.run_id)),
-                        cancel_event=stop_event,
+                        self._follower_identity(score_file),
+                        stop_event,
                     )
                 else:
                     raw_follower = MatchmakerStreamFollower(
@@ -2145,6 +2172,8 @@ class LiveRuntimeManager:
                         minimum_lock_updates=2 if entry is not None else 3,
                         initial_reference_beat=initial_reference_beat,
                     )
+                if stop_event.is_set():
+                    raise InterruptedError("Live startup cancelled")
                 startup_stage("follower_ready")
                 follower = _runtime_follower(raw_follower, projection)
                 # Recover a tracker that mis-locks early and would otherwise stay
@@ -2271,6 +2300,9 @@ class LiveRuntimeManager:
                         name="rubato-midi-input",
                         daemon=True,
                     )
+                    if stop_event.is_set():
+                        raise InterruptedError("Live startup cancelled")
+                    self._hardware_control.mark_managed_ready()
                     startup_stage("input_ready")
                     input_reader.start()
                     recording_started_at = clock.now()
@@ -2359,6 +2391,18 @@ class LiveRuntimeManager:
                     input_reader.join(timeout=1.0)
                 self._publish(engine.stop(), projection=projection)
                 return "Live FOLLOW run stopped"
+            except InterruptedError:
+                self._publish(
+                    initial.model_copy(
+                        update={
+                            "phase": RunPhase.COMPLETED,
+                            "message": "Live startup cancelled",
+                            "monotonic_time": clock.now(),
+                        }
+                    ),
+                    projection=projection,
+                )
+                return "Live startup cancelled"
             except Exception as exc:
                 error_message = str(exc) or f"{type(exc).__name__}: startup failed"
                 if trace_sink is not None:
@@ -2368,7 +2412,7 @@ class LiveRuntimeManager:
                                 "type": "runtime_startup",
                                 "stage": "failed",
                                 "monotonic_time": clock.now(),
-                                "error_type": type(exc).__name__,
+                                "error_type": type(exc.__cause__ or exc).__name__,
                                 "error": error_message,
                             }
                         )
@@ -2412,6 +2456,8 @@ class LiveRuntimeManager:
                 output_advance_commands.close()
                 if raw_follower is not None:
                     raw_follower.close()
+                    if _follower_in_subprocess():
+                        self._follower_preparation.release()
                 if output is not None:
                     output.close()
                     vst_router = None
@@ -2433,13 +2479,13 @@ class LiveRuntimeManager:
                 if capture_error is not None:
                     raise capture_error
 
+        self._publish(initial, projection=projection)
         self._hardware_control.start_managed(
             kind="live_follow",
-            message=(
-                f"Following {input_name} and accompanying on {output_name or 'live audio zones'}"
-            ),
+            message="Preparing the score follower and orchestra",
             target=worker,
             session_id=config.run_id,
+            preparing=True,
         )
         return initial.model_copy(deep=True)
 

@@ -78,6 +78,7 @@ from aimusic.mixing.models import (
 )
 from aimusic.mixing.policy import MixPolicy, compile_mix_policy
 from aimusic.mixing.zones import room_zones
+from aimusic.realtime.follower_preparation import FollowerPreparationStatus
 from aimusic.server.live_control import live_control
 from aimusic.server.live_runtime import live_runtime
 from aimusic.server.schemas import (
@@ -95,6 +96,7 @@ from aimusic.server.schemas import (
     BeatAuditionResponse,
     CursorTraceRequest,
     CursorTraceResponse,
+    FollowerPreloadRequest,
     FreeRegion,
     FreeRegionRequest,
     FreeRegionsResponse,
@@ -766,6 +768,29 @@ async def shutdown_server(request: Request) -> ServerShutdownResponse:
 )
 def live_runtime_status() -> RuntimeStatus | None:
     return live_runtime.status()
+
+
+@router.get(
+    "/runtime/follower/status",
+    response_model=FollowerPreparationStatus,
+    operation_id="followerPreparationStatus",
+)
+def follower_preparation_status() -> FollowerPreparationStatus:
+    return live_runtime.follower_status()
+
+
+@router.post(
+    "/runtime/follower/preload",
+    response_model=FollowerPreparationStatus,
+    operation_id="preloadFollower",
+)
+def preload_follower(payload: FollowerPreloadRequest) -> FollowerPreparationStatus:
+    try:
+        return live_runtime.preload_follower(**payload.model_dump())
+    except (KeyError, FileNotFoundError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
 
 
 @router.get(

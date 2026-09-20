@@ -1,5 +1,14 @@
 # Knowledge Log
 
+## [2026-09-19] Prepare followers before Go Live
+
+Adapted background one-shot preparation to the public lightweight PTHMM,
+preserving its stage diagnostics and timeout handling. Added accurate preparing
+status, explicit retry, fresh-child replacement, a measure-1 Perform default,
+and cold/ready lifecycle and timing tests. See the
+[follower lifecycle](concepts/realtime-performance-dataflow.md#prepared-score-follower-lifecycle)
+and [timing benchmark](TESTING.md#follower-startup-timing).
+
 ## [2026-08-13] LG hardware acceptance | Score-time releases reach BBCSO
 
 After reboot cleared macOS's wedged HDMI/CoreAudio clock, a silent 100-block
