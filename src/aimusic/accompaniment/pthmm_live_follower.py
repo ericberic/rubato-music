@@ -24,8 +24,13 @@ import numpy as np
 
 from aimusic.accompaniment.following import FollowerUpdate, PerformedNote
 from aimusic.accompaniment.matchmaker_follower import (
+    DEFAULT_TRANSITION_BACKWARD_STATES,
+    _band_pthmm_transition,
     _broaden_pthmm_prior,
+    _factorize_pthmm_observation,
+    _instrument_pthmm_step,
     _seed_pthmm_prior,
+    _supports_rewrites,
 )
 
 
@@ -41,6 +46,8 @@ class PthmmLiveFollower:
         initial_reference_beat: float | None = None,
         max_wait_seconds: float = 0.005,
         startup_observer: Any | None = None,
+        transition_backward_states: int = DEFAULT_TRANSITION_BACKWARD_STATES,
+        gauge_publisher: Any | None = None,
         **_: Any,
     ) -> None:
         progress = startup_observer or (lambda stage: None)
@@ -56,6 +63,21 @@ class PthmmLiveFollower:
             has_insertions=True,
             piano_range=True,
         )
+        self._transition_banding = (
+            _band_pthmm_transition(
+                self.score_follower,
+                backward_states=transition_backward_states,
+            )
+            if _supports_rewrites(self.score_follower)
+            else None
+        )
+        self._observation_factorization = (
+            _factorize_pthmm_observation(self.score_follower)
+            if _supports_rewrites(self.score_follower)
+            else None
+        )
+        if gauge_publisher is not None and self.score_follower is not None:
+            _instrument_pthmm_step(self.score_follower, gauge_publisher)
         self._stream_end = stream_end
         self._updates: queue.Queue[float] = queue.Queue()
         self._confidence = provisional_confidence
@@ -139,6 +161,8 @@ class PthmmLiveFollower:
                 "lock_kind": "observation_count_heuristic",
                 "stable_update_count": self._stable_updates,
                 "warm_start_reference_beat": self._warm_start_reference_beat,
+                "transition_banding": self._transition_banding,
+                "observation_factorization": self._observation_factorization,
             },
         )
 

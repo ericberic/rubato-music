@@ -31,6 +31,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from aimusic.accompaniment.following import FollowerUpdate, PerformedNote
+from aimusic.accompaniment.matchmaker_follower import DEFAULT_TRANSITION_BACKWARD_STATES
 from aimusic.realtime.gauges import GaugeBlock
 
 _SENTINEL = None
@@ -47,6 +48,7 @@ class FollowerSpec:
     provisional_confidence: float = 0.5
     minimum_lock_updates: int = 3
     initial_reference_beat: float | None = None
+    transition_backward_states: int = DEFAULT_TRANSITION_BACKWARD_STATES
 
 
 def _child_main(
@@ -90,6 +92,8 @@ def _child_main(
             minimum_lock_updates=spec.minimum_lock_updates,
             initial_reference_beat=spec.initial_reference_beat,
             startup_observer=progress,
+            transition_backward_states=spec.transition_backward_states,
+            gauge_publisher=publisher,
         )
     except BaseException:  # surface construction failure to the parent
         responses.put(("error", traceback.format_exc()))
@@ -104,6 +108,8 @@ def _child_main(
 
     while True:
         message = requests.get()
+        if publisher is not None:
+            publisher.dequeued()
         if message is _SENTINEL:
             break
         kind, payload = message
@@ -142,7 +148,6 @@ def _child_main(
         if publisher is not None:
             now = time.monotonic()
             publisher.beat(now=now, work_seconds=now - started, events=1)
-            publisher.set_queue_depth(_qsize(requests))
     follower.close()
 
 
@@ -180,7 +185,11 @@ class ProcessFollower:
         if diagnostics_dir is not None:
             Path(diagnostics_dir).mkdir(parents=True, exist_ok=True)
         self._spec = spec
-        self._gauges = gauges
+        # Shared memory gauges: preparing a follower in the
+        # background carries them to whichever run claims it; the run reads
+        # them back off ``.gauges`` to point a monitor at them.
+        self._gauges = gauges if gauges is not None else GaugeBlock()
+        self._publisher = self._gauges.publisher("follower")
         self._max_wait_seconds = max_wait_seconds
         # "spawn" keeps the child free of inherited threads/handles from the
         # parent's audio and web stack; "fork" would clone them.
@@ -189,7 +198,7 @@ class ProcessFollower:
         self._responses: Any = self._ctx.Queue()
         self._process = self._ctx.Process(
             target=_child_main,
-            args=(spec, self._requests, self._responses, gauges, diagnostics_dir),
+            args=(spec, self._requests, self._responses, self._gauges, diagnostics_dir),
             name="rubato-follower",
             daemon=True,
         )
@@ -297,6 +306,12 @@ class ProcessFollower:
             raise RuntimeError(f"Follower entry configuration failed: {payload}")
 
     @property
+    def gauges(self) -> GaugeBlock:
+        """The shared vitals block this follower publishes into."""
+
+        return self._gauges
+
+    @property
     def is_alive(self) -> bool:
         return self._process.is_alive()
 
@@ -313,6 +328,12 @@ class ProcessFollower:
 
         if self._closed:
             raise RuntimeError("follower process is closed")
+        # Count before handing the item over: the child can dequeue as soon as
+        # the put returns, and if it does so before this increment the derived
+        # depth goes negative and the high-watermark misses the backlog
+        # entirely. Over-counting for a few microseconds is harmless; the
+        # watermark is a latch and never self-corrects from an under-count.
+        self._publisher.enqueued()
         self._requests.put(("note", (note.perf_time, note.pitch, note.velocity)))
         return self._latest_update()
 
