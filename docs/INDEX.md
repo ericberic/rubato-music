@@ -63,6 +63,9 @@ for the underlying pattern.
 - Score following, Matchmaker, ACCompanion, HeurMiT:
   [Score Following](concepts/score-following.md),
   [Matchmaker Real Follower Tests](concepts/matchmaker-real-follower-tests.md)
+- **Why the live follower costs ~25 ms/note and not the paper's 3.6 ms** —
+  per-note HMM cost scales with score length; measured budget and the two
+  wasted-work terms: [Follower Latency Budget](concepts/follower-latency-budget.md)
 - Tempo modeling, expressive rendering, follow/lead behavior:
   [Accompaniment Control](concepts/accompaniment-control.md),
   [Decision 0008](decisions/0008-predictive-follow-clock.md) (predictive FOLLOW clock),

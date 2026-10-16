@@ -29,7 +29,8 @@ class _WorkerGauges(Structure):
         ("heartbeat", c_double),  # monotonic time of the worker's last iteration
         ("iterations", c_int64),  # monotonic count of loop iterations
         ("events", c_int64),  # monotonic count of domain events handled
-        ("queue_depth", c_int64),  # current inbound backlog
+        ("enqueued", c_int64),  # monotonic count of items handed to the worker
+        ("dequeued", c_int64),  # monotonic count of items the worker has taken
         ("queue_high_watermark", c_int64),  # max backlog ever seen
         ("dropped", c_int64),  # events shed under backpressure
         ("busy_seconds", c_double),  # cumulative work time (for duty cycle)
@@ -85,13 +86,17 @@ class GaugeBlock:
         for name in WORKERS:
             slot = self._slots[name]
             heartbeat = slot.heartbeat
+            # Derived, not sampled: mp.Queue.qsize() raises NotImplementedError on
+            # macOS (no sem_getvalue), which silently pinned the old gauge to 0 on
+            # the only machine that runs performances. Differencing two monotonic
+            # counters needs no platform support and cannot go stale.
             samples.append(
                 WorkerSample(
                     worker=name,
                     heartbeat_age_ms=((now - heartbeat) * 1000 if heartbeat else None),
                     iterations=slot.iterations,
                     events=slot.events,
-                    queue_depth=slot.queue_depth,
+                    queue_depth=max(0, slot.enqueued - slot.dequeued),
                     queue_high_watermark=slot.queue_high_watermark,
                     dropped=slot.dropped,
                     busy_seconds=slot.busy_seconds,
@@ -118,9 +123,25 @@ class GaugePublisher:
         if events:
             slot.events += events
 
-    def set_queue_depth(self, depth: int) -> None:
+    def enqueued(self, count: int = 1) -> None:
+        """Producer side: one more item handed to this worker."""
+
+        self._slot.enqueued += count
+
+    def dequeued(self, count: int = 1) -> None:
+        """Consumer side: one more item taken off this worker's inbox.
+
+        Also refreshes the backlog high-watermark, which the consumer is the
+        right place to compute: it sees both counters in the shared block.
+        """
+
         slot = self._slot
-        slot.queue_depth = depth
+        slot.dequeued += count
+        # Clamped: producers increment ``enqueued`` before handing the item
+        # over, but a torn read across the process boundary could still show a
+        # transient negative. The watermark is a latch -- it never
+        # self-corrects -- so it must never be fed a bogus value.
+        depth = max(0, slot.enqueued - slot.dequeued)
         if depth > slot.queue_high_watermark:
             slot.queue_high_watermark = depth
 

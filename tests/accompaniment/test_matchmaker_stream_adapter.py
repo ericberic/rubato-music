@@ -85,16 +85,40 @@ def test_stream_adapter_times_out_instead_of_blocking(monkeypatch) -> None:
     follower.close()
 
 
+class _FakeTransitionModel:
+    """Minimal stand-in exposing the seam ``_band_pthmm_transition`` uses."""
+
+    def __init__(self, matrix: np.ndarray) -> None:
+        self._transition_prob = matrix
+        self._log_transition_prob = np.log(np.maximum(matrix, 1e-300))
+        self.init_probabilities = None
+        self.use_log_probabilities = False
+
+    def __call__(self):
+        return self._transition_prob
+
+
 def test_stream_adapter_centers_pthmm_prior_and_locks_on_second_onset(monkeypatch) -> None:
     class WarmMatchmaker(FakeMatchmaker):
         instance = None
 
         def __init__(self, score_file, **kwargs) -> None:
             super().__init__(score_file, **kwargs)
+            # Faithful enough for the real rewrites to apply: Rubato now
+            # refuses to run Matchmaker's dense path rather than degrade
+            # silently, so a double that is missing these would (correctly)
+            # raise instead of testing prior seeding.
+            states = np.arange(0.0, 12.5, 0.5)
+            transition = np.eye(len(states)) * 0.5 + np.eye(len(states), k=1) * 0.5
+            transition[-1, -1] = 1.0
             self.score_follower = SimpleNamespace(
-                state_space=np.arange(0.0, 12.5, 0.5),
-                transition_model=SimpleNamespace(init_probabilities=None),
-                forward_variable=np.ones(25),
+                state_space=states,
+                transition_model=_FakeTransitionModel(transition),
+                observation_model=SimpleNamespace(
+                    pitch_profiles=np.full((len(states), 88), 0.1), current_state=None
+                ),
+                forward_variable=np.ones(len(states)),
+                step=lambda features: None,
             )
             WarmMatchmaker.instance = self
 

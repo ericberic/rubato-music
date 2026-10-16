@@ -25,28 +25,41 @@ dvc-sync` once in a new worktree. See
 Use Python 3.11 or 3.12. The live score-following dependencies do not currently
 support Python 3.13+ through this project.
 
-Base development:
+Standard development commands are provided via `Makefile`:
 
-```bash
-uv sync --extra dev
-uv run pytest
-```
+- **Run the rehearsal cockpit and server**:
+  ```bash
+  make run
+  ```
+  This pulls DVC-managed score/data artifacts, builds the webapp if stale,
+  syncs `dev`, `live`, and `audio` extras, starts the server as a background
+  job, polls until ready, and opens the app URL in the browser on macOS. Pass
+  arguments via `ARGS`, e.g. `make run ARGS="--skip-dvc"` or
+  `make run ARGS="--force-build"`. Ctrl-C gracefully stops the server via
+  `dev-server.sh`'s `INT`/`TERM`/`EXIT` trap (rubato#99). See
+  [PWA Rehearsal UI](concepts/pwa-rehearsal-ui.md) for the cockpit itself.
 
-Live MIDI/accompaniment work:
+- **Run tests**:
+  ```bash
+  make test
+  ```
+  Pass arguments to pytest via `ARGS`:
+  ```bash
+  make test ARGS="-m hardware"
+  make test ARGS="tests/test_server_api.py"
+  ```
 
-```bash
-uv sync --extra dev --extra live
-```
+- **Run quality gates**:
+  ```bash
+  make check
+  ```
+  Runs OpenAPI schema drift verification (`make check-types`), Svelte/TypeScript
+  type diagnostics (`npm run check`), and documentation link health.
 
-Running the actual rehearsal cockpit (as opposed to base test/dev work) is
-one command, `./scripts/dev-server.sh`: it pulls DVC-managed score/data
-artifacts, builds the webapp if stale, syncs `dev`+`live` extras, starts the
-server as a background job, polls `GET /` until it responds, and opens the
-app URL on macOS. `--skip-dvc` and `--skip-build` opt out of the
-corresponding step (e.g. for repeated CI-style runs); Ctrl-C still stops the
-server, via an `INT`/`TERM`/`EXIT` trap rather than a bare foreground exec
-(rubato#99). See [PWA Rehearsal UI](concepts/pwa-rehearsal-ui.md) for the
-cockpit itself.
+- **Build web UI assets**:
+  ```bash
+  make build
+  ```
 
 The live PTHMM worker uses the prepared follower-reference MIDI directly. It
 does not import the offline Partitura score loader, Matchmaker audio features,

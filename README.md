@@ -111,13 +111,13 @@ explains this rather than erroring).
 ### Run
 
 ```bash
-./scripts/dev-server.sh
+make run
 ```
 
 This builds the web UI, starts the local server, and opens
 [http://localhost:8000/app/](http://localhost:8000/app/) automatically on macOS
-(other platforms print the URL). Pass `--skip-dvc` or `--skip-build` to opt out
-of either step; see `./scripts/dev-server.sh --help`.
+(other platforms print the URL). Pass options via `ARGS`, e.g. `make run ARGS="--skip-dvc"`
+or `make run ARGS="--skip-build"`.
 
 Connect your piano before starting, then click **Refresh devices** and pick it
 under **Piano input**, and choose an **Orchestra output**.
@@ -178,12 +178,29 @@ runs/              DVC-tracked rehearsal and experiment outputs
 
 ## Development
 
-```bash
-uv sync --extra dev        # base, deterministic tests
-uv run pytest              # run the test suite
+Run tests:
 
-uv sync --extra dev --extra live   # add live MIDI support
-uv run pytest -m "live or matchmaker"   # opt-in live/hardware tests
+```bash
+make test
+```
+
+Pass arguments to pytest via `ARGS`:
+
+```bash
+make test ARGS="-m hardware"
+make test ARGS="tests/test_server_schemas.py"
+```
+
+Run static quality checks (OpenAPI schema contract, Svelte/TypeScript diagnostics, and docs health):
+
+```bash
+make check
+```
+
+Build production webapp assets:
+
+```bash
+make build
 ```
 
 List local MIDI devices:

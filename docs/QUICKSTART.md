@@ -10,17 +10,17 @@ accompanied review, and experimental live following.
 Connect your keyboard to the Mac by USB, then run this from the Rubato checkout:
 
 ```bash
-./scripts/dev-server.sh
+make run
 ```
 
-The script installs the development and live-MIDI
+This installs the development and live-MIDI
 dependencies, pulls the DVC-managed Movement 2 artifacts, builds the web UI
 when needed, starts the FastAPI server, waits for it to become ready, and opens
 [http://localhost:8000/app/](http://localhost:8000/app/) on macOS. Leave that
 terminal window in the background while Rubato is running. There is no second
 setup command and no normal mid-rehearsal terminal step.
 
-Use `./scripts/dev-server.sh --skip-dvc` only when the artifacts are already
+Use `make run ARGS="--skip-dvc"` only when the artifacts are already
 present and you deliberately want to skip the pull.
 
 ## Rehearse in the UI
